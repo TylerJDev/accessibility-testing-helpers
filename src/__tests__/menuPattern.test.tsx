@@ -16,10 +16,10 @@ describe('MenuPattern', () => {
         const component = render(<ExampleMenu />);
 
         const menuBtn = screen.getByRole('button', { name: 'Menu' });
-        // await userEvent.click(menuBtn);
+        await userEvent.click(menuBtn);
 
-        // const menu = screen.getByRole('menu')
-        // expect(menu).toBeTruthy();
+        const menu = screen.getByRole('menu')
+        expect(menu).toBeTruthy();
 
         await triggerButton(component)
     });

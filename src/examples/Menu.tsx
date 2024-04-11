@@ -12,7 +12,7 @@ const Menu = ({items}: Props) => {
     const toggleMenu = (e) => {
         // if the event is a key press of "enter" or "space", toggle the menu
         // if the event is a click, toggle the menu
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
             setIsOpen(!isOpen);
             return;
         };
@@ -33,7 +33,7 @@ const Menu = ({items}: Props) => {
 
     useEffect(() => {
         if (isOpen) {
-            const menuItems = document.querySelectorAll('[role="menuitem"]');
+            const menuItems: NodeListOf<HTMLElement> = document.querySelectorAll('[role="menuitem"]');
             menuItems[index]?.focus();
         }
     }, [index]);
@@ -63,7 +63,7 @@ const Menu = ({items}: Props) => {
 
     return (
         <div>
-            <button id="trigger" onKeyDown={toggleMenu} onClick={toggleMenu} aria-expanded={isOpen ? 'true' : null}>
+            <button id="trigger" onKeyDown={toggleMenu} onClick={toggleMenu} aria-expanded={isOpen}>
                 Menu
             </button>
             {isOpen && (

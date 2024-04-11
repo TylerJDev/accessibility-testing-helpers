@@ -33,7 +33,7 @@ import userEvent from '@testing-library/user-event'
 
 const validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox']
 
-export async function expandEvent(component, keys: string[], elem: HTMLButtonElement, optionalTests) {
+export async function expandEvent(keys: string[], elem: HTMLButtonElement, delay) {
   // Is there a way to determine with context this function is currently in? (Jest, Playwright)
 
   // Jest:
@@ -49,6 +49,7 @@ export async function expandEvent(component, keys: string[], elem: HTMLButtonEle
 
     expect(validElemRole).toContain(elemRole)
 
+    if (delay) await delay();
     await userEvent.keyboard(`{Escape}`)
 
     expect(elem).toBeCollapsed();
@@ -71,9 +72,11 @@ const menuNavigation = (menuElem: HTMLElement) => {
     End: menuElem.lastElementChild,
     PageDown: menuElem.lastElementChild, // TODO!: See why this works
   }
+
+  // {ArrowUp: {target: menuElem.lastElementChild, message: '...', strict: true}}
 }
 
-export async function navigationEvent(elem: HTMLButtonElement, component, optionalTests) {
+export async function navigationEvent(elem: HTMLButtonElement, component, strict, delay) {
   // What we need to test:
   // 1. Open the menu
   // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
@@ -98,6 +101,7 @@ export async function navigationEvent(elem: HTMLButtonElement, component, option
 
   // Steps [2, 4, 5]
   for (const key of Object.keys(menuNavigationSteps)) {
+    if (delay) await delay();
     // TODO: Can we make this easier to debug without messing with the internals of this script?
     // TODO: (e.g. a log statement that only shows if something is true in the environment)
     await userEvent.keyboard(`{${key}}`)
@@ -111,17 +115,16 @@ export async function navigationEvent(elem: HTMLButtonElement, component, option
     // TODO: If submenu, do ...
   }
 
-
-  if (optionalTests) {
+  if (strict) {
+    const menu = component.getByRole('menu')
     // Test character navigation
-
     // TODO, make this a function
     await userEvent.keyboard(`{Escape}`)
     await userEvent.keyboard(`{Enter}`)
 
     // TODO: Maybe make this optional? If there aren't any valid characters (e.g. reaction emoji only menu), then -
     // TODO: we should test this step, as there's no "alphanumeric" character to test.
-    const menuItems = document.querySelectorAll('li') // TODO!: This should test menuitem, menuitemradio, and menuitemcheckbox.
+    const menuItems = menu.querySelectorAll('li') // TODO!: This should test menuitem, menuitemradio, and menuitemcheckbox.
 
     // Get the menu item in the middle
     const middleMenuItem = menuItems[Math.floor(menuItems.length / 2)]
@@ -143,19 +146,21 @@ export async function navigationEvent(elem: HTMLButtonElement, component, option
   //   }
 }
 
-export async function activationEvent(elem: HTMLButtonElement, component, optionalTests) {
+export async function activationEvent(elem: HTMLButtonElement, component, strict) {
   return true
 }
 
 // Could we add a custom matcher
 // example custom matcher
 // toBeExpanded, checks if a component is expanded or not via `aria-expanded`, or if the component naturally expands (e.g. details/summary, dialog, etc.)
+// Add a way to bubble up what exactly failed in an easier way to digest
 
-// TODO: Would optionalTests be suited better as some global var?
-export async function triggerButton(component: RenderResult, optionalTests: boolean = false) {
+// TODO: Would strict be suited better as some global var?
+export async function triggerButton(component: RenderResult, strict: boolean = false, delay: number = 0) {
   // TEST: Do all of the expected keyboard interactions for the trigger button work properly?
   const supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
   const elem = component.getByRole('button') as HTMLButtonElement
+  const delayBy = delay ? (ms = delay) => new Promise(resolve => setTimeout(resolve, ms)) : null;
 
   // We can make this usable in both Jest and Playright tests, somehow
   // Jest utilizes `fireEvent` or `userEvent`
@@ -164,7 +169,7 @@ export async function triggerButton(component: RenderResult, optionalTests: bool
 
   // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
 
-  await expandEvent(component, supportedTriggerKeys, elem, optionalTests)
-  await navigationEvent(elem, component, optionalTests)
-  await activationEvent(elem, component, optionalTests)
+  await expandEvent(supportedTriggerKeys, elem, delayBy)
+  await navigationEvent(elem, component, strict, delayBy)
+  await activationEvent(elem, component, strict)
 }
