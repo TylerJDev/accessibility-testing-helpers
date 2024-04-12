@@ -1,4 +1,6 @@
-import require$$0 from 'util';
+'use strict';
+
+var require$$0 = require('util');
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -55809,4 +55811,4 @@ function accessibleMenuPattern(component_1) {
     });
 }
 
-export { accessibleMenuPattern };
+exports.accessibleMenuPattern = accessibleMenuPattern;
