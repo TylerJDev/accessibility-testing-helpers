@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Accessibility testing helpers",
   "main": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "test": "jest",
     "build": "rollup --config"
