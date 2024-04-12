@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom' // !TODO: Can we move this? How is this done in PRC?
 import {act, RenderResult} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -156,7 +155,7 @@ export async function activationEvent(elem: HTMLButtonElement, component, strict
 // Add a way to bubble up what exactly failed in an easier way to digest
 
 // TODO: Would strict be suited better as some global var?
-export async function triggerButton(component: RenderResult, strict: boolean = false, delay: number = 0) {
+export async function accessibleMenuPattern(component: RenderResult, strict: boolean = false, delay: number = 0) {
   // TEST: Do all of the expected keyboard interactions for the trigger button work properly?
   const supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
   const elem = component.getByRole('button') as HTMLButtonElement
