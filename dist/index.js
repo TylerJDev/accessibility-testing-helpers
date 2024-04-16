@@ -55620,81 +55620,45 @@ const userEvent = {
 var validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox'];
 function expandEvent(keys, elem, delay) {
     return __awaiter(this, void 0, void 0, function () {
-        var _loop_1, _i, keys_1, key;
-        var _this = this;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _i, keys_1, key, elemRole;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     // Is there a way to determine with context this function is currently in? (Jest, Playwright)
                     console.log('-1');
-                    _loop_1 = function (key) {
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
-                                case 0:
-                                    act(function () {
-                                        elem.focus();
-                                        waitForWrapper(function () { });
-                                    });
-                                    console.log('0, loop');
-                                    return [4 /*yield*/, act(function () { return __awaiter(_this, void 0, void 0, function () {
-                                            var elemRole;
-                                            var _a;
-                                            return __generator(this, function (_b) {
-                                                switch (_b.label) {
-                                                    case 0: return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))];
-                                                    case 1:
-                                                        _b.sent();
-                                                        elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
-                                                        waitForWrapper(function () { expect(validElemRole).toContain(elemRole); });
-                                                        return [2 /*return*/];
-                                                }
-                                            });
-                                        }); })
-                                        // expect(elem).toBeExpanded()
-                                    ];
-                                case 1:
-                                    _b.sent();
-                                    // expect(elem).toBeExpanded()
-                                    console.log('1, loop');
-                                    console.log('2, loop');
-                                    if (!delay) return [3 /*break*/, 3];
-                                    return [4 /*yield*/, delay()];
-                                case 2:
-                                    _b.sent();
-                                    _b.label = 3;
-                                case 3: return [4 /*yield*/, act(function () { return __awaiter(_this, void 0, void 0, function () {
-                                        return __generator(this, function (_a) {
-                                            switch (_a.label) {
-                                                case 0: return [4 /*yield*/, userEvent.keyboard("{Escape}")];
-                                                case 1:
-                                                    _a.sent();
-                                                    waitForWrapper(function () { expect(document.activeElement).toBe(elem); });
-                                                    return [2 /*return*/];
-                                            }
-                                        });
-                                    }); })];
-                                case 4:
-                                    _b.sent();
-                                    console.log('3, loop');
-                                    // expect(elem).toBeCollapsed();
-                                    console.log('4, loop');
-                                    return [2 /*return*/];
-                            }
-                        });
-                    };
                     _i = 0, keys_1 = keys;
-                    _a.label = 1;
+                    _b.label = 1;
                 case 1:
-                    if (!(_i < keys_1.length)) return [3 /*break*/, 4];
+                    if (!(_i < keys_1.length)) return [3 /*break*/, 7];
                     key = keys_1[_i];
-                    return [5 /*yield**/, _loop_1(key)];
+                    act(function () {
+                        elem.focus();
+                    });
+                    return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))
+                        // expect(elem).toBeExpanded()
+                    ];
                 case 2:
-                    _a.sent();
-                    _a.label = 3;
+                    _b.sent();
+                    elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
+                    expect(validElemRole).toContain(elemRole);
+                    if (!delay) return [3 /*break*/, 4];
+                    return [4 /*yield*/, delay()];
                 case 3:
+                    _b.sent();
+                    _b.label = 4;
+                case 4: return [4 /*yield*/, userEvent.keyboard("{Escape}")
+                    // expect(elem).toBeCollapsed();
+                ];
+                case 5:
+                    _b.sent();
+                    // expect(elem).toBeCollapsed();
+                    expect(document.activeElement).toBe(elem);
+                    _b.label = 6;
+                case 6:
                     _i++;
                     return [3 /*break*/, 1];
-                case 4: return [2 /*return*/];
+                case 7: return [2 /*return*/];
             }
         });
     });

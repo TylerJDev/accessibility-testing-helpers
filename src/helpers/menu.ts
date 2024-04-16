@@ -40,36 +40,19 @@ export async function expandEvent(keys: string[], elem: HTMLElement, delay) {
   for (const key of keys) {
     act(() => {
       elem.focus()
-      waitFor(() => {})
     })
 
-    console.log('0, loop')
-
-    await act(async () => {
-      await userEvent.keyboard(`{${key}}`)
-
-      const elemRole = document.activeElement?.getAttribute('role')
-      waitFor(() => { expect(validElemRole).toContain(elemRole) })
-    })
-
+    await userEvent.keyboard(`{${key}}`)
     // expect(elem).toBeExpanded()
 
-    console.log('1, loop')
-
-
-
-    console.log('2, loop')
+    const elemRole = document.activeElement?.getAttribute('role')
+    expect(validElemRole).toContain(elemRole)
 
     if (delay) await delay();
-    await act(async() => {
-      await userEvent.keyboard(`{Escape}`)
-      waitFor(() => { expect(document.activeElement).toBe(elem) })
-    });
+    await userEvent.keyboard(`{Escape}`)
 
-    console.log('3, loop')
     // expect(elem).toBeCollapsed();
-
-    console.log('4, loop')
+    expect(document.activeElement).toBe(elem)
   }
 
   // Playwright: TODO
