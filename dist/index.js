@@ -61248,4 +61248,9 @@ function accessibleMenuPatternStorybook(_a) {
     return accessibleMenuPattern({ component: component, strict: strict, delay: delay, event: event, expectType: expect$1 });
 }
 
-export { accessibleMenuPattern, accessibleMenuPatternStorybook };
+function accessibleMenuPatternJest(_a) {
+    var component = _a.component, strict = _a.strict, delay = _a.delay, event = _a.event;
+    return accessibleMenuPattern({ component: component, strict: strict, delay: delay, event: event });
+}
+
+export { accessibleMenuPatternJest, accessibleMenuPatternStorybook };
