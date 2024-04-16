@@ -51531,7 +51531,7 @@ function expandEvent(keys, elem, delay, userEvent) {
                     _i = 0, keys_1 = keys;
                     _b.label = 1;
                 case 1:
-                    if (!(_i < keys_1.length)) return [3 /*break*/, 4];
+                    if (!(_i < keys_1.length)) return [3 /*break*/, 7];
                     key = keys_1[_i];
                     act(function () {
                         elem.focus();
@@ -51543,11 +51543,24 @@ function expandEvent(keys, elem, delay, userEvent) {
                     _b.sent();
                     elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
                     expect(validElemRole).toContain(elemRole);
-                    _b.label = 3;
+                    console.log(elemRole);
+                    if (!delay) return [3 /*break*/, 4];
+                    return [4 /*yield*/, delay()];
                 case 3:
+                    _b.sent();
+                    _b.label = 4;
+                case 4: return [4 /*yield*/, userEvent.keyboard("{Escape}")
+                    // expect(elem).toBeCollapsed();
+                ];
+                case 5:
+                    _b.sent();
+                    // expect(elem).toBeCollapsed();
+                    expect(document.activeElement).toBe(elem);
+                    _b.label = 6;
+                case 6:
                     _i++;
                     return [3 /*break*/, 1];
-                case 4: return [2 /*return*/];
+                case 7: return [2 /*return*/];
             }
         });
     });
