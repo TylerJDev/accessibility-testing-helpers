@@ -1,4 +1,4 @@
-import { accessibleMenuPattern } from './helpers/menu'
-import { accessibleMenuPatternStorybook } from './storybookPatterns'
+import { accessibleMenuPatternStorybook } from './helpers/storybookPatterns'
+import { accessibleMenuPatternJest } from './helpers/jestPatterns'
 
-export { accessibleMenuPattern, accessibleMenuPatternStorybook }
+export { accessibleMenuPatternJest, accessibleMenuPatternStorybook }

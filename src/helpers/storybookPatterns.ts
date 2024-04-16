@@ -1,4 +1,4 @@
-import { accessibleMenuPattern } from "./helpers/menu";
+import { accessibleMenuPattern } from "./menu/menu";
 import { expect } from '@storybook/jest'
 
 export function accessibleMenuPatternStorybook({ component, strict, delay, event}) {

@@ -157,7 +157,7 @@ interface AccessibleMenuPatternOptions {
   strict?: boolean;
   delay?: number;
   event: any;
-  expectType: any;
+  expectType?: any;
 }
 
 // TODO: Would strict be suited better as some global var?
