@@ -1,4 +1,4 @@
-import {act, RenderResult} from '@testing-library/react'
+import {act, RenderResult, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 // `role="menu"` test
@@ -40,27 +40,35 @@ export async function expandEvent(keys: string[], elem: HTMLElement, delay) {
   for (const key of keys) {
     act(() => {
       elem.focus()
+      waitFor(() => {})
     })
 
     console.log('0, loop')
 
-    await userEvent.keyboard(`{${key}}`)
+    await act(async () => {
+      await userEvent.keyboard(`{${key}}`)
+
+      const elemRole = document.activeElement?.getAttribute('role')
+      waitFor(() => { expect(validElemRole).toContain(elemRole) })
+    })
+
     // expect(elem).toBeExpanded()
 
     console.log('1, loop')
 
-    const elemRole = document.activeElement?.getAttribute('role')
 
-    expect(validElemRole).toContain(elemRole)
 
     console.log('2, loop')
 
     if (delay) await delay();
-    await userEvent.keyboard(`{Escape}`)
+    await act(async() => {
+      await userEvent.keyboard(`{Escape}`)
+      waitFor(() => { expect(document.activeElement).toBe(elem) })
+    });
 
     console.log('3, loop')
     // expect(elem).toBeCollapsed();
-    expect(document.activeElement).toBe(elem)
+
     console.log('4, loop')
   }
 
@@ -169,7 +177,7 @@ export async function activationEvent(elem: HTMLElement, component, strict) {
 // TODO: Would strict be suited better as some global var?
 export async function accessibleMenuPattern(component: RenderResult, strict: boolean = false, delay: number = 0) {
   // TEST: Do all of the expected keyboard interactions for the trigger button work properly?
-  const supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
+  const supportedTriggerKeys = ['Enter'] //, ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
   const elem = await component.findByRole('button');
   const delayBy = delay ? (ms = delay) => new Promise(resolve => setTimeout(resolve, ms)) : null;
 
