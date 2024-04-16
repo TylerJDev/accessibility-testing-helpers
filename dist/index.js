@@ -55640,8 +55640,10 @@ function expandEvent(keys, elem, delay) {
                 case 2:
                     _b.sent();
                     expect(elem).toBeExpanded();
+                    console.log('1, loop');
                     elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
                     expect(validElemRole).toContain(elemRole);
+                    console.log('2, loop');
                     if (!delay) return [3 /*break*/, 4];
                     return [4 /*yield*/, delay()];
                 case 3:
@@ -55650,131 +55652,16 @@ function expandEvent(keys, elem, delay) {
                 case 4: return [4 /*yield*/, userEvent.keyboard("{Escape}")];
                 case 5:
                     _b.sent();
+                    console.log('3, loop');
                     expect(elem).toBeCollapsed();
                     expect(document.activeElement).toBe(elem);
+                    console.log('4, loop');
                     _b.label = 6;
                 case 6:
                     _i++;
                     return [3 /*break*/, 1];
                 case 7: return [2 /*return*/];
             }
-        });
-    });
-}
-// TODO: Annotations
-// This function is the expectation of what element should be focused after a certain key is pressed
-var menuNavigation = function (menuElem) {
-    return {
-        ArrowUp: menuElem.lastElementChild,
-        ArrowDown: menuElem.firstElementChild,
-        ArrowLeft: [menuElem.firstElementChild, menuElem.lastElementChild], // TODO!: If the menu is horizontal, it may also navigate to the previous menu item
-        ArrowRight: menuElem.firstElementChild, // As above, but for the next menu item
-        Home: menuElem.firstElementChild,
-        PageUp: menuElem.firstElementChild,
-        End: menuElem.lastElementChild,
-        PageDown: menuElem.lastElementChild, // TODO!: See why this works
-    };
-    // {ArrowUp: {target: menuElem.lastElementChild, message: '...', strict: true}}
-};
-function navigationEvent(elem, component, strict, delay) {
-    return __awaiter(this, void 0, void 0, function () {
-        var menu, menuNavigationSteps, _i, _a, key, menu_1, menuItems, middleMenuItem, characterKey;
-        var _b, _c, _d;
-        return __generator(this, function (_e) {
-            switch (_e.label) {
-                case 0:
-                    // What we need to test:
-                    // 1. Open the menu
-                    // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
-                    // 3. [TODO] Ensure that focus trap loops properly (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L68)
-                    // 4. [DONE] Ensure that 'Home' and 'End' keys work properly
-                    // 5. [DONE] Ensure that 'PageUp' and 'PageDown' keys work properly
-                    // Other things to consider:
-                    // - Ensure that the menu is closed when pressing "Tab and Shift + Tab" (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L126)
-                    // - Test submenu navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L214)
-                    // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
-                    // Jest:
-                    console.log('1');
-                    act(function () {
-                        elem.focus();
-                    });
-                    // Steps [1]
-                    return [4 /*yield*/, userEvent.keyboard("{Enter}")];
-                case 1:
-                    // Steps [1]
-                    _e.sent();
-                    return [4 /*yield*/, component.findByRole('menu')];
-                case 2:
-                    menu = _e.sent();
-                    menuNavigationSteps = menuNavigation(menu);
-                    console.log('2');
-                    _i = 0, _a = Object.keys(menuNavigationSteps);
-                    _e.label = 3;
-                case 3:
-                    if (!(_i < _a.length)) return [3 /*break*/, 8];
-                    key = _a[_i];
-                    if (!delay) return [3 /*break*/, 5];
-                    return [4 /*yield*/, delay()];
-                case 4:
-                    _e.sent();
-                    _e.label = 5;
-                case 5: 
-                // TODO: Can we make this easier to debug without messing with the internals of this script?
-                // TODO: (e.g. a log statement that only shows if something is true in the environment)
-                return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))];
-                case 6:
-                    // TODO: Can we make this easier to debug without messing with the internals of this script?
-                    // TODO: (e.g. a log statement that only shows if something is true in the environment)
-                    _e.sent();
-                    if (menuNavigationSteps[key] instanceof Array) {
-                        expect(menuNavigationSteps[key]).toContain((_b = document.activeElement) === null || _b === void 0 ? void 0 : _b.closest('li'));
-                        return [3 /*break*/, 7];
-                    }
-                    expect((_c = document.activeElement) === null || _c === void 0 ? void 0 : _c.closest('li')).toBe(menuNavigationSteps[key]);
-                    _e.label = 7;
-                case 7:
-                    _i++;
-                    return [3 /*break*/, 3];
-                case 8:
-                    if (!strict) return [3 /*break*/, 13];
-                    return [4 /*yield*/, component.findByRole('menu')
-                        // Test character navigation
-                        // TODO, make this a function
-                    ];
-                case 9:
-                    menu_1 = _e.sent();
-                    // Test character navigation
-                    // TODO, make this a function
-                    return [4 /*yield*/, userEvent.keyboard("{Escape}")];
-                case 10:
-                    // Test character navigation
-                    // TODO, make this a function
-                    _e.sent();
-                    return [4 /*yield*/, userEvent.keyboard("{Enter}")
-                        // TODO: Maybe make this optional? If there aren't any valid characters (e.g. reaction emoji only menu), then -
-                        // TODO: we should test this step, as there's no "alphanumeric" character to test.
-                    ];
-                case 11:
-                    _e.sent();
-                    menuItems = menu_1.querySelectorAll('li') // TODO!: This should test menuitem, menuitemradio, and menuitemcheckbox.
-                    ;
-                    middleMenuItem = menuItems[Math.floor(menuItems.length / 2)];
-                    characterKey = (_d = middleMenuItem === null || middleMenuItem === void 0 ? void 0 : middleMenuItem.textContent) === null || _d === void 0 ? void 0 : _d[0];
-                    expect(document.activeElement).toBe(menuItems[0]);
-                    return [4 /*yield*/, userEvent.keyboard("{".concat(characterKey, "}"))];
-                case 12:
-                    _e.sent();
-                    expect(document.activeElement).toBe(middleMenuItem);
-                    _e.label = 13;
-                case 13: return [2 /*return*/];
-            }
-        });
-    });
-}
-function activationEvent(elem, component, strict) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, true];
         });
     });
 }
@@ -55786,7 +55673,6 @@ function activationEvent(elem, component, strict) {
 function accessibleMenuPattern(component_1) {
     return __awaiter(this, arguments, void 0, function (component, strict, delay) {
         var supportedTriggerKeys, elem, delayBy;
-        if (strict === void 0) { strict = false; }
         if (delay === void 0) { delay = 0; }
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -55805,19 +55691,16 @@ function accessibleMenuPattern(component_1) {
                     // With `fireEvent`, we can do `fireEvent.keyDown(elem, {key: 'Enter'})`
                     // With `userEvent`, we can do `userEvent.type(elem, '{enter}')`
                     // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
-                    return [4 /*yield*/, expandEvent(supportedTriggerKeys, elem, delayBy)];
+                    return [4 /*yield*/, expandEvent(supportedTriggerKeys, elem, delayBy)
+                        //await navigationEvent(elem, component, strict, delayBy)
+                        //await activationEvent(elem, component, strict)
+                    ];
                 case 2:
                     // We can make this usable in both Jest and Playright tests, somehow
                     // Jest utilizes `fireEvent` or `userEvent`
                     // With `fireEvent`, we can do `fireEvent.keyDown(elem, {key: 'Enter'})`
                     // With `userEvent`, we can do `userEvent.type(elem, '{enter}')`
                     // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
-                    _a.sent();
-                    return [4 /*yield*/, navigationEvent(elem, component, strict, delayBy)];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, activationEvent()];
-                case 4:
                     _a.sent();
                     return [2 /*return*/];
             }
