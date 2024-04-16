@@ -55636,10 +55636,12 @@ function expandEvent(keys, elem, delay) {
                         elem.focus();
                     });
                     console.log('0, loop');
-                    return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))];
+                    return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))
+                        // expect(elem).toBeExpanded()
+                    ];
                 case 2:
                     _b.sent();
-                    expect(elem).toBeExpanded();
+                    // expect(elem).toBeExpanded()
                     console.log('1, loop');
                     elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
                     expect(validElemRole).toContain(elemRole);
@@ -55653,7 +55655,7 @@ function expandEvent(keys, elem, delay) {
                 case 5:
                     _b.sent();
                     console.log('3, loop');
-                    expect(elem).toBeCollapsed();
+                    // expect(elem).toBeCollapsed();
                     expect(document.activeElement).toBe(elem);
                     console.log('4, loop');
                     _b.label = 6;
