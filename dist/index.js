@@ -1,6 +1,8 @@
 'use strict';
 
 var require$$0 = require('util');
+var require$$0$1 = require('os');
+var require$$1 = require('tty');
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -67,6 +69,17355 @@ var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof win
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
+
+var minIndent$1 = string => {
+	const match = string.match(/^[ \t]*(?=\S)/gm);
+
+	if (!match) {
+		return 0;
+	}
+
+	return match.reduce((r, a) => Math.min(r, a.length), Infinity);
+};
+
+const minIndent = minIndent$1;
+
+var stripIndent$1 = string => {
+	const indent = minIndent(string);
+
+	if (indent === 0) {
+		return string;
+	}
+
+	const regex = new RegExp(`^[ \\t]{${indent}}`, 'gm');
+
+	return string.replace(regex, '');
+};
+
+var indentString$1 = (string, count = 1, options) => {
+	options = {
+		indent: ' ',
+		includeEmptyLines: false,
+		...options
+	};
+
+	if (typeof string !== 'string') {
+		throw new TypeError(
+			`Expected \`input\` to be a \`string\`, got \`${typeof string}\``
+		);
+	}
+
+	if (typeof count !== 'number') {
+		throw new TypeError(
+			`Expected \`count\` to be a \`number\`, got \`${typeof count}\``
+		);
+	}
+
+	if (typeof options.indent !== 'string') {
+		throw new TypeError(
+			`Expected \`options.indent\` to be a \`string\`, got \`${typeof options.indent}\``
+		);
+	}
+
+	if (count === 0) {
+		return string;
+	}
+
+	const regex = options.includeEmptyLines ? /^/gm : /^(?!\s*$)/gm;
+
+	return string.replace(regex, options.indent.repeat(count));
+};
+
+const stripIndent = stripIndent$1;
+const indentString = indentString$1;
+
+var redent = (string, count = 0, options) => indentString(stripIndent(string), count, options);
+
+var redent$1 = /*@__PURE__*/getDefaultExportFromCjs(redent);
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+
+function listCacheClear$1() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+var _listCacheClear = listCacheClear$1;
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+
+function eq$2(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+var eq_1 = eq$2;
+
+var eq$1 = eq_1;
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf$4(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq$1(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+var _assocIndexOf = assocIndexOf$4;
+
+var assocIndexOf$3 = _assocIndexOf;
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete$1(key) {
+  var data = this.__data__,
+      index = assocIndexOf$3(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+var _listCacheDelete = listCacheDelete$1;
+
+var assocIndexOf$2 = _assocIndexOf;
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet$1(key) {
+  var data = this.__data__,
+      index = assocIndexOf$2(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+var _listCacheGet = listCacheGet$1;
+
+var assocIndexOf$1 = _assocIndexOf;
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas$1(key) {
+  return assocIndexOf$1(this.__data__, key) > -1;
+}
+
+var _listCacheHas = listCacheHas$1;
+
+var assocIndexOf = _assocIndexOf;
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet$1(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+var _listCacheSet = listCacheSet$1;
+
+var listCacheClear = _listCacheClear,
+    listCacheDelete = _listCacheDelete,
+    listCacheGet = _listCacheGet,
+    listCacheHas = _listCacheHas,
+    listCacheSet = _listCacheSet;
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache$4(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache$4.prototype.clear = listCacheClear;
+ListCache$4.prototype['delete'] = listCacheDelete;
+ListCache$4.prototype.get = listCacheGet;
+ListCache$4.prototype.has = listCacheHas;
+ListCache$4.prototype.set = listCacheSet;
+
+var _ListCache = ListCache$4;
+
+var ListCache$3 = _ListCache;
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear$1() {
+  this.__data__ = new ListCache$3;
+  this.size = 0;
+}
+
+var _stackClear = stackClear$1;
+
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+
+function stackDelete$1(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+var _stackDelete = stackDelete$1;
+
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+
+function stackGet$1(key) {
+  return this.__data__.get(key);
+}
+
+var _stackGet = stackGet$1;
+
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+
+function stackHas$1(key) {
+  return this.__data__.has(key);
+}
+
+var _stackHas = stackHas$1;
+
+/** Detect free variable `global` from Node.js. */
+
+var freeGlobal$1 = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+var _freeGlobal = freeGlobal$1;
+
+var freeGlobal = _freeGlobal;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root$8 = freeGlobal || freeSelf || Function('return this')();
+
+var _root = root$8;
+
+var root$7 = _root;
+
+/** Built-in value references. */
+var Symbol$6 = root$7.Symbol;
+
+var _Symbol = Symbol$6;
+
+var Symbol$5 = _Symbol;
+
+/** Used for built-in method references. */
+var objectProto$b = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$9 = objectProto$b.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString$1 = objectProto$b.toString;
+
+/** Built-in value references. */
+var symToStringTag$1 = Symbol$5 ? Symbol$5.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag$1(value) {
+  var isOwn = hasOwnProperty$9.call(value, symToStringTag$1),
+      tag = value[symToStringTag$1];
+
+  try {
+    value[symToStringTag$1] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString$1.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag$1] = tag;
+    } else {
+      delete value[symToStringTag$1];
+    }
+  }
+  return result;
+}
+
+var _getRawTag = getRawTag$1;
+
+/** Used for built-in method references. */
+
+var objectProto$a = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto$a.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString$2(value) {
+  return nativeObjectToString.call(value);
+}
+
+var _objectToString = objectToString$2;
+
+var Symbol$4 = _Symbol,
+    getRawTag = _getRawTag,
+    objectToString$1 = _objectToString;
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol$4 ? Symbol$4.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag$4(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString$1(value);
+}
+
+var _baseGetTag = baseGetTag$4;
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+
+function isObject$2(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+var isObject_1 = isObject$2;
+
+var baseGetTag$3 = _baseGetTag,
+    isObject$1 = isObject_1;
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag$1 = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction$3(value) {
+  if (!isObject$1(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag$3(value);
+  return tag == funcTag$1 || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+var isFunction_1 = isFunction$3;
+
+var root$6 = _root;
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData$1 = root$6['__core-js_shared__'];
+
+var _coreJsData = coreJsData$1;
+
+var coreJsData = _coreJsData;
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked$1(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+var _isMasked = isMasked$1;
+
+/** Used for built-in method references. */
+
+var funcProto$1 = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString$1 = funcProto$1.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource$2(func) {
+  if (func != null) {
+    try {
+      return funcToString$1.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+var _toSource = toSource$2;
+
+var isFunction$2 = isFunction_1,
+    isMasked = _isMasked,
+    isObject = isObject_1,
+    toSource$1 = _toSource;
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto$9 = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$8 = objectProto$9.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty$8).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative$1(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction$2(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource$1(value));
+}
+
+var _baseIsNative = baseIsNative$1;
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+
+function getValue$1(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+var _getValue = getValue$1;
+
+var baseIsNative = _baseIsNative,
+    getValue = _getValue;
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative$6(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+var _getNative = getNative$6;
+
+var getNative$5 = _getNative,
+    root$5 = _root;
+
+/* Built-in method references that are verified to be native. */
+var Map$4 = getNative$5(root$5, 'Map');
+
+var _Map = Map$4;
+
+var getNative$4 = _getNative;
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate$4 = getNative$4(Object, 'create');
+
+var _nativeCreate = nativeCreate$4;
+
+var nativeCreate$3 = _nativeCreate;
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear$1() {
+  this.__data__ = nativeCreate$3 ? nativeCreate$3(null) : {};
+  this.size = 0;
+}
+
+var _hashClear = hashClear$1;
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+
+function hashDelete$1(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+var _hashDelete = hashDelete$1;
+
+var nativeCreate$2 = _nativeCreate;
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto$8 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$7 = objectProto$8.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet$1(key) {
+  var data = this.__data__;
+  if (nativeCreate$2) {
+    var result = data[key];
+    return result === HASH_UNDEFINED$2 ? undefined : result;
+  }
+  return hasOwnProperty$7.call(data, key) ? data[key] : undefined;
+}
+
+var _hashGet = hashGet$1;
+
+var nativeCreate$1 = _nativeCreate;
+
+/** Used for built-in method references. */
+var objectProto$7 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas$1(key) {
+  var data = this.__data__;
+  return nativeCreate$1 ? (data[key] !== undefined) : hasOwnProperty$6.call(data, key);
+}
+
+var _hashHas = hashHas$1;
+
+var nativeCreate = _nativeCreate;
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet$1(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
+  return this;
+}
+
+var _hashSet = hashSet$1;
+
+var hashClear = _hashClear,
+    hashDelete = _hashDelete,
+    hashGet = _hashGet,
+    hashHas = _hashHas,
+    hashSet = _hashSet;
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash$1(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `Hash`.
+Hash$1.prototype.clear = hashClear;
+Hash$1.prototype['delete'] = hashDelete;
+Hash$1.prototype.get = hashGet;
+Hash$1.prototype.has = hashHas;
+Hash$1.prototype.set = hashSet;
+
+var _Hash = Hash$1;
+
+var Hash = _Hash,
+    ListCache$2 = _ListCache,
+    Map$3 = _Map;
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear$1() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map$3 || ListCache$2),
+    'string': new Hash
+  };
+}
+
+var _mapCacheClear = mapCacheClear$1;
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+
+function isKeyable$1(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+var _isKeyable = isKeyable$1;
+
+var isKeyable = _isKeyable;
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData$4(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+var _getMapData = getMapData$4;
+
+var getMapData$3 = _getMapData;
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete$1(key) {
+  var result = getMapData$3(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+var _mapCacheDelete = mapCacheDelete$1;
+
+var getMapData$2 = _getMapData;
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet$1(key) {
+  return getMapData$2(this, key).get(key);
+}
+
+var _mapCacheGet = mapCacheGet$1;
+
+var getMapData$1 = _getMapData;
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas$1(key) {
+  return getMapData$1(this, key).has(key);
+}
+
+var _mapCacheHas = mapCacheHas$1;
+
+var getMapData = _getMapData;
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet$1(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+var _mapCacheSet = mapCacheSet$1;
+
+var mapCacheClear = _mapCacheClear,
+    mapCacheDelete = _mapCacheDelete,
+    mapCacheGet = _mapCacheGet,
+    mapCacheHas = _mapCacheHas,
+    mapCacheSet = _mapCacheSet;
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache$2(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache$2.prototype.clear = mapCacheClear;
+MapCache$2.prototype['delete'] = mapCacheDelete;
+MapCache$2.prototype.get = mapCacheGet;
+MapCache$2.prototype.has = mapCacheHas;
+MapCache$2.prototype.set = mapCacheSet;
+
+var _MapCache = MapCache$2;
+
+var ListCache$1 = _ListCache,
+    Map$2 = _Map,
+    MapCache$1 = _MapCache;
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE$1 = 200;
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet$1(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache$1) {
+    var pairs = data.__data__;
+    if (!Map$2 || (pairs.length < LARGE_ARRAY_SIZE$1 - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache$1(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+var _stackSet = stackSet$1;
+
+var ListCache = _ListCache,
+    stackClear = _stackClear,
+    stackDelete = _stackDelete,
+    stackGet = _stackGet,
+    stackHas = _stackHas,
+    stackSet = _stackSet;
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack$1(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+// Add methods to `Stack`.
+Stack$1.prototype.clear = stackClear;
+Stack$1.prototype['delete'] = stackDelete;
+Stack$1.prototype.get = stackGet;
+Stack$1.prototype.has = stackHas;
+Stack$1.prototype.set = stackSet;
+
+var _Stack = Stack$1;
+
+/** Used to stand-in for `undefined` hash values. */
+
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd$1(value) {
+  this.__data__.set(value, HASH_UNDEFINED);
+  return this;
+}
+
+var _setCacheAdd = setCacheAdd$1;
+
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+
+function setCacheHas$1(value) {
+  return this.__data__.has(value);
+}
+
+var _setCacheHas = setCacheHas$1;
+
+var MapCache = _MapCache,
+    setCacheAdd = _setCacheAdd,
+    setCacheHas = _setCacheHas;
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache$2(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+// Add methods to `SetCache`.
+SetCache$2.prototype.add = SetCache$2.prototype.push = setCacheAdd;
+SetCache$2.prototype.has = setCacheHas;
+
+var _SetCache = SetCache$2;
+
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+
+function arraySome$1(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+var _arraySome = arraySome$1;
+
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+
+function cacheHas$2(cache, key) {
+  return cache.has(key);
+}
+
+var _cacheHas = cacheHas$2;
+
+var SetCache$1 = _SetCache,
+    arraySome = _arraySome,
+    cacheHas$1 = _cacheHas;
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$3 = 1,
+    COMPARE_UNORDERED_FLAG$1 = 2;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays$2(array, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$3,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Check that cyclic values are equal.
+  var arrStacked = stack.get(array);
+  var othStacked = stack.get(other);
+  if (arrStacked && othStacked) {
+    return arrStacked == other && othStacked == array;
+  }
+  var index = -1,
+      result = true,
+      seen = (bitmask & COMPARE_UNORDERED_FLAG$1) ? new SetCache$1 : undefined;
+
+  stack.set(array, other);
+  stack.set(other, array);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (seen) {
+      if (!arraySome(other, function(othValue, othIndex) {
+            if (!cacheHas$1(seen, othIndex) &&
+                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              return seen.push(othIndex);
+            }
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  stack['delete'](other);
+  return result;
+}
+
+var _equalArrays = equalArrays$2;
+
+var root$4 = _root;
+
+/** Built-in value references. */
+var Uint8Array$2 = root$4.Uint8Array;
+
+var _Uint8Array = Uint8Array$2;
+
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+
+function mapToArray$1(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+var _mapToArray = mapToArray$1;
+
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+
+function setToArray$3(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+var _setToArray = setToArray$3;
+
+var Symbol$3 = _Symbol,
+    Uint8Array$1 = _Uint8Array,
+    eq = eq_1,
+    equalArrays$1 = _equalArrays,
+    mapToArray = _mapToArray,
+    setToArray$2 = _setToArray;
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$2 = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/** `Object#toString` result references. */
+var boolTag$1 = '[object Boolean]',
+    dateTag$1 = '[object Date]',
+    errorTag$1 = '[object Error]',
+    mapTag$2 = '[object Map]',
+    numberTag$1 = '[object Number]',
+    regexpTag$1 = '[object RegExp]',
+    setTag$2 = '[object Set]',
+    stringTag$1 = '[object String]',
+    symbolTag = '[object Symbol]';
+
+var arrayBufferTag$1 = '[object ArrayBuffer]',
+    dataViewTag$2 = '[object DataView]';
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol$3 ? Symbol$3.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag$1(object, other, tag, bitmask, customizer, equalFunc, stack) {
+  switch (tag) {
+    case dataViewTag$2:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag$1:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array$1(object), new Uint8Array$1(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag$1:
+    case dateTag$1:
+    case numberTag$1:
+      // Coerce booleans to `1` or `0` and dates to milliseconds.
+      // Invalid dates are coerced to `NaN`.
+      return eq(+object, +other);
+
+    case errorTag$1:
+      return object.name == other.name && object.message == other.message;
+
+    case regexpTag$1:
+    case stringTag$1:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+      // for more details.
+      return object == (other + '');
+
+    case mapTag$2:
+      var convert = mapToArray;
+
+    case setTag$2:
+      var isPartial = bitmask & COMPARE_PARTIAL_FLAG$2;
+      convert || (convert = setToArray$2);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= COMPARE_UNORDERED_FLAG;
+
+      // Recursively compare objects (susceptible to call stack limits).
+      stack.set(object, other);
+      var result = equalArrays$1(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+      stack['delete'](object);
+      return result;
+
+    case symbolTag:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
+
+var _equalByTag = equalByTag$1;
+
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+
+function arrayPush$1(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+var _arrayPush = arrayPush$1;
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+
+var isArray$5 = Array.isArray;
+
+var isArray_1 = isArray$5;
+
+var arrayPush = _arrayPush,
+    isArray$4 = isArray_1;
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys$1(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray$4(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+var _baseGetAllKeys = baseGetAllKeys$1;
+
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+
+function arrayFilter$1(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+    if (predicate(value, index, array)) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+}
+
+var _arrayFilter = arrayFilter$1;
+
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+
+function stubArray$1() {
+  return [];
+}
+
+var stubArray_1 = stubArray$1;
+
+var arrayFilter = _arrayFilter,
+    stubArray = stubArray_1;
+
+/** Used for built-in method references. */
+var objectProto$6 = Object.prototype;
+
+/** Built-in value references. */
+var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols$1 = !nativeGetSymbols ? stubArray : function(object) {
+  if (object == null) {
+    return [];
+  }
+  object = Object(object);
+  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+    return propertyIsEnumerable$1.call(object, symbol);
+  });
+};
+
+var _getSymbols = getSymbols$1;
+
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+
+function baseTimes$1(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+var _baseTimes = baseTimes$1;
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+
+function isObjectLike$4(value) {
+  return value != null && typeof value == 'object';
+}
+
+var isObjectLike_1 = isObjectLike$4;
+
+var baseGetTag$2 = _baseGetTag,
+    isObjectLike$3 = isObjectLike_1;
+
+/** `Object#toString` result references. */
+var argsTag$2 = '[object Arguments]';
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments$1(value) {
+  return isObjectLike$3(value) && baseGetTag$2(value) == argsTag$2;
+}
+
+var _baseIsArguments = baseIsArguments$1;
+
+var baseIsArguments = _baseIsArguments,
+    isObjectLike$2 = isObjectLike_1;
+
+/** Used for built-in method references. */
+var objectProto$5 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$5 = objectProto$5.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto$5.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments$4 = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike$2(value) && hasOwnProperty$5.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+var isArguments_1 = isArguments$4;
+
+var isBuffer$3 = {exports: {}};
+
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+
+function stubFalse() {
+  return false;
+}
+
+var stubFalse_1 = stubFalse;
+
+isBuffer$3.exports;
+
+(function (module, exports) {
+	var root = _root,
+	    stubFalse = stubFalse_1;
+
+	/** Detect free variable `exports`. */
+	var freeExports = exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? root.Buffer : undefined;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+	/**
+	 * Checks if `value` is a buffer.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.3.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+	 * @example
+	 *
+	 * _.isBuffer(new Buffer(2));
+	 * // => true
+	 *
+	 * _.isBuffer(new Uint8Array(2));
+	 * // => false
+	 */
+	var isBuffer = nativeIsBuffer || stubFalse;
+
+	module.exports = isBuffer; 
+} (isBuffer$3, isBuffer$3.exports));
+
+var isBufferExports = isBuffer$3.exports;
+
+/** Used as references for various `Number` constants. */
+
+var MAX_SAFE_INTEGER$1 = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex$1(value, length) {
+  var type = typeof value;
+  length = length == null ? MAX_SAFE_INTEGER$1 : length;
+
+  return !!length &&
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+
+var _isIndex = isIndex$1;
+
+/** Used as references for various `Number` constants. */
+
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength$2(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+var isLength_1 = isLength$2;
+
+var baseGetTag$1 = _baseGetTag,
+    isLength$1 = isLength_1,
+    isObjectLike$1 = isObjectLike_1;
+
+/** `Object#toString` result references. */
+var argsTag$1 = '[object Arguments]',
+    arrayTag$1 = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag$1 = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag$2 = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag$1 = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag$1 = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag$1 = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag$1] = typedArrayTags[arrayTag$1] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag$1] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag$2] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag$1] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag$1] = false;
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray$1(value) {
+  return isObjectLike$1(value) &&
+    isLength$1(value.length) && !!typedArrayTags[baseGetTag$1(value)];
+}
+
+var _baseIsTypedArray = baseIsTypedArray$1;
+
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+
+function baseUnary$1(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+var _baseUnary = baseUnary$1;
+
+var _nodeUtil = {exports: {}};
+
+_nodeUtil.exports;
+
+(function (module, exports) {
+	var freeGlobal = _freeGlobal;
+
+	/** Detect free variable `exports`. */
+	var freeExports = exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && freeGlobal.process;
+
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    // Use `util.types` for Node.js 10+.
+	    var types = freeModule && freeModule.require && freeModule.require('util').types;
+
+	    if (types) {
+	      return types;
+	    }
+
+	    // Legacy `process.binding('util')` for Node.js < 10.
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+
+	module.exports = nodeUtil; 
+} (_nodeUtil, _nodeUtil.exports));
+
+var _nodeUtilExports = _nodeUtil.exports;
+
+var baseIsTypedArray = _baseIsTypedArray,
+    baseUnary = _baseUnary,
+    nodeUtil = _nodeUtilExports;
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray$2 = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+var isTypedArray_1 = isTypedArray$2;
+
+var baseTimes = _baseTimes,
+    isArguments$3 = isArguments_1,
+    isArray$3 = isArray_1,
+    isBuffer$2 = isBufferExports,
+    isIndex = _isIndex,
+    isTypedArray$1 = isTypedArray_1;
+
+/** Used for built-in method references. */
+var objectProto$4 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$4 = objectProto$4.hasOwnProperty;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys$1(value, inherited) {
+  var isArr = isArray$3(value),
+      isArg = !isArr && isArguments$3(value),
+      isBuff = !isArr && !isArg && isBuffer$2(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray$1(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty$4.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+var _arrayLikeKeys = arrayLikeKeys$1;
+
+/** Used for built-in method references. */
+
+var objectProto$3 = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype$1(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$3;
+
+  return value === proto;
+}
+
+var _isPrototype = isPrototype$1;
+
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+
+function overArg$1(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+var _overArg = overArg$1;
+
+var overArg = _overArg;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys$1 = overArg(Object.keys, Object);
+
+var _nativeKeys = nativeKeys$1;
+
+var isPrototype = _isPrototype,
+    nativeKeys = _nativeKeys;
+
+/** Used for built-in method references. */
+var objectProto$2 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$3 = objectProto$2.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys$1(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty$3.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+var _baseKeys = baseKeys$1;
+
+var isFunction$1 = isFunction_1,
+    isLength = isLength_1;
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike$1(value) {
+  return value != null && isLength(value.length) && !isFunction$1(value);
+}
+
+var isArrayLike_1 = isArrayLike$1;
+
+var arrayLikeKeys = _arrayLikeKeys,
+    baseKeys = _baseKeys,
+    isArrayLike = isArrayLike_1;
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys$4(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+var keys_1 = keys$4;
+
+var baseGetAllKeys = _baseGetAllKeys,
+    getSymbols = _getSymbols,
+    keys$3 = keys_1;
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys$1(object) {
+  return baseGetAllKeys(object, keys$3, getSymbols);
+}
+
+var _getAllKeys = getAllKeys$1;
+
+var getAllKeys = _getAllKeys;
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG$1 = 1;
+
+/** Used for built-in method references. */
+var objectProto$1 = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$2 = objectProto$1.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects$1(object, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$1,
+      objProps = getAllKeys(object),
+      objLength = objProps.length,
+      othProps = getAllKeys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : hasOwnProperty$2.call(other, key))) {
+      return false;
+    }
+  }
+  // Check that cyclic values are equal.
+  var objStacked = stack.get(object);
+  var othStacked = stack.get(other);
+  if (objStacked && othStacked) {
+    return objStacked == other && othStacked == object;
+  }
+  var result = true;
+  stack.set(object, other);
+  stack.set(other, object);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  stack['delete'](other);
+  return result;
+}
+
+var _equalObjects = equalObjects$1;
+
+var getNative$3 = _getNative,
+    root$3 = _root;
+
+/* Built-in method references that are verified to be native. */
+var DataView$2 = getNative$3(root$3, 'DataView');
+
+var _DataView = DataView$2;
+
+var getNative$2 = _getNative,
+    root$2 = _root;
+
+/* Built-in method references that are verified to be native. */
+var Promise$2 = getNative$2(root$2, 'Promise');
+
+var _Promise = Promise$2;
+
+var getNative$1 = _getNative,
+    root$1 = _root;
+
+/* Built-in method references that are verified to be native. */
+var Set$3 = getNative$1(root$1, 'Set');
+
+var _Set = Set$3;
+
+var getNative = _getNative,
+    root = _root;
+
+/* Built-in method references that are verified to be native. */
+var WeakMap$2 = getNative(root, 'WeakMap');
+
+var _WeakMap = WeakMap$2;
+
+var DataView$1 = _DataView,
+    Map$1 = _Map,
+    Promise$1 = _Promise,
+    Set$2 = _Set,
+    WeakMap$1 = _WeakMap,
+    baseGetTag = _baseGetTag,
+    toSource = _toSource;
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]',
+    objectTag$1 = '[object Object]',
+    promiseTag = '[object Promise]',
+    setTag = '[object Set]',
+    weakMapTag = '[object WeakMap]';
+
+var dataViewTag = '[object DataView]';
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView$1),
+    mapCtorString = toSource(Map$1),
+    promiseCtorString = toSource(Promise$1),
+    setCtorString = toSource(Set$2),
+    weakMapCtorString = toSource(WeakMap$1);
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag$2 = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView$1 && getTag$2(new DataView$1(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map$1 && getTag$2(new Map$1) != mapTag) ||
+    (Promise$1 && getTag$2(Promise$1.resolve()) != promiseTag) ||
+    (Set$2 && getTag$2(new Set$2) != setTag) ||
+    (WeakMap$1 && getTag$2(new WeakMap$1) != weakMapTag)) {
+  getTag$2 = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag$1 ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+var _getTag = getTag$2;
+
+var Stack = _Stack,
+    equalArrays = _equalArrays,
+    equalByTag = _equalByTag,
+    equalObjects = _equalObjects,
+    getTag$1 = _getTag,
+    isArray$2 = isArray_1,
+    isBuffer$1 = isBufferExports,
+    isTypedArray = isTypedArray_1;
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    objectTag = '[object Object]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty$1 = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep$1(object, other, bitmask, customizer, equalFunc, stack) {
+  var objIsArr = isArray$2(object),
+      othIsArr = isArray$2(other),
+      objTag = objIsArr ? arrayTag : getTag$1(object),
+      othTag = othIsArr ? arrayTag : getTag$1(other);
+
+  objTag = objTag == argsTag ? objectTag : objTag;
+  othTag = othTag == argsTag ? objectTag : othTag;
+
+  var objIsObj = objTag == objectTag,
+      othIsObj = othTag == objectTag,
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && isBuffer$1(object)) {
+    if (!isBuffer$1(other)) {
+      return false;
+    }
+    objIsArr = true;
+    objIsObj = false;
+  }
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+  }
+  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+    var objIsWrapped = objIsObj && hasOwnProperty$1.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty$1.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+}
+
+var _baseIsEqualDeep = baseIsEqualDeep$1;
+
+var baseIsEqualDeep = _baseIsEqualDeep,
+    isObjectLike = isObjectLike_1;
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Unordered comparison
+ *  2 - Partial comparison
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual$2(value, other, bitmask, customizer, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual$2, stack);
+}
+
+var _baseIsEqual = baseIsEqual$2;
+
+var baseIsEqual$1 = _baseIsEqual;
+
+/**
+ * Performs a deep comparison between two values to determine if they are
+ * equivalent.
+ *
+ * **Note:** This method supports comparing arrays, array buffers, booleans,
+ * date objects, error objects, maps, numbers, `Object` objects, regexes,
+ * sets, strings, symbols, and typed arrays. `Object` objects are compared
+ * by their own, not inherited, enumerable properties. Functions and DOM
+ * nodes are compared by strict equality, i.e. `===`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.isEqual(object, other);
+ * // => true
+ *
+ * object === other;
+ * // => false
+ */
+function isEqual(value, other) {
+  return baseIsEqual$1(value, other);
+}
+
+var isEqual_1 = isEqual;
+
+var isEqual$1 = /*@__PURE__*/getDefaultExportFromCjs(isEqual_1);
+
+function $parcel$defineInteropFlag(a) {
+  Object.defineProperty(a, '__esModule', {value: true, configurable: true});
+}
+
+function $parcel$export(e, n, v, s) {
+  Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
+}
+var $009ddb00d3ec72b8$exports = {};
+
+$parcel$defineInteropFlag($009ddb00d3ec72b8$exports);
+
+$parcel$export($009ddb00d3ec72b8$exports, "default", () => $009ddb00d3ec72b8$export$2e2bcd8739ae039);
+class $009ddb00d3ec72b8$export$2e2bcd8739ae039 extends Error {
+    constructor(filename, msg, lineno, column, css){
+        super(filename + ":" + lineno + ":" + column + ": " + msg);
+        this.reason = msg;
+        this.filename = filename;
+        this.line = lineno;
+        this.column = column;
+        this.source = css;
+    }
+}
+
+
+var $0865a9fb4cc365fe$exports = {};
+
+$parcel$defineInteropFlag($0865a9fb4cc365fe$exports);
+
+$parcel$export($0865a9fb4cc365fe$exports, "default", () => $0865a9fb4cc365fe$export$2e2bcd8739ae039);
+/**
+ * Store position information for a node
+ */ class $0865a9fb4cc365fe$export$2e2bcd8739ae039 {
+    constructor(start, end, source){
+        this.start = start;
+        this.end = end;
+        this.source = source;
+    }
+}
+
+
+var $b2e137848b48cf4f$exports = {};
+
+$parcel$export($b2e137848b48cf4f$exports, "CssTypes", () => $b2e137848b48cf4f$export$9be5dd6e61d5d73a);
+var $b2e137848b48cf4f$export$9be5dd6e61d5d73a;
+(function(CssTypes) {
+    CssTypes["stylesheet"] = "stylesheet";
+    CssTypes["rule"] = "rule";
+    CssTypes["declaration"] = "declaration";
+    CssTypes["comment"] = "comment";
+    CssTypes["container"] = "container";
+    CssTypes["charset"] = "charset";
+    CssTypes["document"] = "document";
+    CssTypes["customMedia"] = "custom-media";
+    CssTypes["fontFace"] = "font-face";
+    CssTypes["host"] = "host";
+    CssTypes["import"] = "import";
+    CssTypes["keyframes"] = "keyframes";
+    CssTypes["keyframe"] = "keyframe";
+    CssTypes["layer"] = "layer";
+    CssTypes["media"] = "media";
+    CssTypes["namespace"] = "namespace";
+    CssTypes["page"] = "page";
+    CssTypes["supports"] = "supports";
+})($b2e137848b48cf4f$export$9be5dd6e61d5d73a || ($b2e137848b48cf4f$export$9be5dd6e61d5d73a = {}));
+
+
+// http://www.w3.org/TR/CSS21/grammar.html
+// https://github.com/visionmedia/css-parse/pull/49#issuecomment-30088027
+// New rule => https://www.w3.org/TR/CSS22/syndata.html#comments
+// [^] is equivalent to [.\n\r]
+const $d708735ed1303b43$var$commentre = /\/\*[^]*?(?:\*\/|$)/g;
+const $d708735ed1303b43$export$98e6a39c04603d36 = (css, options)=>{
+    options = options || {};
+    /**
+   * Positional.
+   */ let lineno = 1;
+    let column = 1;
+    /**
+   * Update lineno and column based on `str`.
+   */ function updatePosition(str) {
+        const lines = str.match(/\n/g);
+        if (lines) lineno += lines.length;
+        const i = str.lastIndexOf("\n");
+        column = ~i ? str.length - i : column + str.length;
+    }
+    /**
+   * Mark position and patch `node.position`.
+   */ function position() {
+        const start = {
+            line: lineno,
+            column: column
+        };
+        return function(node) {
+            node.position = new ($0865a9fb4cc365fe$export$2e2bcd8739ae039)(start, {
+                line: lineno,
+                column: column
+            }, options?.source || "");
+            whitespace();
+            return node;
+        };
+    }
+    /**
+   * Error `msg`.
+   */ const errorsList = [];
+    function error(msg) {
+        const err = new ($009ddb00d3ec72b8$export$2e2bcd8739ae039)(options?.source || "", msg, lineno, column, css);
+        if (options?.silent) errorsList.push(err);
+        else throw err;
+    }
+    /**
+   * Parse stylesheet.
+   */ function stylesheet() {
+        const rulesList = rules();
+        const result = {
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).stylesheet,
+            stylesheet: {
+                source: options?.source,
+                rules: rulesList,
+                parsingErrors: errorsList
+            }
+        };
+        return result;
+    }
+    /**
+   * Opening brace.
+   */ function open() {
+        return match(/^{\s*/);
+    }
+    /**
+   * Closing brace.
+   */ function close() {
+        return match(/^}/);
+    }
+    /**
+   * Parse ruleset.
+   */ function rules() {
+        let node;
+        const rules = [];
+        whitespace();
+        comments(rules);
+        while(css.length && css.charAt(0) !== "}" && (node = atrule() || rule()))if (node) {
+            rules.push(node);
+            comments(rules);
+        }
+        return rules;
+    }
+    /**
+   * Match `re` and return captures.
+   */ function match(re) {
+        const m = re.exec(css);
+        if (!m) return;
+        const str = m[0];
+        updatePosition(str);
+        css = css.slice(str.length);
+        return m;
+    }
+    /**
+   * Parse whitespace.
+   */ function whitespace() {
+        match(/^\s*/);
+    }
+    /**
+   * Parse comments;
+   */ function comments(rules) {
+        let c;
+        rules = rules || [];
+        while(c = comment())if (c) rules.push(c);
+        return rules;
+    }
+    /**
+   * Parse comment.
+   */ function comment() {
+        const pos = position();
+        if ("/" !== css.charAt(0) || "*" !== css.charAt(1)) return;
+        const m = match(/^\/\*[^]*?\*\//);
+        if (!m) return error("End of comment missing");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).comment,
+            comment: m[0].slice(2, -2)
+        });
+    }
+    function findClosingParenthese(str, start, depth) {
+        let ptr = start + 1;
+        let found = false;
+        let closeParentheses = str.indexOf(")", ptr);
+        while(!found && closeParentheses !== -1){
+            const nextParentheses = str.indexOf("(", ptr);
+            if (nextParentheses !== -1 && nextParentheses < closeParentheses) {
+                const nextSearch = findClosingParenthese(str, nextParentheses + 1);
+                ptr = nextSearch + 1;
+                closeParentheses = str.indexOf(")", ptr);
+            } else found = true;
+        }
+        if (found && closeParentheses !== -1) return closeParentheses;
+        else return -1;
+    }
+    /**
+   * Parse selector.
+   */ function selector() {
+        const m = match(/^([^{]+)/);
+        if (!m) return;
+        // remove comment in selector;
+        let res = $d708735ed1303b43$var$trim(m[0]).replace($d708735ed1303b43$var$commentre, "");
+        // Optimisation: If there is no ',' no need to split or post-process (this is less costly)
+        if (res.indexOf(",") === -1) return [
+            res
+        ];
+        // Replace all the , in the parentheses by \u200C
+        let ptr = 0;
+        let startParentheses = res.indexOf("(", ptr);
+        while(startParentheses !== -1){
+            const closeParentheses = findClosingParenthese(res, startParentheses);
+            if (closeParentheses === -1) break;
+            ptr = closeParentheses + 1;
+            res = res.substring(0, startParentheses) + res.substring(startParentheses, closeParentheses).replace(/,/g, "\u200C") + res.substring(closeParentheses);
+            startParentheses = res.indexOf("(", ptr);
+        }
+        // Replace all the , in ' and " by \u200C
+        res = res/**
+       * replace ',' by \u200C for data selector (div[data-lang="fr,de,us"])
+       *
+       * Examples:
+       * div[data-lang="fr,\"de,us"]
+       * div[data-lang='fr,\'de,us']
+       *
+       * Regex logic:
+       *  ("|')(?:\\\1|.)*?\1 => Handle the " and '
+       *
+       * Optimization 1:
+       * No greedy capture (see docs about the difference between .* and .*?)
+       *
+       * Optimization 2:
+       * ("|')(?:\\\1|.)*?\1 this use reference to capture group, it work faster.
+       */ .replace(/("|')(?:\\\1|.)*?\1/g, (m)=>m.replace(/,/g, "\u200C"));
+        // Split all the left , and replace all the \u200C by ,
+        return res// Split the selector by ','
+        .split(",")// Replace back \u200C by ','
+        .map((s)=>{
+            return $d708735ed1303b43$var$trim(s.replace(/\u200C/g, ","));
+        });
+    }
+    /**
+   * Parse declaration.
+   */ function declaration() {
+        const pos = position();
+        // prop
+        const propMatch = match(/^(\*?[-#/*\\\w]+(\[[0-9a-z_-]+\])?)\s*/);
+        if (!propMatch) return;
+        const propValue = $d708735ed1303b43$var$trim(propMatch[0]);
+        // :
+        if (!match(/^:\s*/)) return error("property missing ':'");
+        // val
+        const val = match(/^((?:'(?:\\'|.)*?'|"(?:\\"|.)*?"|\([^)]*?\)|[^};])+)/);
+        const ret = pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).declaration,
+            property: propValue.replace($d708735ed1303b43$var$commentre, ""),
+            value: val ? $d708735ed1303b43$var$trim(val[0]).replace($d708735ed1303b43$var$commentre, "") : ""
+        });
+        // ;
+        match(/^[;\s]*/);
+        return ret;
+    }
+    /**
+   * Parse declarations.
+   */ function declarations() {
+        const decls = [];
+        if (!open()) return error("missing '{'");
+        comments(decls);
+        // declarations
+        let decl;
+        while(decl = declaration())if (decl) {
+            decls.push(decl);
+            comments(decls);
+        }
+        if (!close()) return error("missing '}'");
+        return decls;
+    }
+    /**
+   * Parse keyframe.
+   */ function keyframe() {
+        let m;
+        const vals = [];
+        const pos = position();
+        while(m = match(/^((\d+\.\d+|\.\d+|\d+)%?|[a-z]+)\s*/)){
+            vals.push(m[1]);
+            match(/^,\s*/);
+        }
+        if (!vals.length) return;
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).keyframe,
+            values: vals,
+            declarations: declarations() || []
+        });
+    }
+    /**
+   * Parse keyframes.
+   */ function atkeyframes() {
+        const pos = position();
+        const m1 = match(/^@([-\w]+)?keyframes\s*/);
+        if (!m1) return;
+        const vendor = m1[1];
+        // identifier
+        const m2 = match(/^([-\w]+)\s*/);
+        if (!m2) return error("@keyframes missing name");
+        const name = m2[1];
+        if (!open()) return error("@keyframes missing '{'");
+        let frame;
+        let frames = comments();
+        while(frame = keyframe()){
+            frames.push(frame);
+            frames = frames.concat(comments());
+        }
+        if (!close()) return error("@keyframes missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).keyframes,
+            name: name,
+            vendor: vendor,
+            keyframes: frames
+        });
+    }
+    /**
+   * Parse supports.
+   */ function atsupports() {
+        const pos = position();
+        const m = match(/^@supports *([^{]+)/);
+        if (!m) return;
+        const supports = $d708735ed1303b43$var$trim(m[1]);
+        if (!open()) return error("@supports missing '{'");
+        const style = comments().concat(rules());
+        if (!close()) return error("@supports missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).supports,
+            supports: supports,
+            rules: style
+        });
+    }
+    /**
+   * Parse host.
+   */ function athost() {
+        const pos = position();
+        const m = match(/^@host\s*/);
+        if (!m) return;
+        if (!open()) return error("@host missing '{'");
+        const style = comments().concat(rules());
+        if (!close()) return error("@host missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).host,
+            rules: style
+        });
+    }
+    /**
+   * Parse container.
+   */ function atcontainer() {
+        const pos = position();
+        const m = match(/^@container *([^{]+)/);
+        if (!m) return;
+        const container = $d708735ed1303b43$var$trim(m[1]);
+        if (!open()) return error("@container missing '{'");
+        const style = comments().concat(rules());
+        if (!close()) return error("@container missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).container,
+            container: container,
+            rules: style
+        });
+    }
+    /**
+   * Parse container.
+   */ function atlayer() {
+        const pos = position();
+        const m = match(/^@layer *([^{;@]+)/);
+        if (!m) return;
+        const layer = $d708735ed1303b43$var$trim(m[1]);
+        if (!open()) {
+            match(/^[;\s]*/);
+            return pos({
+                type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).layer,
+                layer: layer
+            });
+        }
+        const style = comments().concat(rules());
+        if (!close()) return error("@layer missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).layer,
+            layer: layer,
+            rules: style
+        });
+    }
+    /**
+   * Parse media.
+   */ function atmedia() {
+        const pos = position();
+        const m = match(/^@media *([^{]+)/);
+        if (!m) return;
+        const media = $d708735ed1303b43$var$trim(m[1]);
+        if (!open()) return error("@media missing '{'");
+        const style = comments().concat(rules());
+        if (!close()) return error("@media missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).media,
+            media: media,
+            rules: style
+        });
+    }
+    /**
+   * Parse custom-media.
+   */ function atcustommedia() {
+        const pos = position();
+        const m = match(/^@custom-media\s+(--\S+)\s*([^{;\s][^{;]*);/);
+        if (!m) return;
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).customMedia,
+            name: $d708735ed1303b43$var$trim(m[1]),
+            media: $d708735ed1303b43$var$trim(m[2])
+        });
+    }
+    /**
+   * Parse paged media.
+   */ function atpage() {
+        const pos = position();
+        const m = match(/^@page */);
+        if (!m) return;
+        const sel = selector() || [];
+        if (!open()) return error("@page missing '{'");
+        let decls = comments();
+        // declarations
+        let decl;
+        while(decl = declaration()){
+            decls.push(decl);
+            decls = decls.concat(comments());
+        }
+        if (!close()) return error("@page missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).page,
+            selectors: sel,
+            declarations: decls
+        });
+    }
+    /**
+   * Parse document.
+   */ function atdocument() {
+        const pos = position();
+        const m = match(/^@([-\w]+)?document *([^{]+)/);
+        if (!m) return;
+        const vendor = $d708735ed1303b43$var$trim(m[1]);
+        const doc = $d708735ed1303b43$var$trim(m[2]);
+        if (!open()) return error("@document missing '{'");
+        const style = comments().concat(rules());
+        if (!close()) return error("@document missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).document,
+            document: doc,
+            vendor: vendor,
+            rules: style
+        });
+    }
+    /**
+   * Parse font-face.
+   */ function atfontface() {
+        const pos = position();
+        const m = match(/^@font-face\s*/);
+        if (!m) return;
+        if (!open()) return error("@font-face missing '{'");
+        let decls = comments();
+        // declarations
+        let decl;
+        while(decl = declaration()){
+            decls.push(decl);
+            decls = decls.concat(comments());
+        }
+        if (!close()) return error("@font-face missing '}'");
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).fontFace,
+            declarations: decls
+        });
+    }
+    /**
+   * Parse import
+   */ const atimport = _compileAtrule("import");
+    /**
+   * Parse charset
+   */ const atcharset = _compileAtrule("charset");
+    /**
+   * Parse namespace
+   */ const atnamespace = _compileAtrule("namespace");
+    /**
+   * Parse non-block at-rules
+   */ function _compileAtrule(name) {
+        const re = new RegExp("^@" + name + "\\s*((?::?[^;'\"]|\"(?:\\\\\"|[^\"])*?\"|'(?:\\\\'|[^'])*?')+)(?:;|$)");
+        // ^@import\s*([^;"']|("|')(?:\\\2|.)*?\2)+(;|$)
+        return function() {
+            const pos = position();
+            const m = match(re);
+            if (!m) return;
+            const ret = {
+                type: name
+            };
+            ret[name] = m[1].trim();
+            return pos(ret);
+        };
+    }
+    /**
+   * Parse at rule.
+   */ function atrule() {
+        if (css[0] !== "@") return;
+        return atkeyframes() || atmedia() || atcustommedia() || atsupports() || atimport() || atcharset() || atnamespace() || atdocument() || atpage() || athost() || atfontface() || atcontainer() || atlayer();
+    }
+    /**
+   * Parse rule.
+   */ function rule() {
+        const pos = position();
+        const sel = selector();
+        if (!sel) return error("selector missing");
+        comments();
+        return pos({
+            type: ($b2e137848b48cf4f$export$9be5dd6e61d5d73a).rule,
+            selectors: sel,
+            declarations: declarations() || []
+        });
+    }
+    return $d708735ed1303b43$var$addParent(stylesheet());
+};
+/**
+ * Trim `str`.
+ */ function $d708735ed1303b43$var$trim(str) {
+    return str ? str.trim() : "";
+}
+/**
+ * Adds non-enumerable parent node reference to each node.
+ */ function $d708735ed1303b43$var$addParent(obj, parent) {
+    const isNode = obj && typeof obj.type === "string";
+    const childParent = isNode ? obj : parent;
+    for(const k in obj){
+        const value = obj[k];
+        if (Array.isArray(value)) value.forEach((v)=>{
+            $d708735ed1303b43$var$addParent(v, childParent);
+        });
+        else if (value && typeof value === "object") $d708735ed1303b43$var$addParent(value, childParent);
+    }
+    if (isNode) Object.defineProperty(obj, "parent", {
+        configurable: true,
+        writable: true,
+        enumerable: false,
+        value: parent || null
+    });
+    return obj;
+}
+var $d708735ed1303b43$export$2e2bcd8739ae039 = $d708735ed1303b43$export$98e6a39c04603d36;
+
+
+
+
+
+const $149c1bd638913645$export$98e6a39c04603d36 = ($d708735ed1303b43$export$2e2bcd8739ae039);
+
+/**
+ * @source {https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#Polyfill}
+ * but without thisArg (too hard to type, no need to `this`)
+ */
+var toStr$b = Object.prototype.toString;
+function isCallable$3(fn) {
+  return typeof fn === "function" || toStr$b.call(fn) === "[object Function]";
+}
+function toInteger$1(value) {
+  var number = Number(value);
+  if (isNaN(number)) {
+    return 0;
+  }
+  if (number === 0 || !isFinite(number)) {
+    return number;
+  }
+  return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
+}
+var maxSafeInteger$1 = Math.pow(2, 53) - 1;
+function toLength$1(value) {
+  var len = toInteger$1(value);
+  return Math.min(Math.max(len, 0), maxSafeInteger$1);
+}
+/**
+ * Creates an array from an iterable object.
+ * @param iterable An iterable object to convert to an array.
+ */
+
+/**
+ * Creates an array from an iterable object.
+ * @param iterable An iterable object to convert to an array.
+ * @param mapfn A mapping function to call on every element of the array.
+ * @param thisArg Value of 'this' used to invoke the mapfn.
+ */
+function arrayFrom$1(arrayLike, mapFn) {
+  // 1. Let C be the this value.
+  // edit(@eps1lon): we're not calling it as Array.from
+  var C = Array;
+
+  // 2. Let items be ToObject(arrayLike).
+  var items = Object(arrayLike);
+
+  // 3. ReturnIfAbrupt(items).
+  if (arrayLike == null) {
+    throw new TypeError("Array.from requires an array-like object - not null or undefined");
+  }
+
+  // 4. If mapfn is undefined, then let mapping be false.
+  // const mapFn = arguments.length > 1 ? arguments[1] : void undefined;
+
+  if (typeof mapFn !== "undefined") {
+    // 5. else
+    // 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
+    if (!isCallable$3(mapFn)) {
+      throw new TypeError("Array.from: when provided, the second argument must be a function");
+    }
+  }
+
+  // 10. Let lenValue be Get(items, "length").
+  // 11. Let len be ToLength(lenValue).
+  var len = toLength$1(items.length);
+
+  // 13. If IsConstructor(C) is true, then
+  // 13. a. Let A be the result of calling the [[Construct]] internal method
+  // of C with an argument list containing the single item len.
+  // 14. a. Else, Let A be ArrayCreate(len).
+  var A = isCallable$3(C) ? Object(new C(len)) : new Array(len);
+
+  // 16. Let k be 0.
+  var k = 0;
+  // 17. Repeat, while k < len… (also steps a - h)
+  var kValue;
+  while (k < len) {
+    kValue = items[k];
+    if (mapFn) {
+      A[k] = mapFn(kValue, k);
+    } else {
+      A[k] = kValue;
+    }
+    k += 1;
+  }
+  // 18. Let putStatus be Put(A, "length", len, true).
+  A.length = len;
+  // 20. Return A.
+  return A;
+}
+
+function _typeof$4(o) { "@babel/helpers - typeof"; return _typeof$4 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof$4(o); }
+function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties$1(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey$3(descriptor.key), descriptor); } }
+function _createClass$1(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties$1(Constructor.prototype, protoProps); if (staticProps) _defineProperties$1(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty$4(obj, key, value) { key = _toPropertyKey$3(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey$3(arg) { var key = _toPrimitive$3(arg, "string"); return _typeof$4(key) === "symbol" ? key : String(key); }
+function _toPrimitive$3(input, hint) { if (_typeof$4(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof$4(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+// for environments without Set we fallback to arrays with unique members
+var SetLike$2 = /*#__PURE__*/function () {
+  function SetLike() {
+    var items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    _classCallCheck$1(this, SetLike);
+    _defineProperty$4(this, "items", void 0);
+    this.items = items;
+  }
+  _createClass$1(SetLike, [{
+    key: "add",
+    value: function add(value) {
+      if (this.has(value) === false) {
+        this.items.push(value);
+      }
+      return this;
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this.items = [];
+    }
+  }, {
+    key: "delete",
+    value: function _delete(value) {
+      var previousLength = this.items.length;
+      this.items = this.items.filter(function (item) {
+        return item !== value;
+      });
+      return previousLength !== this.items.length;
+    }
+  }, {
+    key: "forEach",
+    value: function forEach(callbackfn) {
+      var _this = this;
+      this.items.forEach(function (item) {
+        callbackfn(item, item, _this);
+      });
+    }
+  }, {
+    key: "has",
+    value: function has(value) {
+      return this.items.indexOf(value) !== -1;
+    }
+  }, {
+    key: "size",
+    get: function get() {
+      return this.items.length;
+    }
+  }]);
+  return SetLike;
+}();
+var SetLike$3 = typeof Set === "undefined" ? Set : SetLike$2;
+
+// https://w3c.github.io/html-aria/#document-conformance-requirements-for-use-of-aria-attributes-in-html
+
+
+/**
+ * Safe Element.localName for all supported environments
+ * @param element
+ */
+function getLocalName$1(element) {
+  var _element$localName;
+  return (// eslint-disable-next-line no-restricted-properties -- actual guard for environments without localName
+    (_element$localName = element.localName) !== null && _element$localName !== void 0 ? _element$localName :
+    // eslint-disable-next-line no-restricted-properties -- required for the fallback
+    element.tagName.toLowerCase()
+  );
+}
+var localNameToRoleMappings$1 = {
+  article: "article",
+  aside: "complementary",
+  button: "button",
+  datalist: "listbox",
+  dd: "definition",
+  details: "group",
+  dialog: "dialog",
+  dt: "term",
+  fieldset: "group",
+  figure: "figure",
+  // WARNING: Only with an accessible name
+  form: "form",
+  footer: "contentinfo",
+  h1: "heading",
+  h2: "heading",
+  h3: "heading",
+  h4: "heading",
+  h5: "heading",
+  h6: "heading",
+  header: "banner",
+  hr: "separator",
+  html: "document",
+  legend: "legend",
+  li: "listitem",
+  math: "math",
+  main: "main",
+  menu: "list",
+  nav: "navigation",
+  ol: "list",
+  optgroup: "group",
+  // WARNING: Only in certain context
+  option: "option",
+  output: "status",
+  progress: "progressbar",
+  // WARNING: Only with an accessible name
+  section: "region",
+  summary: "button",
+  table: "table",
+  tbody: "rowgroup",
+  textarea: "textbox",
+  tfoot: "rowgroup",
+  // WARNING: Only in certain context
+  td: "cell",
+  th: "columnheader",
+  thead: "rowgroup",
+  tr: "row",
+  ul: "list"
+};
+var prohibitedAttributes$1 = {
+  caption: new Set(["aria-label", "aria-labelledby"]),
+  code: new Set(["aria-label", "aria-labelledby"]),
+  deletion: new Set(["aria-label", "aria-labelledby"]),
+  emphasis: new Set(["aria-label", "aria-labelledby"]),
+  generic: new Set(["aria-label", "aria-labelledby", "aria-roledescription"]),
+  insertion: new Set(["aria-label", "aria-labelledby"]),
+  none: new Set(["aria-label", "aria-labelledby"]),
+  paragraph: new Set(["aria-label", "aria-labelledby"]),
+  presentation: new Set(["aria-label", "aria-labelledby"]),
+  strong: new Set(["aria-label", "aria-labelledby"]),
+  subscript: new Set(["aria-label", "aria-labelledby"]),
+  superscript: new Set(["aria-label", "aria-labelledby"])
+};
+
+/**
+ *
+ * @param element
+ * @param role The role used for this element. This is specified to control whether you want to use the implicit or explicit role.
+ */
+function hasGlobalAriaAttributes$1(element, role) {
+  // https://rawgit.com/w3c/aria/stable/#global_states
+  // commented attributes are deprecated
+  return ["aria-atomic", "aria-busy", "aria-controls", "aria-current", "aria-description", "aria-describedby", "aria-details",
+  // "disabled",
+  "aria-dropeffect",
+  // "errormessage",
+  "aria-flowto", "aria-grabbed",
+  // "haspopup",
+  "aria-hidden",
+  // "invalid",
+  "aria-keyshortcuts", "aria-label", "aria-labelledby", "aria-live", "aria-owns", "aria-relevant", "aria-roledescription"].some(function (attributeName) {
+    var _prohibitedAttributes;
+    return element.hasAttribute(attributeName) && !((_prohibitedAttributes = prohibitedAttributes$1[role]) !== null && _prohibitedAttributes !== void 0 && _prohibitedAttributes.has(attributeName));
+  });
+}
+function ignorePresentationalRole$1(element, implicitRole) {
+  // https://rawgit.com/w3c/aria/stable/#conflict_resolution_presentation_none
+  return hasGlobalAriaAttributes$1(element, implicitRole);
+}
+function getRole$1(element) {
+  var explicitRole = getExplicitRole$1(element);
+  if (explicitRole === null || presentationRoles.indexOf(explicitRole) !== -1) {
+    var implicitRole = getImplicitRole$1(element);
+    if (presentationRoles.indexOf(explicitRole || "") === -1 || ignorePresentationalRole$1(element, implicitRole || "")) {
+      return implicitRole;
+    }
+  }
+  return explicitRole;
+}
+function getImplicitRole$1(element) {
+  var mappedByTag = localNameToRoleMappings$1[getLocalName$1(element)];
+  if (mappedByTag !== undefined) {
+    return mappedByTag;
+  }
+  switch (getLocalName$1(element)) {
+    case "a":
+    case "area":
+    case "link":
+      if (element.hasAttribute("href")) {
+        return "link";
+      }
+      break;
+    case "img":
+      if (element.getAttribute("alt") === "" && !ignorePresentationalRole$1(element, "img")) {
+        return "presentation";
+      }
+      return "img";
+    case "input":
+      {
+        var _ref = element,
+          type = _ref.type;
+        switch (type) {
+          case "button":
+          case "image":
+          case "reset":
+          case "submit":
+            return "button";
+          case "checkbox":
+          case "radio":
+            return type;
+          case "range":
+            return "slider";
+          case "email":
+          case "tel":
+          case "text":
+          case "url":
+            if (element.hasAttribute("list")) {
+              return "combobox";
+            }
+            return "textbox";
+          case "search":
+            if (element.hasAttribute("list")) {
+              return "combobox";
+            }
+            return "searchbox";
+          case "number":
+            return "spinbutton";
+          default:
+            return null;
+        }
+      }
+    case "select":
+      if (element.hasAttribute("multiple") || element.size > 1) {
+        return "listbox";
+      }
+      return "combobox";
+  }
+  return null;
+}
+function getExplicitRole$1(element) {
+  var role = element.getAttribute("role");
+  if (role !== null) {
+    var explicitRole = role.trim().split(" ")[0];
+    // String.prototype.split(sep, limit) will always return an array with at least one member
+    // as long as limit is either undefined or > 0
+    if (explicitRole.length > 0) {
+      return explicitRole;
+    }
+  }
+  return null;
+}
+
+var presentationRoles = ["presentation", "none"];
+function isElement$4(node) {
+  return node !== null && node.nodeType === node.ELEMENT_NODE;
+}
+function isHTMLTableCaptionElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "caption";
+}
+function isHTMLInputElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "input";
+}
+function isHTMLOptGroupElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "optgroup";
+}
+function isHTMLSelectElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "select";
+}
+function isHTMLTableElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "table";
+}
+function isHTMLTextAreaElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "textarea";
+}
+function safeWindow$1(node) {
+  var _ref = node.ownerDocument === null ? node : node.ownerDocument,
+    defaultView = _ref.defaultView;
+  if (defaultView === null) {
+    throw new TypeError("no window available");
+  }
+  return defaultView;
+}
+function isHTMLFieldSetElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "fieldset";
+}
+function isHTMLLegendElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "legend";
+}
+function isHTMLSlotElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "slot";
+}
+function isSVGElement$1(node) {
+  return isElement$4(node) && node.ownerSVGElement !== undefined;
+}
+function isSVGSVGElement$1(node) {
+  return isElement$4(node) && getLocalName$1(node) === "svg";
+}
+function isSVGTitleElement$1(node) {
+  return isSVGElement$1(node) && getLocalName$1(node) === "title";
+}
+
+/**
+ *
+ * @param {Node} node -
+ * @param {string} attributeName -
+ * @returns {Element[]} -
+ */
+function queryIdRefs$1(node, attributeName) {
+  if (isElement$4(node) && node.hasAttribute(attributeName)) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute check
+    var ids = node.getAttribute(attributeName).split(" ");
+
+    // Browsers that don't support shadow DOM won't have getRootNode
+    var root = node.getRootNode ? node.getRootNode() : node.ownerDocument;
+    return ids.map(function (id) {
+      return root.getElementById(id);
+    }).filter(function (element) {
+      return element !== null;
+    }
+    // TODO: why does this not narrow?
+    );
+  }
+
+  return [];
+}
+function hasAnyConcreteRoles$1(node, roles) {
+  if (isElement$4(node)) {
+    return roles.indexOf(getRole$1(node)) !== -1;
+  }
+  return false;
+}
+
+/**
+ * implements https://w3c.github.io/accname/
+ */
+
+/**
+ *  A string of characters where all carriage returns, newlines, tabs, and form-feeds are replaced with a single space, and multiple spaces are reduced to a single space. The string contains only character data; it does not contain any markup.
+ */
+
+/**
+ * interface for an options-bag where `window.getComputedStyle` can be mocked
+ */
+
+/**
+ *
+ * @param {string} string -
+ * @returns {FlatString} -
+ */
+function asFlatString$1(s) {
+  return s.trim().replace(/\s\s+/g, " ");
+}
+
+/**
+ *
+ * @param node -
+ * @param options - These are not optional to prevent accidentally calling it without options in `computeAccessibleName`
+ * @returns {boolean} -
+ */
+function isHidden$1(node, getComputedStyleImplementation) {
+  if (!isElement$4(node)) {
+    return false;
+  }
+  if (node.hasAttribute("hidden") || node.getAttribute("aria-hidden") === "true") {
+    return true;
+  }
+  var style = getComputedStyleImplementation(node);
+  return style.getPropertyValue("display") === "none" || style.getPropertyValue("visibility") === "hidden";
+}
+
+/**
+ * @param {Node} node -
+ * @returns {boolean} - As defined in step 2E of https://w3c.github.io/accname/#mapping_additional_nd_te
+ */
+function isControl$1(node) {
+  return hasAnyConcreteRoles$1(node, ["button", "combobox", "listbox", "textbox"]) || hasAbstractRole$1(node, "range");
+}
+function hasAbstractRole$1(node, role) {
+  if (!isElement$4(node)) {
+    return false;
+  }
+  switch (role) {
+    case "range":
+      return hasAnyConcreteRoles$1(node, ["meter", "progressbar", "scrollbar", "slider", "spinbutton"]);
+    default:
+      throw new TypeError("No knowledge about abstract role '".concat(role, "'. This is likely a bug :("));
+  }
+}
+
+/**
+ * element.querySelectorAll but also considers owned tree
+ * @param element
+ * @param selectors
+ */
+function querySelectorAllSubtree$1(element, selectors) {
+  var elements = arrayFrom$1(element.querySelectorAll(selectors));
+  queryIdRefs$1(element, "aria-owns").forEach(function (root) {
+    // babel transpiles this assuming an iterator
+    elements.push.apply(elements, arrayFrom$1(root.querySelectorAll(selectors)));
+  });
+  return elements;
+}
+function querySelectedOptions$1(listbox) {
+  if (isHTMLSelectElement$1(listbox)) {
+    // IE11 polyfill
+    return listbox.selectedOptions || querySelectorAllSubtree$1(listbox, "[selected]");
+  }
+  return querySelectorAllSubtree$1(listbox, '[aria-selected="true"]');
+}
+function isMarkedPresentational$1(node) {
+  return hasAnyConcreteRoles$1(node, presentationRoles);
+}
+
+/**
+ * Elements specifically listed in html-aam
+ *
+ * We don't need this for `label` or `legend` elements.
+ * Their implicit roles already allow "naming from content".
+ *
+ * sources:
+ *
+ * - https://w3c.github.io/html-aam/#table-element
+ */
+function isNativeHostLanguageTextAlternativeElement$1(node) {
+  return isHTMLTableCaptionElement$1(node);
+}
+
+/**
+ * https://w3c.github.io/aria/#namefromcontent
+ */
+function allowsNameFromContent$1(node) {
+  return hasAnyConcreteRoles$1(node, ["button", "cell", "checkbox", "columnheader", "gridcell", "heading", "label", "legend", "link", "menuitem", "menuitemcheckbox", "menuitemradio", "option", "radio", "row", "rowheader", "switch", "tab", "tooltip", "treeitem"]);
+}
+
+/**
+ * TODO https://github.com/eps1lon/dom-accessibility-api/issues/100
+ */
+function isDescendantOfNativeHostLanguageTextAlternativeElement$1(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- not implemented yet
+node) {
+  return false;
+}
+function getValueOfTextbox$1(element) {
+  if (isHTMLInputElement$1(element) || isHTMLTextAreaElement$1(element)) {
+    return element.value;
+  }
+  // https://github.com/eps1lon/dom-accessibility-api/issues/4
+  return element.textContent || "";
+}
+function getTextualContent$1(declaration) {
+  var content = declaration.getPropertyValue("content");
+  if (/^["'].*["']$/.test(content)) {
+    return content.slice(1, -1);
+  }
+  return "";
+}
+
+/**
+ * https://html.spec.whatwg.org/multipage/forms.html#category-label
+ * TODO: form-associated custom elements
+ * @param element
+ */
+function isLabelableElement$1(element) {
+  var localName = getLocalName$1(element);
+  return localName === "button" || localName === "input" && element.getAttribute("type") !== "hidden" || localName === "meter" || localName === "output" || localName === "progress" || localName === "select" || localName === "textarea";
+}
+
+/**
+ * > [...], then the first such descendant in tree order is the label element's labeled control.
+ * -- https://html.spec.whatwg.org/multipage/forms.html#labeled-control
+ * @param element
+ */
+function findLabelableElement$1(element) {
+  if (isLabelableElement$1(element)) {
+    return element;
+  }
+  var labelableElement = null;
+  element.childNodes.forEach(function (childNode) {
+    if (labelableElement === null && isElement$4(childNode)) {
+      var descendantLabelableElement = findLabelableElement$1(childNode);
+      if (descendantLabelableElement !== null) {
+        labelableElement = descendantLabelableElement;
+      }
+    }
+  });
+  return labelableElement;
+}
+
+/**
+ * Polyfill of HTMLLabelElement.control
+ * https://html.spec.whatwg.org/multipage/forms.html#labeled-control
+ * @param label
+ */
+function getControlOfLabel$1(label) {
+  if (label.control !== undefined) {
+    return label.control;
+  }
+  var htmlFor = label.getAttribute("for");
+  if (htmlFor !== null) {
+    return label.ownerDocument.getElementById(htmlFor);
+  }
+  return findLabelableElement$1(label);
+}
+
+/**
+ * Polyfill of HTMLInputElement.labels
+ * https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/labels
+ * @param element
+ */
+function getLabels$2(element) {
+  var labelsProperty = element.labels;
+  if (labelsProperty === null) {
+    return labelsProperty;
+  }
+  if (labelsProperty !== undefined) {
+    return arrayFrom$1(labelsProperty);
+  }
+
+  // polyfill
+  if (!isLabelableElement$1(element)) {
+    return null;
+  }
+  var document = element.ownerDocument;
+  return arrayFrom$1(document.querySelectorAll("label")).filter(function (label) {
+    return getControlOfLabel$1(label) === element;
+  });
+}
+
+/**
+ * Gets the contents of a slot used for computing the accname
+ * @param slot
+ */
+function getSlotContents$1(slot) {
+  // Computing the accessible name for elements containing slots is not
+  // currently defined in the spec. This implementation reflects the
+  // behavior of NVDA 2020.2/Firefox 81 and iOS VoiceOver/Safari 13.6.
+  var assignedNodes = slot.assignedNodes();
+  if (assignedNodes.length === 0) {
+    // if no nodes are assigned to the slot, it displays the default content
+    return arrayFrom$1(slot.childNodes);
+  }
+  return assignedNodes;
+}
+
+/**
+ * implements https://w3c.github.io/accname/#mapping_additional_nd_te
+ * @param root
+ * @param options
+ * @returns
+ */
+function computeTextAlternative$1(root) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var consultedNodes = new SetLike$3();
+  var window = safeWindow$1(root);
+  var _options$compute = options.compute,
+    compute = _options$compute === void 0 ? "name" : _options$compute,
+    _options$computedStyl = options.computedStyleSupportsPseudoElements,
+    computedStyleSupportsPseudoElements = _options$computedStyl === void 0 ? options.getComputedStyle !== undefined : _options$computedStyl,
+    _options$getComputedS = options.getComputedStyle,
+    getComputedStyle = _options$getComputedS === void 0 ? window.getComputedStyle.bind(window) : _options$getComputedS,
+    _options$hidden = options.hidden,
+    hidden = _options$hidden === void 0 ? false : _options$hidden;
+
+  // 2F.i
+  function computeMiscTextAlternative(node, context) {
+    var accumulatedText = "";
+    if (isElement$4(node) && computedStyleSupportsPseudoElements) {
+      var pseudoBefore = getComputedStyle(node, "::before");
+      var beforeContent = getTextualContent$1(pseudoBefore);
+      accumulatedText = "".concat(beforeContent, " ").concat(accumulatedText);
+    }
+
+    // FIXME: Including aria-owns is not defined in the spec
+    // But it is required in the web-platform-test
+    var childNodes = isHTMLSlotElement$1(node) ? getSlotContents$1(node) : arrayFrom$1(node.childNodes).concat(queryIdRefs$1(node, "aria-owns"));
+    childNodes.forEach(function (child) {
+      var result = computeTextAlternative(child, {
+        isEmbeddedInLabel: context.isEmbeddedInLabel,
+        isReferenced: false,
+        recursion: true
+      });
+      // TODO: Unclear why display affects delimiter
+      // see https://github.com/w3c/accname/issues/3
+      var display = isElement$4(child) ? getComputedStyle(child).getPropertyValue("display") : "inline";
+      var separator = display !== "inline" ? " " : "";
+      // trailing separator for wpt tests
+      accumulatedText += "".concat(separator).concat(result).concat(separator);
+    });
+    if (isElement$4(node) && computedStyleSupportsPseudoElements) {
+      var pseudoAfter = getComputedStyle(node, "::after");
+      var afterContent = getTextualContent$1(pseudoAfter);
+      accumulatedText = "".concat(accumulatedText, " ").concat(afterContent);
+    }
+    return accumulatedText.trim();
+  }
+
+  /**
+   *
+   * @param element
+   * @param attributeName
+   * @returns A string non-empty string or `null`
+   */
+  function useAttribute(element, attributeName) {
+    var attribute = element.getAttributeNode(attributeName);
+    if (attribute !== null && !consultedNodes.has(attribute) && attribute.value.trim() !== "") {
+      consultedNodes.add(attribute);
+      return attribute.value;
+    }
+    return null;
+  }
+  function computeTooltipAttributeValue(node) {
+    if (!isElement$4(node)) {
+      return null;
+    }
+    return useAttribute(node, "title");
+  }
+  function computeElementTextAlternative(node) {
+    if (!isElement$4(node)) {
+      return null;
+    }
+
+    // https://w3c.github.io/html-aam/#fieldset-and-legend-elements
+    if (isHTMLFieldSetElement$1(node)) {
+      consultedNodes.add(node);
+      var children = arrayFrom$1(node.childNodes);
+      for (var i = 0; i < children.length; i += 1) {
+        var child = children[i];
+        if (isHTMLLegendElement$1(child)) {
+          return computeTextAlternative(child, {
+            isEmbeddedInLabel: false,
+            isReferenced: false,
+            recursion: false
+          });
+        }
+      }
+    } else if (isHTMLTableElement$1(node)) {
+      // https://w3c.github.io/html-aam/#table-element
+      consultedNodes.add(node);
+      var _children = arrayFrom$1(node.childNodes);
+      for (var _i = 0; _i < _children.length; _i += 1) {
+        var _child = _children[_i];
+        if (isHTMLTableCaptionElement$1(_child)) {
+          return computeTextAlternative(_child, {
+            isEmbeddedInLabel: false,
+            isReferenced: false,
+            recursion: false
+          });
+        }
+      }
+    } else if (isSVGSVGElement$1(node)) {
+      // https://www.w3.org/TR/svg-aam-1.0/
+      consultedNodes.add(node);
+      var _children2 = arrayFrom$1(node.childNodes);
+      for (var _i2 = 0; _i2 < _children2.length; _i2 += 1) {
+        var _child2 = _children2[_i2];
+        if (isSVGTitleElement$1(_child2)) {
+          return _child2.textContent;
+        }
+      }
+      return null;
+    } else if (getLocalName$1(node) === "img" || getLocalName$1(node) === "area") {
+      // https://w3c.github.io/html-aam/#area-element
+      // https://w3c.github.io/html-aam/#img-element
+      var nameFromAlt = useAttribute(node, "alt");
+      if (nameFromAlt !== null) {
+        return nameFromAlt;
+      }
+    } else if (isHTMLOptGroupElement$1(node)) {
+      var nameFromLabel = useAttribute(node, "label");
+      if (nameFromLabel !== null) {
+        return nameFromLabel;
+      }
+    }
+    if (isHTMLInputElement$1(node) && (node.type === "button" || node.type === "submit" || node.type === "reset")) {
+      // https://w3c.github.io/html-aam/#input-type-text-input-type-password-input-type-search-input-type-tel-input-type-email-input-type-url-and-textarea-element-accessible-description-computation
+      var nameFromValue = useAttribute(node, "value");
+      if (nameFromValue !== null) {
+        return nameFromValue;
+      }
+
+      // TODO: l10n
+      if (node.type === "submit") {
+        return "Submit";
+      }
+      // TODO: l10n
+      if (node.type === "reset") {
+        return "Reset";
+      }
+    }
+    var labels = getLabels$2(node);
+    if (labels !== null && labels.length !== 0) {
+      consultedNodes.add(node);
+      return arrayFrom$1(labels).map(function (element) {
+        return computeTextAlternative(element, {
+          isEmbeddedInLabel: true,
+          isReferenced: false,
+          recursion: true
+        });
+      }).filter(function (label) {
+        return label.length > 0;
+      }).join(" ");
+    }
+
+    // https://w3c.github.io/html-aam/#input-type-image-accessible-name-computation
+    // TODO: wpt test consider label elements but html-aam does not mention them
+    // We follow existing implementations over spec
+    if (isHTMLInputElement$1(node) && node.type === "image") {
+      var _nameFromAlt = useAttribute(node, "alt");
+      if (_nameFromAlt !== null) {
+        return _nameFromAlt;
+      }
+      var nameFromTitle = useAttribute(node, "title");
+      if (nameFromTitle !== null) {
+        return nameFromTitle;
+      }
+
+      // TODO: l10n
+      return "Submit Query";
+    }
+    if (hasAnyConcreteRoles$1(node, ["button"])) {
+      // https://www.w3.org/TR/html-aam-1.0/#button-element
+      var nameFromSubTree = computeMiscTextAlternative(node, {
+        isEmbeddedInLabel: false,
+        isReferenced: false
+      });
+      if (nameFromSubTree !== "") {
+        return nameFromSubTree;
+      }
+    }
+    return null;
+  }
+  function computeTextAlternative(current, context) {
+    if (consultedNodes.has(current)) {
+      return "";
+    }
+
+    // 2A
+    if (!hidden && isHidden$1(current, getComputedStyle) && !context.isReferenced) {
+      consultedNodes.add(current);
+      return "";
+    }
+
+    // 2B
+    var labelAttributeNode = isElement$4(current) ? current.getAttributeNode("aria-labelledby") : null;
+    // TODO: Do we generally need to block query IdRefs of attributes we have already consulted?
+    var labelElements = labelAttributeNode !== null && !consultedNodes.has(labelAttributeNode) ? queryIdRefs$1(current, "aria-labelledby") : [];
+    if (compute === "name" && !context.isReferenced && labelElements.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Can't be null here otherwise labelElements would be empty
+      consultedNodes.add(labelAttributeNode);
+      return labelElements.map(function (element) {
+        // TODO: Chrome will consider repeated values i.e. use a node multiple times while we'll bail out in computeTextAlternative.
+        return computeTextAlternative(element, {
+          isEmbeddedInLabel: context.isEmbeddedInLabel,
+          isReferenced: true,
+          // this isn't recursion as specified, otherwise we would skip
+          // `aria-label` in
+          // <input id="myself" aria-label="foo" aria-labelledby="myself"
+          recursion: false
+        });
+      }).join(" ");
+    }
+
+    // 2C
+    // Changed from the spec in anticipation of https://github.com/w3c/accname/issues/64
+    // spec says we should only consider skipping if we have a non-empty label
+    var skipToStep2E = context.recursion && isControl$1(current) && compute === "name";
+    if (!skipToStep2E) {
+      var ariaLabel = (isElement$4(current) && current.getAttribute("aria-label") || "").trim();
+      if (ariaLabel !== "" && compute === "name") {
+        consultedNodes.add(current);
+        return ariaLabel;
+      }
+
+      // 2D
+      if (!isMarkedPresentational$1(current)) {
+        var elementTextAlternative = computeElementTextAlternative(current);
+        if (elementTextAlternative !== null) {
+          consultedNodes.add(current);
+          return elementTextAlternative;
+        }
+      }
+    }
+
+    // special casing, cheating to make tests pass
+    // https://github.com/w3c/accname/issues/67
+    if (hasAnyConcreteRoles$1(current, ["menu"])) {
+      consultedNodes.add(current);
+      return "";
+    }
+
+    // 2E
+    if (skipToStep2E || context.isEmbeddedInLabel || context.isReferenced) {
+      if (hasAnyConcreteRoles$1(current, ["combobox", "listbox"])) {
+        consultedNodes.add(current);
+        var selectedOptions = querySelectedOptions$1(current);
+        if (selectedOptions.length === 0) {
+          // defined per test `name_heading_combobox`
+          return isHTMLInputElement$1(current) ? current.value : "";
+        }
+        return arrayFrom$1(selectedOptions).map(function (selectedOption) {
+          return computeTextAlternative(selectedOption, {
+            isEmbeddedInLabel: context.isEmbeddedInLabel,
+            isReferenced: false,
+            recursion: true
+          });
+        }).join(" ");
+      }
+      if (hasAbstractRole$1(current, "range")) {
+        consultedNodes.add(current);
+        if (current.hasAttribute("aria-valuetext")) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute guard
+          return current.getAttribute("aria-valuetext");
+        }
+        if (current.hasAttribute("aria-valuenow")) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute guard
+          return current.getAttribute("aria-valuenow");
+        }
+        // Otherwise, use the value as specified by a host language attribute.
+        return current.getAttribute("value") || "";
+      }
+      if (hasAnyConcreteRoles$1(current, ["textbox"])) {
+        consultedNodes.add(current);
+        return getValueOfTextbox$1(current);
+      }
+    }
+
+    // 2F: https://w3c.github.io/accname/#step2F
+    if (allowsNameFromContent$1(current) || isElement$4(current) && context.isReferenced || isNativeHostLanguageTextAlternativeElement$1(current) || isDescendantOfNativeHostLanguageTextAlternativeElement$1()) {
+      var accumulatedText2F = computeMiscTextAlternative(current, {
+        isEmbeddedInLabel: context.isEmbeddedInLabel,
+        isReferenced: false
+      });
+      if (accumulatedText2F !== "") {
+        consultedNodes.add(current);
+        return accumulatedText2F;
+      }
+    }
+    if (current.nodeType === current.TEXT_NODE) {
+      consultedNodes.add(current);
+      return current.textContent || "";
+    }
+    if (context.recursion) {
+      consultedNodes.add(current);
+      return computeMiscTextAlternative(current, {
+        isEmbeddedInLabel: context.isEmbeddedInLabel,
+        isReferenced: false
+      });
+    }
+    var tooltipAttributeValue = computeTooltipAttributeValue(current);
+    if (tooltipAttributeValue !== null) {
+      consultedNodes.add(current);
+      return tooltipAttributeValue;
+    }
+
+    // TODO should this be reachable?
+    consultedNodes.add(current);
+    return "";
+  }
+  return asFlatString$1(computeTextAlternative(root, {
+    isEmbeddedInLabel: false,
+    // by spec computeAccessibleDescription starts with the referenced elements as roots
+    isReferenced: compute === "description",
+    recursion: false
+  }));
+}
+
+function _typeof$3(o) { "@babel/helpers - typeof"; return _typeof$3 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof$3(o); }
+function ownKeys$1(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread$1(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys$1(Object(t), !0).forEach(function (r) { _defineProperty$3(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys$1(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty$3(obj, key, value) { key = _toPropertyKey$2(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey$2(arg) { var key = _toPrimitive$2(arg, "string"); return _typeof$3(key) === "symbol" ? key : String(key); }
+function _toPrimitive$2(input, hint) { if (_typeof$3(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof$3(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+/**
+ * @param root
+ * @param options
+ * @returns
+ */
+function computeAccessibleDescription$1(root) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var description = queryIdRefs$1(root, "aria-describedby").map(function (element) {
+    return computeTextAlternative$1(element, _objectSpread$1(_objectSpread$1({}, options), {}, {
+      compute: "description"
+    }));
+  }).join(" ");
+
+  // TODO: Technically we need to make sure that node wasn't used for the accessible name
+  //       This causes `description_1.0_combobox-focusable-manual` to fail
+
+  // https://w3c.github.io/aria/#aria-description
+  // mentions that aria-description should only be calculated if aria-describedby didn't provide
+  // a description
+  if (description === "") {
+    var ariaDescription = root.getAttribute("aria-description");
+    description = ariaDescription === null ? "" : ariaDescription;
+  }
+
+  // https://www.w3.org/TR/html-aam-1.0/#accessible-name-and-description-computation
+  // says for so many elements to use the `title` that we assume all elements are considered
+  if (description === "") {
+    var title = root.getAttribute("title");
+    description = title === null ? "" : title;
+  }
+  return description;
+}
+
+/**
+ * https://w3c.github.io/aria/#namefromprohibited
+ */
+function prohibitsNaming$1(node) {
+  return hasAnyConcreteRoles$1(node, ["caption", "code", "deletion", "emphasis", "generic", "insertion", "none", "paragraph", "presentation", "strong", "subscript", "superscript"]);
+}
+
+/**
+ * implements https://w3c.github.io/accname/#mapping_additional_nd_name
+ * @param root
+ * @param options
+ * @returns
+ */
+function computeAccessibleName$1(root) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  if (prohibitsNaming$1(root)) {
+    return "";
+  }
+  return computeTextAlternative$1(root, options);
+}
+
+var lib = {};
+
+var ariaPropsMap$1 = {};
+
+var iterationDecorator$1 = {};
+
+var iteratorProxy$1 = {};
+
+Object.defineProperty(iteratorProxy$1, "__esModule", {
+  value: true
+});
+iteratorProxy$1.default = void 0;
+
+// eslint-disable-next-line no-unused-vars
+function iteratorProxy() {
+  var values = this;
+  var index = 0;
+  var iter = {
+    '@@iterator': function iterator() {
+      return iter;
+    },
+    next: function next() {
+      if (index < values.length) {
+        var value = values[index];
+        index = index + 1;
+        return {
+          done: false,
+          value: value
+        };
+      } else {
+        return {
+          done: true
+        };
+      }
+    }
+  };
+  return iter;
+}
+var _default$2p = iteratorProxy;
+iteratorProxy$1.default = _default$2p;
+
+Object.defineProperty(iterationDecorator$1, "__esModule", {
+  value: true
+});
+iterationDecorator$1.default = iterationDecorator;
+var _iteratorProxy = _interopRequireDefault$d(iteratorProxy$1);
+function _interopRequireDefault$d(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _typeof$2(obj) { "@babel/helpers - typeof"; return _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof$2(obj); }
+function iterationDecorator(collection, entries) {
+  if (typeof Symbol === 'function' && _typeof$2(Symbol.iterator) === 'symbol') {
+    Object.defineProperty(collection, Symbol.iterator, {
+      value: _iteratorProxy.default.bind(entries)
+    });
+  }
+  return collection;
+}
+
+Object.defineProperty(ariaPropsMap$1, "__esModule", {
+  value: true
+});
+ariaPropsMap$1.default = void 0;
+var _iterationDecorator$4 = _interopRequireDefault$c(iterationDecorator$1);
+function _interopRequireDefault$c(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _slicedToArray$4(arr, i) { return _arrayWithHoles$4(arr) || _iterableToArrayLimit$4(arr, i) || _unsupportedIterableToArray$4(arr, i) || _nonIterableRest$4(); }
+function _nonIterableRest$4() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit$4(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles$4(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper$4(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$4(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray$4(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$4(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$4(o, minLen); }
+function _arrayLikeToArray$4(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+var properties = [['aria-activedescendant', {
+  'type': 'id'
+}], ['aria-atomic', {
+  'type': 'boolean'
+}], ['aria-autocomplete', {
+  'type': 'token',
+  'values': ['inline', 'list', 'both', 'none']
+}], ['aria-busy', {
+  'type': 'boolean'
+}], ['aria-checked', {
+  'type': 'tristate'
+}], ['aria-colcount', {
+  type: 'integer'
+}], ['aria-colindex', {
+  type: 'integer'
+}], ['aria-colspan', {
+  type: 'integer'
+}], ['aria-controls', {
+  'type': 'idlist'
+}], ['aria-current', {
+  type: 'token',
+  values: ['page', 'step', 'location', 'date', 'time', true, false]
+}], ['aria-describedby', {
+  'type': 'idlist'
+}], ['aria-details', {
+  'type': 'id'
+}], ['aria-disabled', {
+  'type': 'boolean'
+}], ['aria-dropeffect', {
+  'type': 'tokenlist',
+  'values': ['copy', 'execute', 'link', 'move', 'none', 'popup']
+}], ['aria-errormessage', {
+  'type': 'id'
+}], ['aria-expanded', {
+  'type': 'boolean',
+  'allowundefined': true
+}], ['aria-flowto', {
+  'type': 'idlist'
+}], ['aria-grabbed', {
+  'type': 'boolean',
+  'allowundefined': true
+}], ['aria-haspopup', {
+  'type': 'token',
+  'values': [false, true, 'menu', 'listbox', 'tree', 'grid', 'dialog']
+}], ['aria-hidden', {
+  'type': 'boolean',
+  'allowundefined': true
+}], ['aria-invalid', {
+  'type': 'token',
+  'values': ['grammar', false, 'spelling', true]
+}], ['aria-keyshortcuts', {
+  type: 'string'
+}], ['aria-label', {
+  'type': 'string'
+}], ['aria-labelledby', {
+  'type': 'idlist'
+}], ['aria-level', {
+  'type': 'integer'
+}], ['aria-live', {
+  'type': 'token',
+  'values': ['assertive', 'off', 'polite']
+}], ['aria-modal', {
+  type: 'boolean'
+}], ['aria-multiline', {
+  'type': 'boolean'
+}], ['aria-multiselectable', {
+  'type': 'boolean'
+}], ['aria-orientation', {
+  'type': 'token',
+  'values': ['vertical', 'undefined', 'horizontal']
+}], ['aria-owns', {
+  'type': 'idlist'
+}], ['aria-placeholder', {
+  type: 'string'
+}], ['aria-posinset', {
+  'type': 'integer'
+}], ['aria-pressed', {
+  'type': 'tristate'
+}], ['aria-readonly', {
+  'type': 'boolean'
+}], ['aria-relevant', {
+  'type': 'tokenlist',
+  'values': ['additions', 'all', 'removals', 'text']
+}], ['aria-required', {
+  'type': 'boolean'
+}], ['aria-roledescription', {
+  type: 'string'
+}], ['aria-rowcount', {
+  type: 'integer'
+}], ['aria-rowindex', {
+  type: 'integer'
+}], ['aria-rowspan', {
+  type: 'integer'
+}], ['aria-selected', {
+  'type': 'boolean',
+  'allowundefined': true
+}], ['aria-setsize', {
+  'type': 'integer'
+}], ['aria-sort', {
+  'type': 'token',
+  'values': ['ascending', 'descending', 'none', 'other']
+}], ['aria-valuemax', {
+  'type': 'number'
+}], ['aria-valuemin', {
+  'type': 'number'
+}], ['aria-valuenow', {
+  'type': 'number'
+}], ['aria-valuetext', {
+  'type': 'string'
+}]];
+var ariaPropsMap = {
+  entries: function entries() {
+    return properties;
+  },
+  forEach: function forEach(fn) {
+    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var _iterator = _createForOfIteratorHelper$4(properties),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _step$value = _slicedToArray$4(_step.value, 2),
+          key = _step$value[0],
+          values = _step$value[1];
+        fn.call(thisArg, values, key, properties);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  },
+  get: function get(key) {
+    var item = properties.find(function (tuple) {
+      return tuple[0] === key ? true : false;
+    });
+    return item && item[1];
+  },
+  has: function has(key) {
+    return !!ariaPropsMap.get(key);
+  },
+  keys: function keys() {
+    return properties.map(function (_ref) {
+      var _ref2 = _slicedToArray$4(_ref, 1),
+        key = _ref2[0];
+      return key;
+    });
+  },
+  values: function values() {
+    return properties.map(function (_ref3) {
+      var _ref4 = _slicedToArray$4(_ref3, 2),
+        values = _ref4[1];
+      return values;
+    });
+  }
+};
+var _default$2o = (0, _iterationDecorator$4.default)(ariaPropsMap, ariaPropsMap.entries());
+ariaPropsMap$1.default = _default$2o;
+
+var domMap$1 = {};
+
+Object.defineProperty(domMap$1, "__esModule", {
+  value: true
+});
+domMap$1.default = void 0;
+var _iterationDecorator$3 = _interopRequireDefault$b(iterationDecorator$1);
+function _interopRequireDefault$b(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _slicedToArray$3(arr, i) { return _arrayWithHoles$3(arr) || _iterableToArrayLimit$3(arr, i) || _unsupportedIterableToArray$3(arr, i) || _nonIterableRest$3(); }
+function _nonIterableRest$3() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit$3(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles$3(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper$3(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
+function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+var dom$1 = [['a', {
+  reserved: false
+}], ['abbr', {
+  reserved: false
+}], ['acronym', {
+  reserved: false
+}], ['address', {
+  reserved: false
+}], ['applet', {
+  reserved: false
+}], ['area', {
+  reserved: false
+}], ['article', {
+  reserved: false
+}], ['aside', {
+  reserved: false
+}], ['audio', {
+  reserved: false
+}], ['b', {
+  reserved: false
+}], ['base', {
+  reserved: true
+}], ['bdi', {
+  reserved: false
+}], ['bdo', {
+  reserved: false
+}], ['big', {
+  reserved: false
+}], ['blink', {
+  reserved: false
+}], ['blockquote', {
+  reserved: false
+}], ['body', {
+  reserved: false
+}], ['br', {
+  reserved: false
+}], ['button', {
+  reserved: false
+}], ['canvas', {
+  reserved: false
+}], ['caption', {
+  reserved: false
+}], ['center', {
+  reserved: false
+}], ['cite', {
+  reserved: false
+}], ['code', {
+  reserved: false
+}], ['col', {
+  reserved: true
+}], ['colgroup', {
+  reserved: true
+}], ['content', {
+  reserved: false
+}], ['data', {
+  reserved: false
+}], ['datalist', {
+  reserved: false
+}], ['dd', {
+  reserved: false
+}], ['del', {
+  reserved: false
+}], ['details', {
+  reserved: false
+}], ['dfn', {
+  reserved: false
+}], ['dialog', {
+  reserved: false
+}], ['dir', {
+  reserved: false
+}], ['div', {
+  reserved: false
+}], ['dl', {
+  reserved: false
+}], ['dt', {
+  reserved: false
+}], ['em', {
+  reserved: false
+}], ['embed', {
+  reserved: false
+}], ['fieldset', {
+  reserved: false
+}], ['figcaption', {
+  reserved: false
+}], ['figure', {
+  reserved: false
+}], ['font', {
+  reserved: false
+}], ['footer', {
+  reserved: false
+}], ['form', {
+  reserved: false
+}], ['frame', {
+  reserved: false
+}], ['frameset', {
+  reserved: false
+}], ['h1', {
+  reserved: false
+}], ['h2', {
+  reserved: false
+}], ['h3', {
+  reserved: false
+}], ['h4', {
+  reserved: false
+}], ['h5', {
+  reserved: false
+}], ['h6', {
+  reserved: false
+}], ['head', {
+  reserved: true
+}], ['header', {
+  reserved: false
+}], ['hgroup', {
+  reserved: false
+}], ['hr', {
+  reserved: false
+}], ['html', {
+  reserved: true
+}], ['i', {
+  reserved: false
+}], ['iframe', {
+  reserved: false
+}], ['img', {
+  reserved: false
+}], ['input', {
+  reserved: false
+}], ['ins', {
+  reserved: false
+}], ['kbd', {
+  reserved: false
+}], ['keygen', {
+  reserved: false
+}], ['label', {
+  reserved: false
+}], ['legend', {
+  reserved: false
+}], ['li', {
+  reserved: false
+}], ['link', {
+  reserved: true
+}], ['main', {
+  reserved: false
+}], ['map', {
+  reserved: false
+}], ['mark', {
+  reserved: false
+}], ['marquee', {
+  reserved: false
+}], ['menu', {
+  reserved: false
+}], ['menuitem', {
+  reserved: false
+}], ['meta', {
+  reserved: true
+}], ['meter', {
+  reserved: false
+}], ['nav', {
+  reserved: false
+}], ['noembed', {
+  reserved: true
+}], ['noscript', {
+  reserved: true
+}], ['object', {
+  reserved: false
+}], ['ol', {
+  reserved: false
+}], ['optgroup', {
+  reserved: false
+}], ['option', {
+  reserved: false
+}], ['output', {
+  reserved: false
+}], ['p', {
+  reserved: false
+}], ['param', {
+  reserved: true
+}], ['picture', {
+  reserved: true
+}], ['pre', {
+  reserved: false
+}], ['progress', {
+  reserved: false
+}], ['q', {
+  reserved: false
+}], ['rp', {
+  reserved: false
+}], ['rt', {
+  reserved: false
+}], ['rtc', {
+  reserved: false
+}], ['ruby', {
+  reserved: false
+}], ['s', {
+  reserved: false
+}], ['samp', {
+  reserved: false
+}], ['script', {
+  reserved: true
+}], ['section', {
+  reserved: false
+}], ['select', {
+  reserved: false
+}], ['small', {
+  reserved: false
+}], ['source', {
+  reserved: true
+}], ['spacer', {
+  reserved: false
+}], ['span', {
+  reserved: false
+}], ['strike', {
+  reserved: false
+}], ['strong', {
+  reserved: false
+}], ['style', {
+  reserved: true
+}], ['sub', {
+  reserved: false
+}], ['summary', {
+  reserved: false
+}], ['sup', {
+  reserved: false
+}], ['table', {
+  reserved: false
+}], ['tbody', {
+  reserved: false
+}], ['td', {
+  reserved: false
+}], ['textarea', {
+  reserved: false
+}], ['tfoot', {
+  reserved: false
+}], ['th', {
+  reserved: false
+}], ['thead', {
+  reserved: false
+}], ['time', {
+  reserved: false
+}], ['title', {
+  reserved: true
+}], ['tr', {
+  reserved: false
+}], ['track', {
+  reserved: true
+}], ['tt', {
+  reserved: false
+}], ['u', {
+  reserved: false
+}], ['ul', {
+  reserved: false
+}], ['var', {
+  reserved: false
+}], ['video', {
+  reserved: false
+}], ['wbr', {
+  reserved: false
+}], ['xmp', {
+  reserved: false
+}]];
+var domMap = {
+  entries: function entries() {
+    return dom$1;
+  },
+  forEach: function forEach(fn) {
+    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var _iterator = _createForOfIteratorHelper$3(dom$1),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _step$value = _slicedToArray$3(_step.value, 2),
+          key = _step$value[0],
+          values = _step$value[1];
+        fn.call(thisArg, values, key, dom$1);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  },
+  get: function get(key) {
+    var item = dom$1.find(function (tuple) {
+      return tuple[0] === key ? true : false;
+    });
+    return item && item[1];
+  },
+  has: function has(key) {
+    return !!domMap.get(key);
+  },
+  keys: function keys() {
+    return dom$1.map(function (_ref) {
+      var _ref2 = _slicedToArray$3(_ref, 1),
+        key = _ref2[0];
+      return key;
+    });
+  },
+  values: function values() {
+    return dom$1.map(function (_ref3) {
+      var _ref4 = _slicedToArray$3(_ref3, 2),
+        values = _ref4[1];
+      return values;
+    });
+  }
+};
+var _default$2n = (0, _iterationDecorator$3.default)(domMap, domMap.entries());
+domMap$1.default = _default$2n;
+
+var rolesMap$1 = {};
+
+var ariaAbstractRoles$1 = {};
+
+var commandRole$1 = {};
+
+Object.defineProperty(commandRole$1, "__esModule", {
+  value: true
+});
+commandRole$1.default = void 0;
+var commandRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'menuitem'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget']]
+};
+var _default$2m = commandRole;
+commandRole$1.default = _default$2m;
+
+var compositeRole$1 = {};
+
+Object.defineProperty(compositeRole$1, "__esModule", {
+  value: true
+});
+compositeRole$1.default = void 0;
+var compositeRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-activedescendant': null,
+    'aria-disabled': null
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget']]
+};
+var _default$2l = compositeRole;
+compositeRole$1.default = _default$2l;
+
+var inputRole$1 = {};
+
+Object.defineProperty(inputRole$1, "__esModule", {
+  value: true
+});
+inputRole$1.default = void 0;
+var inputRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'input'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget']]
+};
+var _default$2k = inputRole;
+inputRole$1.default = _default$2k;
+
+var landmarkRole$1 = {};
+
+Object.defineProperty(landmarkRole$1, "__esModule", {
+  value: true
+});
+landmarkRole$1.default = void 0;
+var landmarkRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$2j = landmarkRole;
+landmarkRole$1.default = _default$2j;
+
+var rangeRole$1 = {};
+
+Object.defineProperty(rangeRole$1, "__esModule", {
+  value: true
+});
+rangeRole$1.default = void 0;
+var rangeRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-valuemax': null,
+    'aria-valuemin': null,
+    'aria-valuenow': null
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$2i = rangeRole;
+rangeRole$1.default = _default$2i;
+
+var roletypeRole$1 = {};
+
+Object.defineProperty(roletypeRole$1, "__esModule", {
+  value: true
+});
+roletypeRole$1.default = void 0;
+var roletypeRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: [],
+  prohibitedProps: [],
+  props: {
+    'aria-atomic': null,
+    'aria-busy': null,
+    'aria-controls': null,
+    'aria-current': null,
+    'aria-describedby': null,
+    'aria-details': null,
+    'aria-dropeffect': null,
+    'aria-flowto': null,
+    'aria-grabbed': null,
+    'aria-hidden': null,
+    'aria-keyshortcuts': null,
+    'aria-label': null,
+    'aria-labelledby': null,
+    'aria-live': null,
+    'aria-owns': null,
+    'aria-relevant': null,
+    'aria-roledescription': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'rel'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'role'
+    },
+    module: 'XHTML'
+  }, {
+    concept: {
+      name: 'type'
+    },
+    module: 'Dublin Core'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: []
+};
+var _default$2h = roletypeRole;
+roletypeRole$1.default = _default$2h;
+
+var sectionRole$1 = {};
+
+Object.defineProperty(sectionRole$1, "__esModule", {
+  value: true
+});
+sectionRole$1.default = void 0;
+var sectionRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: [],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'frontmatter'
+    },
+    module: 'DTB'
+  }, {
+    concept: {
+      name: 'level'
+    },
+    module: 'DTB'
+  }, {
+    concept: {
+      name: 'level'
+    },
+    module: 'SMIL'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$2g = sectionRole;
+sectionRole$1.default = _default$2g;
+
+var sectionheadRole$1 = {};
+
+Object.defineProperty(sectionheadRole$1, "__esModule", {
+  value: true
+});
+sectionheadRole$1.default = void 0;
+var sectionheadRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$2f = sectionheadRole;
+sectionheadRole$1.default = _default$2f;
+
+var selectRole$1 = {};
+
+Object.defineProperty(selectRole$1, "__esModule", {
+  value: true
+});
+selectRole$1.default = void 0;
+var selectRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-orientation': null
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'structure', 'section', 'group']]
+};
+var _default$2e = selectRole;
+selectRole$1.default = _default$2e;
+
+var structureRole$1 = {};
+
+Object.defineProperty(structureRole$1, "__esModule", {
+  value: true
+});
+structureRole$1.default = void 0;
+var structureRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: [],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype']]
+};
+var _default$2d = structureRole;
+structureRole$1.default = _default$2d;
+
+var widgetRole$1 = {};
+
+Object.defineProperty(widgetRole$1, "__esModule", {
+  value: true
+});
+widgetRole$1.default = void 0;
+var widgetRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: [],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype']]
+};
+var _default$2c = widgetRole;
+widgetRole$1.default = _default$2c;
+
+var windowRole$1 = {};
+
+Object.defineProperty(windowRole$1, "__esModule", {
+  value: true
+});
+windowRole$1.default = void 0;
+var windowRole = {
+  abstract: true,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-modal': null
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype']]
+};
+var _default$2b = windowRole;
+windowRole$1.default = _default$2b;
+
+Object.defineProperty(ariaAbstractRoles$1, "__esModule", {
+  value: true
+});
+ariaAbstractRoles$1.default = void 0;
+var _commandRole = _interopRequireDefault$a(commandRole$1);
+var _compositeRole = _interopRequireDefault$a(compositeRole$1);
+var _inputRole = _interopRequireDefault$a(inputRole$1);
+var _landmarkRole = _interopRequireDefault$a(landmarkRole$1);
+var _rangeRole = _interopRequireDefault$a(rangeRole$1);
+var _roletypeRole = _interopRequireDefault$a(roletypeRole$1);
+var _sectionRole = _interopRequireDefault$a(sectionRole$1);
+var _sectionheadRole = _interopRequireDefault$a(sectionheadRole$1);
+var _selectRole = _interopRequireDefault$a(selectRole$1);
+var _structureRole = _interopRequireDefault$a(structureRole$1);
+var _widgetRole = _interopRequireDefault$a(widgetRole$1);
+var _windowRole = _interopRequireDefault$a(windowRole$1);
+function _interopRequireDefault$a(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ariaAbstractRoles = [['command', _commandRole.default], ['composite', _compositeRole.default], ['input', _inputRole.default], ['landmark', _landmarkRole.default], ['range', _rangeRole.default], ['roletype', _roletypeRole.default], ['section', _sectionRole.default], ['sectionhead', _sectionheadRole.default], ['select', _selectRole.default], ['structure', _structureRole.default], ['widget', _widgetRole.default], ['window', _windowRole.default]];
+var _default$2a = ariaAbstractRoles;
+ariaAbstractRoles$1.default = _default$2a;
+
+var ariaLiteralRoles$1 = {};
+
+var alertRole$1 = {};
+
+Object.defineProperty(alertRole$1, "__esModule", {
+  value: true
+});
+alertRole$1.default = void 0;
+var alertRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-atomic': 'true',
+    'aria-live': 'assertive'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'alert'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$29 = alertRole;
+alertRole$1.default = _default$29;
+
+var alertdialogRole$1 = {};
+
+Object.defineProperty(alertdialogRole$1, "__esModule", {
+  value: true
+});
+alertdialogRole$1.default = void 0;
+var alertdialogRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'alert'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'alert'], ['roletype', 'window', 'dialog']]
+};
+var _default$28 = alertdialogRole;
+alertdialogRole$1.default = _default$28;
+
+var applicationRole$1 = {};
+
+Object.defineProperty(applicationRole$1, "__esModule", {
+  value: true
+});
+applicationRole$1.default = void 0;
+var applicationRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-activedescendant': null,
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'Device Independence Delivery Unit'
+    }
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$27 = applicationRole;
+applicationRole$1.default = _default$27;
+
+var articleRole$1 = {};
+
+Object.defineProperty(articleRole$1, "__esModule", {
+  value: true
+});
+articleRole$1.default = void 0;
+var articleRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-posinset': null,
+    'aria-setsize': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'article'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'document']]
+};
+var _default$26 = articleRole;
+articleRole$1.default = _default$26;
+
+var bannerRole$1 = {};
+
+Object.defineProperty(bannerRole$1, "__esModule", {
+  value: true
+});
+bannerRole$1.default = void 0;
+var bannerRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      constraints: ['direct descendant of document'],
+      name: 'header'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$25 = bannerRole;
+bannerRole$1.default = _default$25;
+
+var blockquoteRole$1 = {};
+
+Object.defineProperty(blockquoteRole$1, "__esModule", {
+  value: true
+});
+blockquoteRole$1.default = void 0;
+var blockquoteRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$24 = blockquoteRole;
+blockquoteRole$1.default = _default$24;
+
+var buttonRole$1 = {};
+
+Object.defineProperty(buttonRole$1, "__esModule", {
+  value: true
+});
+buttonRole$1.default = void 0;
+var buttonRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-pressed': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'aria-pressed'
+      }, {
+        name: 'type',
+        value: 'checkbox'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'aria-expanded',
+        value: 'false'
+      }],
+      name: 'summary'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'aria-expanded',
+        value: 'true'
+      }],
+      constraints: ['direct descendant of details element with the open attribute defined'],
+      name: 'summary'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'button'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'image'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'reset'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'submit'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'button'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'trigger'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command']]
+};
+var _default$23 = buttonRole;
+buttonRole$1.default = _default$23;
+
+var captionRole$1 = {};
+
+Object.defineProperty(captionRole$1, "__esModule", {
+  value: true
+});
+captionRole$1.default = void 0;
+var captionRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: ['figure', 'grid', 'table'],
+  requiredContextRole: ['figure', 'grid', 'table'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$22 = captionRole;
+captionRole$1.default = _default$22;
+
+var cellRole$1 = {};
+
+Object.defineProperty(cellRole$1, "__esModule", {
+  value: true
+});
+cellRole$1.default = void 0;
+var cellRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-colindex': null,
+    'aria-colspan': null,
+    'aria-rowindex': null,
+    'aria-rowspan': null
+  },
+  relatedConcepts: [{
+    concept: {
+      constraints: ['descendant of table'],
+      name: 'td'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: ['row'],
+  requiredContextRole: ['row'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$21 = cellRole;
+cellRole$1.default = _default$21;
+
+var checkboxRole$1 = {};
+
+Object.defineProperty(checkboxRole$1, "__esModule", {
+  value: true
+});
+checkboxRole$1.default = void 0;
+var checkboxRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-checked': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-invalid': null,
+    'aria-readonly': null,
+    'aria-required': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'checkbox'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'option'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-checked': null
+  },
+  superClass: [['roletype', 'widget', 'input']]
+};
+var _default$20 = checkboxRole;
+checkboxRole$1.default = _default$20;
+
+var codeRole$1 = {};
+
+Object.defineProperty(codeRole$1, "__esModule", {
+  value: true
+});
+codeRole$1.default = void 0;
+var codeRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1$ = codeRole;
+codeRole$1.default = _default$1$;
+
+var columnheaderRole$1 = {};
+
+Object.defineProperty(columnheaderRole$1, "__esModule", {
+  value: true
+});
+columnheaderRole$1.default = void 0;
+var columnheaderRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-sort': null
+  },
+  relatedConcepts: [{
+    attributes: [{
+      name: 'scope',
+      value: 'col'
+    }],
+    concept: {
+      name: 'th'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: ['row'],
+  requiredContextRole: ['row'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
+};
+var _default$1_ = columnheaderRole;
+columnheaderRole$1.default = _default$1_;
+
+var comboboxRole$1 = {};
+
+Object.defineProperty(comboboxRole$1, "__esModule", {
+  value: true
+});
+comboboxRole$1.default = void 0;
+var comboboxRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-activedescendant': null,
+    'aria-autocomplete': null,
+    'aria-errormessage': null,
+    'aria-invalid': null,
+    'aria-readonly': null,
+    'aria-required': null,
+    'aria-expanded': 'false',
+    'aria-haspopup': 'listbox'
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'email'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'search'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'tel'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'text'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'url'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'url'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'multiple'
+      }, {
+        constraints: ['undefined'],
+        name: 'size'
+      }],
+      name: 'select'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'multiple'
+      }, {
+        name: 'size',
+        value: 1
+      }],
+      name: 'select'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'select'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-controls': null,
+    'aria-expanded': 'false'
+  },
+  superClass: [['roletype', 'widget', 'input']]
+};
+var _default$1Z = comboboxRole;
+comboboxRole$1.default = _default$1Z;
+
+var complementaryRole$1 = {};
+
+Object.defineProperty(complementaryRole$1, "__esModule", {
+  value: true
+});
+complementaryRole$1.default = void 0;
+var complementaryRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'aside'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1Y = complementaryRole;
+complementaryRole$1.default = _default$1Y;
+
+var contentinfoRole$1 = {};
+
+Object.defineProperty(contentinfoRole$1, "__esModule", {
+  value: true
+});
+contentinfoRole$1.default = void 0;
+var contentinfoRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      constraints: ['direct descendant of document'],
+      name: 'footer'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1X = contentinfoRole;
+contentinfoRole$1.default = _default$1X;
+
+var definitionRole$1 = {};
+
+Object.defineProperty(definitionRole$1, "__esModule", {
+  value: true
+});
+definitionRole$1.default = void 0;
+var definitionRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'dd'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1W = definitionRole;
+definitionRole$1.default = _default$1W;
+
+var deletionRole$1 = {};
+
+Object.defineProperty(deletionRole$1, "__esModule", {
+  value: true
+});
+deletionRole$1.default = void 0;
+var deletionRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1V = deletionRole;
+deletionRole$1.default = _default$1V;
+
+var dialogRole$1 = {};
+
+Object.defineProperty(dialogRole$1, "__esModule", {
+  value: true
+});
+dialogRole$1.default = void 0;
+var dialogRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'dialog'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'window']]
+};
+var _default$1U = dialogRole;
+dialogRole$1.default = _default$1U;
+
+var directoryRole$1 = {};
+
+Object.defineProperty(directoryRole$1, "__esModule", {
+  value: true
+});
+directoryRole$1.default = void 0;
+var directoryRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    module: 'DAISY Guide'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'list']]
+};
+var _default$1T = directoryRole;
+directoryRole$1.default = _default$1T;
+
+var documentRole$1 = {};
+
+Object.defineProperty(documentRole$1, "__esModule", {
+  value: true
+});
+documentRole$1.default = void 0;
+var documentRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'Device Independence Delivery Unit'
+    }
+  }, {
+    concept: {
+      name: 'body'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$1S = documentRole;
+documentRole$1.default = _default$1S;
+
+var emphasisRole$1 = {};
+
+Object.defineProperty(emphasisRole$1, "__esModule", {
+  value: true
+});
+emphasisRole$1.default = void 0;
+var emphasisRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1R = emphasisRole;
+emphasisRole$1.default = _default$1R;
+
+var feedRole$1 = {};
+
+Object.defineProperty(feedRole$1, "__esModule", {
+  value: true
+});
+feedRole$1.default = void 0;
+var feedRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['article']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'list']]
+};
+var _default$1Q = feedRole;
+feedRole$1.default = _default$1Q;
+
+var figureRole$1 = {};
+
+Object.defineProperty(figureRole$1, "__esModule", {
+  value: true
+});
+figureRole$1.default = void 0;
+var figureRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'figure'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1P = figureRole;
+figureRole$1.default = _default$1P;
+
+var formRole$1 = {};
+
+Object.defineProperty(formRole$1, "__esModule", {
+  value: true
+});
+formRole$1.default = void 0;
+var formRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'aria-label'
+      }],
+      name: 'form'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'aria-labelledby'
+      }],
+      name: 'form'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'name'
+      }],
+      name: 'form'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1O = formRole;
+formRole$1.default = _default$1O;
+
+var genericRole$1 = {};
+
+Object.defineProperty(genericRole$1, "__esModule", {
+  value: true
+});
+genericRole$1.default = void 0;
+var genericRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'span'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'div'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$1N = genericRole;
+genericRole$1.default = _default$1N;
+
+var gridRole$1 = {};
+
+Object.defineProperty(gridRole$1, "__esModule", {
+  value: true
+});
+gridRole$1.default = void 0;
+var gridRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-multiselectable': null,
+    'aria-readonly': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'role',
+        value: 'grid'
+      }],
+      name: 'table'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'structure', 'section', 'table']]
+};
+var _default$1M = gridRole;
+gridRole$1.default = _default$1M;
+
+var gridcellRole$1 = {};
+
+Object.defineProperty(gridcellRole$1, "__esModule", {
+  value: true
+});
+gridcellRole$1.default = void 0;
+var gridcellRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null,
+    'aria-readonly': null,
+    'aria-required': null,
+    'aria-selected': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'role',
+        value: 'gridcell'
+      }],
+      name: 'td'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: ['row'],
+  requiredContextRole: ['row'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'widget']]
+};
+var _default$1L = gridcellRole;
+gridcellRole$1.default = _default$1L;
+
+var groupRole$1 = {};
+
+Object.defineProperty(groupRole$1, "__esModule", {
+  value: true
+});
+groupRole$1.default = void 0;
+var groupRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-activedescendant': null,
+    'aria-disabled': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'details'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'fieldset'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'optgroup'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1K = groupRole;
+groupRole$1.default = _default$1K;
+
+var headingRole$1 = {};
+
+Object.defineProperty(headingRole$1, "__esModule", {
+  value: true
+});
+headingRole$1.default = void 0;
+var headingRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-level': '2'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'h1'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'h2'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'h3'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'h4'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'h5'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'h6'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-level': '2'
+  },
+  superClass: [['roletype', 'structure', 'sectionhead']]
+};
+var _default$1J = headingRole;
+headingRole$1.default = _default$1J;
+
+var imgRole$1 = {};
+
+Object.defineProperty(imgRole$1, "__esModule", {
+  value: true
+});
+imgRole$1.default = void 0;
+var imgRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'alt'
+      }],
+      name: 'img'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'alt'
+      }],
+      name: 'img'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'imggroup'
+    },
+    module: 'DTB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1I = imgRole;
+imgRole$1.default = _default$1I;
+
+var insertionRole$1 = {};
+
+Object.defineProperty(insertionRole$1, "__esModule", {
+  value: true
+});
+insertionRole$1.default = void 0;
+var insertionRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1H = insertionRole;
+insertionRole$1.default = _default$1H;
+
+var linkRole$1 = {};
+
+Object.defineProperty(linkRole$1, "__esModule", {
+  value: true
+});
+linkRole$1.default = void 0;
+var linkRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-expanded': null,
+    'aria-haspopup': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'href'
+      }],
+      name: 'a'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'href'
+      }],
+      name: 'area'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'href'
+      }],
+      name: 'link'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command']]
+};
+var _default$1G = linkRole;
+linkRole$1.default = _default$1G;
+
+var listRole$1 = {};
+
+Object.defineProperty(listRole$1, "__esModule", {
+  value: true
+});
+listRole$1.default = void 0;
+var listRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'menu'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'ol'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'ul'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['listitem']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1F = listRole;
+listRole$1.default = _default$1F;
+
+var listboxRole$1 = {};
+
+Object.defineProperty(listboxRole$1, "__esModule", {
+  value: true
+});
+listboxRole$1.default = void 0;
+var listboxRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-invalid': null,
+    'aria-multiselectable': null,
+    'aria-readonly': null,
+    'aria-required': null,
+    'aria-orientation': 'vertical'
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['>1'],
+        name: 'size'
+      }, {
+        name: 'multiple'
+      }],
+      name: 'select'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['>1'],
+        name: 'size'
+      }],
+      name: 'select'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'multiple'
+      }],
+      name: 'select'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'datalist'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'list'
+    },
+    module: 'ARIA'
+  }, {
+    concept: {
+      name: 'select'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['option', 'group'], ['option']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+};
+var _default$1E = listboxRole;
+listboxRole$1.default = _default$1E;
+
+var listitemRole$1 = {};
+
+Object.defineProperty(listitemRole$1, "__esModule", {
+  value: true
+});
+listitemRole$1.default = void 0;
+var listitemRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-level': null,
+    'aria-posinset': null,
+    'aria-setsize': null
+  },
+  relatedConcepts: [{
+    concept: {
+      constraints: ['direct descendant of ol, ul or menu'],
+      name: 'li'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'item'
+    },
+    module: 'XForms'
+  }],
+  requireContextRole: ['directory', 'list'],
+  requiredContextRole: ['directory', 'list'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1D = listitemRole;
+listitemRole$1.default = _default$1D;
+
+var logRole$1 = {};
+
+Object.defineProperty(logRole$1, "__esModule", {
+  value: true
+});
+logRole$1.default = void 0;
+var logRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-live': 'polite'
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1C = logRole;
+logRole$1.default = _default$1C;
+
+var mainRole$1 = {};
+
+Object.defineProperty(mainRole$1, "__esModule", {
+  value: true
+});
+mainRole$1.default = void 0;
+var mainRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'main'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1B = mainRole;
+mainRole$1.default = _default$1B;
+
+var marqueeRole$1 = {};
+
+Object.defineProperty(marqueeRole$1, "__esModule", {
+  value: true
+});
+marqueeRole$1.default = void 0;
+var marqueeRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1A = marqueeRole;
+marqueeRole$1.default = _default$1A;
+
+var mathRole$1 = {};
+
+Object.defineProperty(mathRole$1, "__esModule", {
+  value: true
+});
+mathRole$1.default = void 0;
+var mathRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'math'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1z = mathRole;
+mathRole$1.default = _default$1z;
+
+var menuRole$1 = {};
+
+Object.defineProperty(menuRole$1, "__esModule", {
+  value: true
+});
+menuRole$1.default = void 0;
+var menuRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-orientation': 'vertical'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'MENU'
+    },
+    module: 'JAPI'
+  }, {
+    concept: {
+      name: 'list'
+    },
+    module: 'ARIA'
+  }, {
+    concept: {
+      name: 'select'
+    },
+    module: 'XForms'
+  }, {
+    concept: {
+      name: 'sidebar'
+    },
+    module: 'DTB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+};
+var _default$1y = menuRole;
+menuRole$1.default = _default$1y;
+
+var menubarRole$1 = {};
+
+Object.defineProperty(menubarRole$1, "__esModule", {
+  value: true
+});
+menubarRole$1.default = void 0;
+var menubarRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-orientation': 'horizontal'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'toolbar'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite', 'select', 'menu'], ['roletype', 'structure', 'section', 'group', 'select', 'menu']]
+};
+var _default$1x = menubarRole;
+menubarRole$1.default = _default$1x;
+
+var menuitemRole$1 = {};
+
+Object.defineProperty(menuitemRole$1, "__esModule", {
+  value: true
+});
+menuitemRole$1.default = void 0;
+var menuitemRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-posinset': null,
+    'aria-setsize': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'MENU_ITEM'
+    },
+    module: 'JAPI'
+  }, {
+    concept: {
+      name: 'listitem'
+    },
+    module: 'ARIA'
+  }, {
+    concept: {
+      name: 'menuitem'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'option'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: ['group', 'menu', 'menubar'],
+  requiredContextRole: ['group', 'menu', 'menubar'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command']]
+};
+var _default$1w = menuitemRole;
+menuitemRole$1.default = _default$1w;
+
+var menuitemcheckboxRole$1 = {};
+
+Object.defineProperty(menuitemcheckboxRole$1, "__esModule", {
+  value: true
+});
+menuitemcheckboxRole$1.default = void 0;
+var menuitemcheckboxRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'menuitem'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: ['group', 'menu', 'menubar'],
+  requiredContextRole: ['group', 'menu', 'menubar'],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-checked': null
+  },
+  superClass: [['roletype', 'widget', 'input', 'checkbox'], ['roletype', 'widget', 'command', 'menuitem']]
+};
+var _default$1v = menuitemcheckboxRole;
+menuitemcheckboxRole$1.default = _default$1v;
+
+var menuitemradioRole$1 = {};
+
+Object.defineProperty(menuitemradioRole$1, "__esModule", {
+  value: true
+});
+menuitemradioRole$1.default = void 0;
+var menuitemradioRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'menuitem'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: ['group', 'menu', 'menubar'],
+  requiredContextRole: ['group', 'menu', 'menubar'],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-checked': null
+  },
+  superClass: [['roletype', 'widget', 'input', 'checkbox', 'menuitemcheckbox'], ['roletype', 'widget', 'command', 'menuitem', 'menuitemcheckbox'], ['roletype', 'widget', 'input', 'radio']]
+};
+var _default$1u = menuitemradioRole;
+menuitemradioRole$1.default = _default$1u;
+
+var meterRole$1 = {};
+
+Object.defineProperty(meterRole$1, "__esModule", {
+  value: true
+});
+meterRole$1.default = void 0;
+var meterRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-valuetext': null,
+    'aria-valuemax': '100',
+    'aria-valuemin': '0'
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-valuenow': null
+  },
+  superClass: [['roletype', 'structure', 'range']]
+};
+var _default$1t = meterRole;
+meterRole$1.default = _default$1t;
+
+var navigationRole$1 = {};
+
+Object.defineProperty(navigationRole$1, "__esModule", {
+  value: true
+});
+navigationRole$1.default = void 0;
+var navigationRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'nav'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1s = navigationRole;
+navigationRole$1.default = _default$1s;
+
+var noneRole$1 = {};
+
+Object.defineProperty(noneRole$1, "__esModule", {
+  value: true
+});
+noneRole$1.default = void 0;
+var noneRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: [],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: []
+};
+var _default$1r = noneRole;
+noneRole$1.default = _default$1r;
+
+var noteRole$1 = {};
+
+Object.defineProperty(noteRole$1, "__esModule", {
+  value: true
+});
+noteRole$1.default = void 0;
+var noteRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1q = noteRole;
+noteRole$1.default = _default$1q;
+
+var optionRole$1 = {};
+
+Object.defineProperty(optionRole$1, "__esModule", {
+  value: true
+});
+optionRole$1.default = void 0;
+var optionRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-checked': null,
+    'aria-posinset': null,
+    'aria-setsize': null,
+    'aria-selected': 'false'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'item'
+    },
+    module: 'XForms'
+  }, {
+    concept: {
+      name: 'listitem'
+    },
+    module: 'ARIA'
+  }, {
+    concept: {
+      name: 'option'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-selected': 'false'
+  },
+  superClass: [['roletype', 'widget', 'input']]
+};
+var _default$1p = optionRole;
+optionRole$1.default = _default$1p;
+
+var paragraphRole$1 = {};
+
+Object.defineProperty(paragraphRole$1, "__esModule", {
+  value: true
+});
+paragraphRole$1.default = void 0;
+var paragraphRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$1o = paragraphRole;
+paragraphRole$1.default = _default$1o;
+
+var presentationRole$1 = {};
+
+Object.defineProperty(presentationRole$1, "__esModule", {
+  value: true
+});
+presentationRole$1.default = void 0;
+var presentationRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$1n = presentationRole;
+presentationRole$1.default = _default$1n;
+
+var progressbarRole$1 = {};
+
+Object.defineProperty(progressbarRole$1, "__esModule", {
+  value: true
+});
+progressbarRole$1.default = void 0;
+var progressbarRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-valuetext': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'progress'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'status'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
+};
+var _default$1m = progressbarRole;
+progressbarRole$1.default = _default$1m;
+
+var radioRole$1 = {};
+
+Object.defineProperty(radioRole$1, "__esModule", {
+  value: true
+});
+radioRole$1.default = void 0;
+var radioRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-checked': null,
+    'aria-posinset': null,
+    'aria-setsize': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'radio'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-checked': null
+  },
+  superClass: [['roletype', 'widget', 'input']]
+};
+var _default$1l = radioRole;
+radioRole$1.default = _default$1l;
+
+var radiogroupRole$1 = {};
+
+Object.defineProperty(radiogroupRole$1, "__esModule", {
+  value: true
+});
+radiogroupRole$1.default = void 0;
+var radiogroupRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null,
+    'aria-readonly': null,
+    'aria-required': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'list'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['radio']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+};
+var _default$1k = radiogroupRole;
+radiogroupRole$1.default = _default$1k;
+
+var regionRole$1 = {};
+
+Object.defineProperty(regionRole$1, "__esModule", {
+  value: true
+});
+regionRole$1.default = void 0;
+var regionRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'aria-label'
+      }],
+      name: 'section'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['set'],
+        name: 'aria-labelledby'
+      }],
+      name: 'section'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'Device Independence Glossart perceivable unit'
+    }
+  }, {
+    concept: {
+      name: 'frame'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1j = regionRole;
+regionRole$1.default = _default$1j;
+
+var rowRole$1 = {};
+
+Object.defineProperty(rowRole$1, "__esModule", {
+  value: true
+});
+rowRole$1.default = void 0;
+var rowRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-colindex': null,
+    'aria-expanded': null,
+    'aria-level': null,
+    'aria-posinset': null,
+    'aria-rowindex': null,
+    'aria-selected': null,
+    'aria-setsize': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'tr'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: ['grid', 'rowgroup', 'table', 'treegrid'],
+  requiredContextRole: ['grid', 'rowgroup', 'table', 'treegrid'],
+  requiredOwnedElements: [['cell'], ['columnheader'], ['gridcell'], ['rowheader']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'group'], ['roletype', 'widget']]
+};
+var _default$1i = rowRole;
+rowRole$1.default = _default$1i;
+
+var rowgroupRole$1 = {};
+
+Object.defineProperty(rowgroupRole$1, "__esModule", {
+  value: true
+});
+rowgroupRole$1.default = void 0;
+var rowgroupRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'tbody'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'tfoot'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'thead'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: ['grid', 'table', 'treegrid'],
+  requiredContextRole: ['grid', 'table', 'treegrid'],
+  requiredOwnedElements: [['row']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$1h = rowgroupRole;
+rowgroupRole$1.default = _default$1h;
+
+var rowheaderRole$1 = {};
+
+Object.defineProperty(rowheaderRole$1, "__esModule", {
+  value: true
+});
+rowheaderRole$1.default = void 0;
+var rowheaderRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-sort': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'scope',
+        value: 'row'
+      }],
+      name: 'th'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        name: 'scope',
+        value: 'rowgroup'
+      }],
+      name: 'th'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: ['row', 'rowgroup'],
+  requiredContextRole: ['row', 'rowgroup'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
+};
+var _default$1g = rowheaderRole;
+rowheaderRole$1.default = _default$1g;
+
+var scrollbarRole$1 = {};
+
+Object.defineProperty(scrollbarRole$1, "__esModule", {
+  value: true
+});
+scrollbarRole$1.default = void 0;
+var scrollbarRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-valuetext': null,
+    'aria-orientation': 'vertical',
+    'aria-valuemax': '100',
+    'aria-valuemin': '0'
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-controls': null,
+    'aria-valuenow': null
+  },
+  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
+};
+var _default$1f = scrollbarRole;
+scrollbarRole$1.default = _default$1f;
+
+var searchRole$1 = {};
+
+Object.defineProperty(searchRole$1, "__esModule", {
+  value: true
+});
+searchRole$1.default = void 0;
+var searchRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$1e = searchRole;
+searchRole$1.default = _default$1e;
+
+var searchboxRole$1 = {};
+
+Object.defineProperty(searchboxRole$1, "__esModule", {
+  value: true
+});
+searchboxRole$1.default = void 0;
+var searchboxRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'search'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'input', 'textbox']]
+};
+var _default$1d = searchboxRole;
+searchboxRole$1.default = _default$1d;
+
+var separatorRole$1 = {};
+
+Object.defineProperty(separatorRole$1, "__esModule", {
+  value: true
+});
+separatorRole$1.default = void 0;
+var separatorRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-orientation': 'horizontal',
+    'aria-valuemax': '100',
+    'aria-valuemin': '0',
+    'aria-valuenow': null,
+    'aria-valuetext': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'hr'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure']]
+};
+var _default$1c = separatorRole;
+separatorRole$1.default = _default$1c;
+
+var sliderRole$1 = {};
+
+Object.defineProperty(sliderRole$1, "__esModule", {
+  value: true
+});
+sliderRole$1.default = void 0;
+var sliderRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-haspopup': null,
+    'aria-invalid': null,
+    'aria-readonly': null,
+    'aria-valuetext': null,
+    'aria-orientation': 'horizontal',
+    'aria-valuemax': '100',
+    'aria-valuemin': '0'
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'range'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-valuenow': null
+  },
+  superClass: [['roletype', 'widget', 'input'], ['roletype', 'structure', 'range']]
+};
+var _default$1b = sliderRole;
+sliderRole$1.default = _default$1b;
+
+var spinbuttonRole$1 = {};
+
+Object.defineProperty(spinbuttonRole$1, "__esModule", {
+  value: true
+});
+spinbuttonRole$1.default = void 0;
+var spinbuttonRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null,
+    'aria-readonly': null,
+    'aria-required': null,
+    'aria-valuetext': null,
+    'aria-valuenow': '0'
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        name: 'type',
+        value: 'number'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'widget', 'input'], ['roletype', 'structure', 'range']]
+};
+var _default$1a = spinbuttonRole;
+spinbuttonRole$1.default = _default$1a;
+
+var statusRole$1 = {};
+
+Object.defineProperty(statusRole$1, "__esModule", {
+  value: true
+});
+statusRole$1.default = void 0;
+var statusRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-atomic': 'true',
+    'aria-live': 'polite'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'output'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$19 = statusRole;
+statusRole$1.default = _default$19;
+
+var strongRole$1 = {};
+
+Object.defineProperty(strongRole$1, "__esModule", {
+  value: true
+});
+strongRole$1.default = void 0;
+var strongRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$18 = strongRole;
+strongRole$1.default = _default$18;
+
+var subscriptRole$1 = {};
+
+Object.defineProperty(subscriptRole$1, "__esModule", {
+  value: true
+});
+subscriptRole$1.default = void 0;
+var subscriptRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$17 = subscriptRole;
+subscriptRole$1.default = _default$17;
+
+var superscriptRole$1 = {};
+
+Object.defineProperty(superscriptRole$1, "__esModule", {
+  value: true
+});
+superscriptRole$1.default = void 0;
+var superscriptRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['prohibited'],
+  prohibitedProps: ['aria-label', 'aria-labelledby'],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$16 = superscriptRole;
+superscriptRole$1.default = _default$16;
+
+var switchRole$1 = {};
+
+Object.defineProperty(switchRole$1, "__esModule", {
+  value: true
+});
+switchRole$1.default = void 0;
+var switchRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'button'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-checked': null
+  },
+  superClass: [['roletype', 'widget', 'input', 'checkbox']]
+};
+var _default$15 = switchRole;
+switchRole$1.default = _default$15;
+
+var tabRole$1 = {};
+
+Object.defineProperty(tabRole$1, "__esModule", {
+  value: true
+});
+tabRole$1.default = void 0;
+var tabRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-posinset': null,
+    'aria-setsize': null,
+    'aria-selected': 'false'
+  },
+  relatedConcepts: [],
+  requireContextRole: ['tablist'],
+  requiredContextRole: ['tablist'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'sectionhead'], ['roletype', 'widget']]
+};
+var _default$14 = tabRole;
+tabRole$1.default = _default$14;
+
+var tableRole$1 = {};
+
+Object.defineProperty(tableRole$1, "__esModule", {
+  value: true
+});
+tableRole$1.default = void 0;
+var tableRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-colcount': null,
+    'aria-rowcount': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'table'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$13 = tableRole;
+tableRole$1.default = _default$13;
+
+var tablistRole$1 = {};
+
+Object.defineProperty(tablistRole$1, "__esModule", {
+  value: true
+});
+tablistRole$1.default = void 0;
+var tablistRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-level': null,
+    'aria-multiselectable': null,
+    'aria-orientation': 'horizontal'
+  },
+  relatedConcepts: [{
+    module: 'DAISY',
+    concept: {
+      name: 'guide'
+    }
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['tab']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite']]
+};
+var _default$12 = tablistRole;
+tablistRole$1.default = _default$12;
+
+var tabpanelRole$1 = {};
+
+Object.defineProperty(tabpanelRole$1, "__esModule", {
+  value: true
+});
+tabpanelRole$1.default = void 0;
+var tabpanelRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$11 = tabpanelRole;
+tabpanelRole$1.default = _default$11;
+
+var termRole$1 = {};
+
+Object.defineProperty(termRole$1, "__esModule", {
+  value: true
+});
+termRole$1.default = void 0;
+var termRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'dfn'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'dt'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$10 = termRole;
+termRole$1.default = _default$10;
+
+var textboxRole$1 = {};
+
+Object.defineProperty(textboxRole$1, "__esModule", {
+  value: true
+});
+textboxRole$1.default = void 0;
+var textboxRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-activedescendant': null,
+    'aria-autocomplete': null,
+    'aria-errormessage': null,
+    'aria-haspopup': null,
+    'aria-invalid': null,
+    'aria-multiline': null,
+    'aria-placeholder': null,
+    'aria-readonly': null,
+    'aria-required': null
+  },
+  relatedConcepts: [{
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'type'
+      }, {
+        constraints: ['undefined'],
+        name: 'list'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'email'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'tel'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'text'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      attributes: [{
+        constraints: ['undefined'],
+        name: 'list'
+      }, {
+        name: 'type',
+        value: 'url'
+      }],
+      name: 'input'
+    },
+    module: 'HTML'
+  }, {
+    concept: {
+      name: 'input'
+    },
+    module: 'XForms'
+  }, {
+    concept: {
+      name: 'textarea'
+    },
+    module: 'HTML'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'input']]
+};
+var _default$$ = textboxRole;
+textboxRole$1.default = _default$$;
+
+var timeRole$1 = {};
+
+Object.defineProperty(timeRole$1, "__esModule", {
+  value: true
+});
+timeRole$1.default = void 0;
+var timeRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$_ = timeRole;
+timeRole$1.default = _default$_;
+
+var timerRole$1 = {};
+
+Object.defineProperty(timerRole$1, "__esModule", {
+  value: true
+});
+timerRole$1.default = void 0;
+var timerRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'status']]
+};
+var _default$Z = timerRole;
+timerRole$1.default = _default$Z;
+
+var toolbarRole$1 = {};
+
+Object.defineProperty(toolbarRole$1, "__esModule", {
+  value: true
+});
+toolbarRole$1.default = void 0;
+var toolbarRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-orientation': 'horizontal'
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'menubar'
+    },
+    module: 'ARIA'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'group']]
+};
+var _default$Y = toolbarRole;
+toolbarRole$1.default = _default$Y;
+
+var tooltipRole$1 = {};
+
+Object.defineProperty(tooltipRole$1, "__esModule", {
+  value: true
+});
+tooltipRole$1.default = void 0;
+var tooltipRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$X = tooltipRole;
+tooltipRole$1.default = _default$X;
+
+var treeRole$1 = {};
+
+Object.defineProperty(treeRole$1, "__esModule", {
+  value: true
+});
+treeRole$1.default = void 0;
+var treeRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null,
+    'aria-multiselectable': null,
+    'aria-required': null,
+    'aria-orientation': 'vertical'
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['treeitem', 'group'], ['treeitem']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+};
+var _default$W = treeRole;
+treeRole$1.default = _default$W;
+
+var treegridRole$1 = {};
+
+Object.defineProperty(treegridRole$1, "__esModule", {
+  value: true
+});
+treegridRole$1.default = void 0;
+var treegridRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'composite', 'grid'], ['roletype', 'structure', 'section', 'table', 'grid'], ['roletype', 'widget', 'composite', 'select', 'tree'], ['roletype', 'structure', 'section', 'group', 'select', 'tree']]
+};
+var _default$V = treegridRole;
+treegridRole$1.default = _default$V;
+
+var treeitemRole$1 = {};
+
+Object.defineProperty(treeitemRole$1, "__esModule", {
+  value: true
+});
+treeitemRole$1.default = void 0;
+var treeitemRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-expanded': null,
+    'aria-haspopup': null
+  },
+  relatedConcepts: [],
+  requireContextRole: ['group', 'tree'],
+  requiredContextRole: ['group', 'tree'],
+  requiredOwnedElements: [],
+  requiredProps: {
+    'aria-selected': null
+  },
+  superClass: [['roletype', 'structure', 'section', 'listitem'], ['roletype', 'widget', 'input', 'option']]
+};
+var _default$U = treeitemRole;
+treeitemRole$1.default = _default$U;
+
+Object.defineProperty(ariaLiteralRoles$1, "__esModule", {
+  value: true
+});
+ariaLiteralRoles$1.default = void 0;
+var _alertRole = _interopRequireDefault$9(alertRole$1);
+var _alertdialogRole = _interopRequireDefault$9(alertdialogRole$1);
+var _applicationRole = _interopRequireDefault$9(applicationRole$1);
+var _articleRole = _interopRequireDefault$9(articleRole$1);
+var _bannerRole = _interopRequireDefault$9(bannerRole$1);
+var _blockquoteRole = _interopRequireDefault$9(blockquoteRole$1);
+var _buttonRole = _interopRequireDefault$9(buttonRole$1);
+var _captionRole = _interopRequireDefault$9(captionRole$1);
+var _cellRole = _interopRequireDefault$9(cellRole$1);
+var _checkboxRole = _interopRequireDefault$9(checkboxRole$1);
+var _codeRole = _interopRequireDefault$9(codeRole$1);
+var _columnheaderRole = _interopRequireDefault$9(columnheaderRole$1);
+var _comboboxRole = _interopRequireDefault$9(comboboxRole$1);
+var _complementaryRole = _interopRequireDefault$9(complementaryRole$1);
+var _contentinfoRole = _interopRequireDefault$9(contentinfoRole$1);
+var _definitionRole = _interopRequireDefault$9(definitionRole$1);
+var _deletionRole = _interopRequireDefault$9(deletionRole$1);
+var _dialogRole = _interopRequireDefault$9(dialogRole$1);
+var _directoryRole = _interopRequireDefault$9(directoryRole$1);
+var _documentRole = _interopRequireDefault$9(documentRole$1);
+var _emphasisRole = _interopRequireDefault$9(emphasisRole$1);
+var _feedRole = _interopRequireDefault$9(feedRole$1);
+var _figureRole = _interopRequireDefault$9(figureRole$1);
+var _formRole = _interopRequireDefault$9(formRole$1);
+var _genericRole = _interopRequireDefault$9(genericRole$1);
+var _gridRole = _interopRequireDefault$9(gridRole$1);
+var _gridcellRole = _interopRequireDefault$9(gridcellRole$1);
+var _groupRole = _interopRequireDefault$9(groupRole$1);
+var _headingRole = _interopRequireDefault$9(headingRole$1);
+var _imgRole = _interopRequireDefault$9(imgRole$1);
+var _insertionRole = _interopRequireDefault$9(insertionRole$1);
+var _linkRole = _interopRequireDefault$9(linkRole$1);
+var _listRole = _interopRequireDefault$9(listRole$1);
+var _listboxRole = _interopRequireDefault$9(listboxRole$1);
+var _listitemRole = _interopRequireDefault$9(listitemRole$1);
+var _logRole = _interopRequireDefault$9(logRole$1);
+var _mainRole = _interopRequireDefault$9(mainRole$1);
+var _marqueeRole = _interopRequireDefault$9(marqueeRole$1);
+var _mathRole = _interopRequireDefault$9(mathRole$1);
+var _menuRole = _interopRequireDefault$9(menuRole$1);
+var _menubarRole = _interopRequireDefault$9(menubarRole$1);
+var _menuitemRole = _interopRequireDefault$9(menuitemRole$1);
+var _menuitemcheckboxRole = _interopRequireDefault$9(menuitemcheckboxRole$1);
+var _menuitemradioRole = _interopRequireDefault$9(menuitemradioRole$1);
+var _meterRole = _interopRequireDefault$9(meterRole$1);
+var _navigationRole = _interopRequireDefault$9(navigationRole$1);
+var _noneRole = _interopRequireDefault$9(noneRole$1);
+var _noteRole = _interopRequireDefault$9(noteRole$1);
+var _optionRole = _interopRequireDefault$9(optionRole$1);
+var _paragraphRole = _interopRequireDefault$9(paragraphRole$1);
+var _presentationRole = _interopRequireDefault$9(presentationRole$1);
+var _progressbarRole = _interopRequireDefault$9(progressbarRole$1);
+var _radioRole = _interopRequireDefault$9(radioRole$1);
+var _radiogroupRole = _interopRequireDefault$9(radiogroupRole$1);
+var _regionRole = _interopRequireDefault$9(regionRole$1);
+var _rowRole = _interopRequireDefault$9(rowRole$1);
+var _rowgroupRole = _interopRequireDefault$9(rowgroupRole$1);
+var _rowheaderRole = _interopRequireDefault$9(rowheaderRole$1);
+var _scrollbarRole = _interopRequireDefault$9(scrollbarRole$1);
+var _searchRole = _interopRequireDefault$9(searchRole$1);
+var _searchboxRole = _interopRequireDefault$9(searchboxRole$1);
+var _separatorRole = _interopRequireDefault$9(separatorRole$1);
+var _sliderRole = _interopRequireDefault$9(sliderRole$1);
+var _spinbuttonRole = _interopRequireDefault$9(spinbuttonRole$1);
+var _statusRole = _interopRequireDefault$9(statusRole$1);
+var _strongRole = _interopRequireDefault$9(strongRole$1);
+var _subscriptRole = _interopRequireDefault$9(subscriptRole$1);
+var _superscriptRole = _interopRequireDefault$9(superscriptRole$1);
+var _switchRole = _interopRequireDefault$9(switchRole$1);
+var _tabRole = _interopRequireDefault$9(tabRole$1);
+var _tableRole = _interopRequireDefault$9(tableRole$1);
+var _tablistRole = _interopRequireDefault$9(tablistRole$1);
+var _tabpanelRole = _interopRequireDefault$9(tabpanelRole$1);
+var _termRole = _interopRequireDefault$9(termRole$1);
+var _textboxRole = _interopRequireDefault$9(textboxRole$1);
+var _timeRole = _interopRequireDefault$9(timeRole$1);
+var _timerRole = _interopRequireDefault$9(timerRole$1);
+var _toolbarRole = _interopRequireDefault$9(toolbarRole$1);
+var _tooltipRole = _interopRequireDefault$9(tooltipRole$1);
+var _treeRole = _interopRequireDefault$9(treeRole$1);
+var _treegridRole = _interopRequireDefault$9(treegridRole$1);
+var _treeitemRole = _interopRequireDefault$9(treeitemRole$1);
+function _interopRequireDefault$9(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ariaLiteralRoles = [['alert', _alertRole.default], ['alertdialog', _alertdialogRole.default], ['application', _applicationRole.default], ['article', _articleRole.default], ['banner', _bannerRole.default], ['blockquote', _blockquoteRole.default], ['button', _buttonRole.default], ['caption', _captionRole.default], ['cell', _cellRole.default], ['checkbox', _checkboxRole.default], ['code', _codeRole.default], ['columnheader', _columnheaderRole.default], ['combobox', _comboboxRole.default], ['complementary', _complementaryRole.default], ['contentinfo', _contentinfoRole.default], ['definition', _definitionRole.default], ['deletion', _deletionRole.default], ['dialog', _dialogRole.default], ['directory', _directoryRole.default], ['document', _documentRole.default], ['emphasis', _emphasisRole.default], ['feed', _feedRole.default], ['figure', _figureRole.default], ['form', _formRole.default], ['generic', _genericRole.default], ['grid', _gridRole.default], ['gridcell', _gridcellRole.default], ['group', _groupRole.default], ['heading', _headingRole.default], ['img', _imgRole.default], ['insertion', _insertionRole.default], ['link', _linkRole.default], ['list', _listRole.default], ['listbox', _listboxRole.default], ['listitem', _listitemRole.default], ['log', _logRole.default], ['main', _mainRole.default], ['marquee', _marqueeRole.default], ['math', _mathRole.default], ['menu', _menuRole.default], ['menubar', _menubarRole.default], ['menuitem', _menuitemRole.default], ['menuitemcheckbox', _menuitemcheckboxRole.default], ['menuitemradio', _menuitemradioRole.default], ['meter', _meterRole.default], ['navigation', _navigationRole.default], ['none', _noneRole.default], ['note', _noteRole.default], ['option', _optionRole.default], ['paragraph', _paragraphRole.default], ['presentation', _presentationRole.default], ['progressbar', _progressbarRole.default], ['radio', _radioRole.default], ['radiogroup', _radiogroupRole.default], ['region', _regionRole.default], ['row', _rowRole.default], ['rowgroup', _rowgroupRole.default], ['rowheader', _rowheaderRole.default], ['scrollbar', _scrollbarRole.default], ['search', _searchRole.default], ['searchbox', _searchboxRole.default], ['separator', _separatorRole.default], ['slider', _sliderRole.default], ['spinbutton', _spinbuttonRole.default], ['status', _statusRole.default], ['strong', _strongRole.default], ['subscript', _subscriptRole.default], ['superscript', _superscriptRole.default], ['switch', _switchRole.default], ['tab', _tabRole.default], ['table', _tableRole.default], ['tablist', _tablistRole.default], ['tabpanel', _tabpanelRole.default], ['term', _termRole.default], ['textbox', _textboxRole.default], ['time', _timeRole.default], ['timer', _timerRole.default], ['toolbar', _toolbarRole.default], ['tooltip', _tooltipRole.default], ['tree', _treeRole.default], ['treegrid', _treegridRole.default], ['treeitem', _treeitemRole.default]];
+var _default$T = ariaLiteralRoles;
+ariaLiteralRoles$1.default = _default$T;
+
+var ariaDpubRoles$1 = {};
+
+var docAbstractRole$1 = {};
+
+Object.defineProperty(docAbstractRole$1, "__esModule", {
+  value: true
+});
+docAbstractRole$1.default = void 0;
+var docAbstractRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'abstract [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$S = docAbstractRole;
+docAbstractRole$1.default = _default$S;
+
+var docAcknowledgmentsRole$1 = {};
+
+Object.defineProperty(docAcknowledgmentsRole$1, "__esModule", {
+  value: true
+});
+docAcknowledgmentsRole$1.default = void 0;
+var docAcknowledgmentsRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'acknowledgments [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$R = docAcknowledgmentsRole;
+docAcknowledgmentsRole$1.default = _default$R;
+
+var docAfterwordRole$1 = {};
+
+Object.defineProperty(docAfterwordRole$1, "__esModule", {
+  value: true
+});
+docAfterwordRole$1.default = void 0;
+var docAfterwordRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'afterword [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$Q = docAfterwordRole;
+docAfterwordRole$1.default = _default$Q;
+
+var docAppendixRole$1 = {};
+
+Object.defineProperty(docAppendixRole$1, "__esModule", {
+  value: true
+});
+docAppendixRole$1.default = void 0;
+var docAppendixRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'appendix [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$P = docAppendixRole;
+docAppendixRole$1.default = _default$P;
+
+var docBacklinkRole$1 = {};
+
+Object.defineProperty(docBacklinkRole$1, "__esModule", {
+  value: true
+});
+docBacklinkRole$1.default = void 0;
+var docBacklinkRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'content'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'referrer [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command', 'link']]
+};
+var _default$O = docBacklinkRole;
+docBacklinkRole$1.default = _default$O;
+
+var docBiblioentryRole$1 = {};
+
+Object.defineProperty(docBiblioentryRole$1, "__esModule", {
+  value: true
+});
+docBiblioentryRole$1.default = void 0;
+var docBiblioentryRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'EPUB biblioentry [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: ['doc-bibliography'],
+  requiredContextRole: ['doc-bibliography'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'listitem']]
+};
+var _default$N = docBiblioentryRole;
+docBiblioentryRole$1.default = _default$N;
+
+var docBibliographyRole$1 = {};
+
+Object.defineProperty(docBibliographyRole$1, "__esModule", {
+  value: true
+});
+docBibliographyRole$1.default = void 0;
+var docBibliographyRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'bibliography [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['doc-biblioentry']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$M = docBibliographyRole;
+docBibliographyRole$1.default = _default$M;
+
+var docBibliorefRole$1 = {};
+
+Object.defineProperty(docBibliorefRole$1, "__esModule", {
+  value: true
+});
+docBibliorefRole$1.default = void 0;
+var docBibliorefRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'biblioref [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command', 'link']]
+};
+var _default$L = docBibliorefRole;
+docBibliorefRole$1.default = _default$L;
+
+var docChapterRole$1 = {};
+
+Object.defineProperty(docChapterRole$1, "__esModule", {
+  value: true
+});
+docChapterRole$1.default = void 0;
+var docChapterRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'chapter [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$K = docChapterRole;
+docChapterRole$1.default = _default$K;
+
+var docColophonRole$1 = {};
+
+Object.defineProperty(docColophonRole$1, "__esModule", {
+  value: true
+});
+docColophonRole$1.default = void 0;
+var docColophonRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'colophon [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$J = docColophonRole;
+docColophonRole$1.default = _default$J;
+
+var docConclusionRole$1 = {};
+
+Object.defineProperty(docConclusionRole$1, "__esModule", {
+  value: true
+});
+docConclusionRole$1.default = void 0;
+var docConclusionRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'conclusion [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$I = docConclusionRole;
+docConclusionRole$1.default = _default$I;
+
+var docCoverRole$1 = {};
+
+Object.defineProperty(docCoverRole$1, "__esModule", {
+  value: true
+});
+docCoverRole$1.default = void 0;
+var docCoverRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'cover [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'img']]
+};
+var _default$H = docCoverRole;
+docCoverRole$1.default = _default$H;
+
+var docCreditRole$1 = {};
+
+Object.defineProperty(docCreditRole$1, "__esModule", {
+  value: true
+});
+docCreditRole$1.default = void 0;
+var docCreditRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'credit [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$G = docCreditRole;
+docCreditRole$1.default = _default$G;
+
+var docCreditsRole$1 = {};
+
+Object.defineProperty(docCreditsRole$1, "__esModule", {
+  value: true
+});
+docCreditsRole$1.default = void 0;
+var docCreditsRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'credits [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$F = docCreditsRole;
+docCreditsRole$1.default = _default$F;
+
+var docDedicationRole$1 = {};
+
+Object.defineProperty(docDedicationRole$1, "__esModule", {
+  value: true
+});
+docDedicationRole$1.default = void 0;
+var docDedicationRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'dedication [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$E = docDedicationRole;
+docDedicationRole$1.default = _default$E;
+
+var docEndnoteRole$1 = {};
+
+Object.defineProperty(docEndnoteRole$1, "__esModule", {
+  value: true
+});
+docEndnoteRole$1.default = void 0;
+var docEndnoteRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'rearnote [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: ['doc-endnotes'],
+  requiredContextRole: ['doc-endnotes'],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'listitem']]
+};
+var _default$D = docEndnoteRole;
+docEndnoteRole$1.default = _default$D;
+
+var docEndnotesRole$1 = {};
+
+Object.defineProperty(docEndnotesRole$1, "__esModule", {
+  value: true
+});
+docEndnotesRole$1.default = void 0;
+var docEndnotesRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'rearnotes [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['doc-endnote']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$C = docEndnotesRole;
+docEndnotesRole$1.default = _default$C;
+
+var docEpigraphRole$1 = {};
+
+Object.defineProperty(docEpigraphRole$1, "__esModule", {
+  value: true
+});
+docEpigraphRole$1.default = void 0;
+var docEpigraphRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'epigraph [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$B = docEpigraphRole;
+docEpigraphRole$1.default = _default$B;
+
+var docEpilogueRole$1 = {};
+
+Object.defineProperty(docEpilogueRole$1, "__esModule", {
+  value: true
+});
+docEpilogueRole$1.default = void 0;
+var docEpilogueRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'epilogue [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$A = docEpilogueRole;
+docEpilogueRole$1.default = _default$A;
+
+var docErrataRole$1 = {};
+
+Object.defineProperty(docErrataRole$1, "__esModule", {
+  value: true
+});
+docErrataRole$1.default = void 0;
+var docErrataRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'errata [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$z = docErrataRole;
+docErrataRole$1.default = _default$z;
+
+var docExampleRole$1 = {};
+
+Object.defineProperty(docExampleRole$1, "__esModule", {
+  value: true
+});
+docExampleRole$1.default = void 0;
+var docExampleRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$y = docExampleRole;
+docExampleRole$1.default = _default$y;
+
+var docFootnoteRole$1 = {};
+
+Object.defineProperty(docFootnoteRole$1, "__esModule", {
+  value: true
+});
+docFootnoteRole$1.default = void 0;
+var docFootnoteRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'footnote [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$x = docFootnoteRole;
+docFootnoteRole$1.default = _default$x;
+
+var docForewordRole$1 = {};
+
+Object.defineProperty(docForewordRole$1, "__esModule", {
+  value: true
+});
+docForewordRole$1.default = void 0;
+var docForewordRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'foreword [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$w = docForewordRole;
+docForewordRole$1.default = _default$w;
+
+var docGlossaryRole$1 = {};
+
+Object.defineProperty(docGlossaryRole$1, "__esModule", {
+  value: true
+});
+docGlossaryRole$1.default = void 0;
+var docGlossaryRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'glossary [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [['definition'], ['term']],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$v = docGlossaryRole;
+docGlossaryRole$1.default = _default$v;
+
+var docGlossrefRole$1 = {};
+
+Object.defineProperty(docGlossrefRole$1, "__esModule", {
+  value: true
+});
+docGlossrefRole$1.default = void 0;
+var docGlossrefRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'glossref [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command', 'link']]
+};
+var _default$u = docGlossrefRole;
+docGlossrefRole$1.default = _default$u;
+
+var docIndexRole$1 = {};
+
+Object.defineProperty(docIndexRole$1, "__esModule", {
+  value: true
+});
+docIndexRole$1.default = void 0;
+var docIndexRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'index [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
+};
+var _default$t = docIndexRole;
+docIndexRole$1.default = _default$t;
+
+var docIntroductionRole$1 = {};
+
+Object.defineProperty(docIntroductionRole$1, "__esModule", {
+  value: true
+});
+docIntroductionRole$1.default = void 0;
+var docIntroductionRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'introduction [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$s = docIntroductionRole;
+docIntroductionRole$1.default = _default$s;
+
+var docNoterefRole$1 = {};
+
+Object.defineProperty(docNoterefRole$1, "__esModule", {
+  value: true
+});
+docNoterefRole$1.default = void 0;
+var docNoterefRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'noteref [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'widget', 'command', 'link']]
+};
+var _default$r = docNoterefRole;
+docNoterefRole$1.default = _default$r;
+
+var docNoticeRole$1 = {};
+
+Object.defineProperty(docNoticeRole$1, "__esModule", {
+  value: true
+});
+docNoticeRole$1.default = void 0;
+var docNoticeRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'notice [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'note']]
+};
+var _default$q = docNoticeRole;
+docNoticeRole$1.default = _default$q;
+
+var docPagebreakRole$1 = {};
+
+Object.defineProperty(docPagebreakRole$1, "__esModule", {
+  value: true
+});
+docPagebreakRole$1.default = void 0;
+var docPagebreakRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'pagebreak [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'separator']]
+};
+var _default$p = docPagebreakRole;
+docPagebreakRole$1.default = _default$p;
+
+var docPagelistRole$1 = {};
+
+Object.defineProperty(docPagelistRole$1, "__esModule", {
+  value: true
+});
+docPagelistRole$1.default = void 0;
+var docPagelistRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'page-list [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
+};
+var _default$o = docPagelistRole;
+docPagelistRole$1.default = _default$o;
+
+var docPartRole$1 = {};
+
+Object.defineProperty(docPartRole$1, "__esModule", {
+  value: true
+});
+docPartRole$1.default = void 0;
+var docPartRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'part [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$n = docPartRole;
+docPartRole$1.default = _default$n;
+
+var docPrefaceRole$1 = {};
+
+Object.defineProperty(docPrefaceRole$1, "__esModule", {
+  value: true
+});
+docPrefaceRole$1.default = void 0;
+var docPrefaceRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'preface [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$m = docPrefaceRole;
+docPrefaceRole$1.default = _default$m;
+
+var docPrologueRole$1 = {};
+
+Object.defineProperty(docPrologueRole$1, "__esModule", {
+  value: true
+});
+docPrologueRole$1.default = void 0;
+var docPrologueRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'prologue [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark']]
+};
+var _default$l = docPrologueRole;
+docPrologueRole$1.default = _default$l;
+
+var docPullquoteRole$1 = {};
+
+Object.defineProperty(docPullquoteRole$1, "__esModule", {
+  value: true
+});
+docPullquoteRole$1.default = void 0;
+var docPullquoteRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {},
+  relatedConcepts: [{
+    concept: {
+      name: 'pullquote [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['none']]
+};
+var _default$k = docPullquoteRole;
+docPullquoteRole$1.default = _default$k;
+
+var docQnaRole$1 = {};
+
+Object.defineProperty(docQnaRole$1, "__esModule", {
+  value: true
+});
+docQnaRole$1.default = void 0;
+var docQnaRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'qna [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section']]
+};
+var _default$j = docQnaRole;
+docQnaRole$1.default = _default$j;
+
+var docSubtitleRole$1 = {};
+
+Object.defineProperty(docSubtitleRole$1, "__esModule", {
+  value: true
+});
+docSubtitleRole$1.default = void 0;
+var docSubtitleRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'subtitle [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'sectionhead']]
+};
+var _default$i = docSubtitleRole;
+docSubtitleRole$1.default = _default$i;
+
+var docTipRole$1 = {};
+
+Object.defineProperty(docTipRole$1, "__esModule", {
+  value: true
+});
+docTipRole$1.default = void 0;
+var docTipRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'help [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'note']]
+};
+var _default$h = docTipRole;
+docTipRole$1.default = _default$h;
+
+var docTocRole$1 = {};
+
+Object.defineProperty(docTocRole$1, "__esModule", {
+  value: true
+});
+docTocRole$1.default = void 0;
+var docTocRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    concept: {
+      name: 'toc [EPUB-SSV]'
+    },
+    module: 'EPUB'
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
+};
+var _default$g = docTocRole;
+docTocRole$1.default = _default$g;
+
+Object.defineProperty(ariaDpubRoles$1, "__esModule", {
+  value: true
+});
+ariaDpubRoles$1.default = void 0;
+var _docAbstractRole = _interopRequireDefault$8(docAbstractRole$1);
+var _docAcknowledgmentsRole = _interopRequireDefault$8(docAcknowledgmentsRole$1);
+var _docAfterwordRole = _interopRequireDefault$8(docAfterwordRole$1);
+var _docAppendixRole = _interopRequireDefault$8(docAppendixRole$1);
+var _docBacklinkRole = _interopRequireDefault$8(docBacklinkRole$1);
+var _docBiblioentryRole = _interopRequireDefault$8(docBiblioentryRole$1);
+var _docBibliographyRole = _interopRequireDefault$8(docBibliographyRole$1);
+var _docBibliorefRole = _interopRequireDefault$8(docBibliorefRole$1);
+var _docChapterRole = _interopRequireDefault$8(docChapterRole$1);
+var _docColophonRole = _interopRequireDefault$8(docColophonRole$1);
+var _docConclusionRole = _interopRequireDefault$8(docConclusionRole$1);
+var _docCoverRole = _interopRequireDefault$8(docCoverRole$1);
+var _docCreditRole = _interopRequireDefault$8(docCreditRole$1);
+var _docCreditsRole = _interopRequireDefault$8(docCreditsRole$1);
+var _docDedicationRole = _interopRequireDefault$8(docDedicationRole$1);
+var _docEndnoteRole = _interopRequireDefault$8(docEndnoteRole$1);
+var _docEndnotesRole = _interopRequireDefault$8(docEndnotesRole$1);
+var _docEpigraphRole = _interopRequireDefault$8(docEpigraphRole$1);
+var _docEpilogueRole = _interopRequireDefault$8(docEpilogueRole$1);
+var _docErrataRole = _interopRequireDefault$8(docErrataRole$1);
+var _docExampleRole = _interopRequireDefault$8(docExampleRole$1);
+var _docFootnoteRole = _interopRequireDefault$8(docFootnoteRole$1);
+var _docForewordRole = _interopRequireDefault$8(docForewordRole$1);
+var _docGlossaryRole = _interopRequireDefault$8(docGlossaryRole$1);
+var _docGlossrefRole = _interopRequireDefault$8(docGlossrefRole$1);
+var _docIndexRole = _interopRequireDefault$8(docIndexRole$1);
+var _docIntroductionRole = _interopRequireDefault$8(docIntroductionRole$1);
+var _docNoterefRole = _interopRequireDefault$8(docNoterefRole$1);
+var _docNoticeRole = _interopRequireDefault$8(docNoticeRole$1);
+var _docPagebreakRole = _interopRequireDefault$8(docPagebreakRole$1);
+var _docPagelistRole = _interopRequireDefault$8(docPagelistRole$1);
+var _docPartRole = _interopRequireDefault$8(docPartRole$1);
+var _docPrefaceRole = _interopRequireDefault$8(docPrefaceRole$1);
+var _docPrologueRole = _interopRequireDefault$8(docPrologueRole$1);
+var _docPullquoteRole = _interopRequireDefault$8(docPullquoteRole$1);
+var _docQnaRole = _interopRequireDefault$8(docQnaRole$1);
+var _docSubtitleRole = _interopRequireDefault$8(docSubtitleRole$1);
+var _docTipRole = _interopRequireDefault$8(docTipRole$1);
+var _docTocRole = _interopRequireDefault$8(docTocRole$1);
+function _interopRequireDefault$8(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ariaDpubRoles = [['doc-abstract', _docAbstractRole.default], ['doc-acknowledgments', _docAcknowledgmentsRole.default], ['doc-afterword', _docAfterwordRole.default], ['doc-appendix', _docAppendixRole.default], ['doc-backlink', _docBacklinkRole.default], ['doc-biblioentry', _docBiblioentryRole.default], ['doc-bibliography', _docBibliographyRole.default], ['doc-biblioref', _docBibliorefRole.default], ['doc-chapter', _docChapterRole.default], ['doc-colophon', _docColophonRole.default], ['doc-conclusion', _docConclusionRole.default], ['doc-cover', _docCoverRole.default], ['doc-credit', _docCreditRole.default], ['doc-credits', _docCreditsRole.default], ['doc-dedication', _docDedicationRole.default], ['doc-endnote', _docEndnoteRole.default], ['doc-endnotes', _docEndnotesRole.default], ['doc-epigraph', _docEpigraphRole.default], ['doc-epilogue', _docEpilogueRole.default], ['doc-errata', _docErrataRole.default], ['doc-example', _docExampleRole.default], ['doc-footnote', _docFootnoteRole.default], ['doc-foreword', _docForewordRole.default], ['doc-glossary', _docGlossaryRole.default], ['doc-glossref', _docGlossrefRole.default], ['doc-index', _docIndexRole.default], ['doc-introduction', _docIntroductionRole.default], ['doc-noteref', _docNoterefRole.default], ['doc-notice', _docNoticeRole.default], ['doc-pagebreak', _docPagebreakRole.default], ['doc-pagelist', _docPagelistRole.default], ['doc-part', _docPartRole.default], ['doc-preface', _docPrefaceRole.default], ['doc-prologue', _docPrologueRole.default], ['doc-pullquote', _docPullquoteRole.default], ['doc-qna', _docQnaRole.default], ['doc-subtitle', _docSubtitleRole.default], ['doc-tip', _docTipRole.default], ['doc-toc', _docTocRole.default]];
+var _default$f = ariaDpubRoles;
+ariaDpubRoles$1.default = _default$f;
+
+var ariaGraphicsRoles$1 = {};
+
+var graphicsDocumentRole$1 = {};
+
+Object.defineProperty(graphicsDocumentRole$1, "__esModule", {
+  value: true
+});
+graphicsDocumentRole$1.default = void 0;
+var graphicsDocumentRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    module: 'GRAPHICS',
+    concept: {
+      name: 'graphics-object'
+    }
+  }, {
+    module: 'ARIA',
+    concept: {
+      name: 'img'
+    }
+  }, {
+    module: 'ARIA',
+    concept: {
+      name: 'article'
+    }
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'document']]
+};
+var _default$e = graphicsDocumentRole;
+graphicsDocumentRole$1.default = _default$e;
+
+var graphicsObjectRole$1 = {};
+
+Object.defineProperty(graphicsObjectRole$1, "__esModule", {
+  value: true
+});
+graphicsObjectRole$1.default = void 0;
+var graphicsObjectRole = {
+  abstract: false,
+  accessibleNameRequired: false,
+  baseConcepts: [],
+  childrenPresentational: false,
+  nameFrom: ['author', 'contents'],
+  prohibitedProps: [],
+  props: {
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [{
+    module: 'GRAPHICS',
+    concept: {
+      name: 'graphics-document'
+    }
+  }, {
+    module: 'ARIA',
+    concept: {
+      name: 'group'
+    }
+  }, {
+    module: 'ARIA',
+    concept: {
+      name: 'img'
+    }
+  }, {
+    module: 'GRAPHICS',
+    concept: {
+      name: 'graphics-symbol'
+    }
+  }],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'group']]
+};
+var _default$d = graphicsObjectRole;
+graphicsObjectRole$1.default = _default$d;
+
+var graphicsSymbolRole$1 = {};
+
+Object.defineProperty(graphicsSymbolRole$1, "__esModule", {
+  value: true
+});
+graphicsSymbolRole$1.default = void 0;
+var graphicsSymbolRole = {
+  abstract: false,
+  accessibleNameRequired: true,
+  baseConcepts: [],
+  childrenPresentational: true,
+  nameFrom: ['author'],
+  prohibitedProps: [],
+  props: {
+    'aria-disabled': null,
+    'aria-errormessage': null,
+    'aria-expanded': null,
+    'aria-haspopup': null,
+    'aria-invalid': null
+  },
+  relatedConcepts: [],
+  requireContextRole: [],
+  requiredContextRole: [],
+  requiredOwnedElements: [],
+  requiredProps: {},
+  superClass: [['roletype', 'structure', 'section', 'img']]
+};
+var _default$c = graphicsSymbolRole;
+graphicsSymbolRole$1.default = _default$c;
+
+Object.defineProperty(ariaGraphicsRoles$1, "__esModule", {
+  value: true
+});
+ariaGraphicsRoles$1.default = void 0;
+var _graphicsDocumentRole = _interopRequireDefault$7(graphicsDocumentRole$1);
+var _graphicsObjectRole = _interopRequireDefault$7(graphicsObjectRole$1);
+var _graphicsSymbolRole = _interopRequireDefault$7(graphicsSymbolRole$1);
+function _interopRequireDefault$7(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ariaGraphicsRoles = [['graphics-document', _graphicsDocumentRole.default], ['graphics-object', _graphicsObjectRole.default], ['graphics-symbol', _graphicsSymbolRole.default]];
+var _default$b = ariaGraphicsRoles;
+ariaGraphicsRoles$1.default = _default$b;
+
+Object.defineProperty(rolesMap$1, "__esModule", {
+  value: true
+});
+rolesMap$1.default = void 0;
+var _ariaAbstractRoles = _interopRequireDefault$6(ariaAbstractRoles$1);
+var _ariaLiteralRoles = _interopRequireDefault$6(ariaLiteralRoles$1);
+var _ariaDpubRoles = _interopRequireDefault$6(ariaDpubRoles$1);
+var _ariaGraphicsRoles = _interopRequireDefault$6(ariaGraphicsRoles$1);
+var _iterationDecorator$2 = _interopRequireDefault$6(iterationDecorator$1);
+function _interopRequireDefault$6(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _slicedToArray$2(arr, i) { return _arrayWithHoles$2(arr) || _iterableToArrayLimit$2(arr, i) || _unsupportedIterableToArray$2(arr, i) || _nonIterableRest$2(); }
+function _nonIterableRest$2() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
+function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _iterableToArrayLimit$2(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles$2(arr) { if (Array.isArray(arr)) return arr; }
+var roles$1 = [].concat(_ariaAbstractRoles.default, _ariaLiteralRoles.default, _ariaDpubRoles.default, _ariaGraphicsRoles.default);
+roles$1.forEach(function (_ref) {
+  var _ref2 = _slicedToArray$2(_ref, 2),
+    roleDefinition = _ref2[1];
+  // Conglomerate the properties
+  var _iterator = _createForOfIteratorHelper$2(roleDefinition.superClass),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var superClassIter = _step.value;
+      var _iterator2 = _createForOfIteratorHelper$2(superClassIter),
+        _step2;
+      try {
+        var _loop = function _loop() {
+          var superClassName = _step2.value;
+          var superClassRoleTuple = roles$1.find(function (_ref3) {
+            var _ref4 = _slicedToArray$2(_ref3, 1),
+              name = _ref4[0];
+            return name === superClassName;
+          });
+          if (superClassRoleTuple) {
+            var superClassDefinition = superClassRoleTuple[1];
+            for (var _i2 = 0, _Object$keys = Object.keys(superClassDefinition.props); _i2 < _Object$keys.length; _i2++) {
+              var prop = _Object$keys[_i2];
+              if (
+              // $FlowIssue Accessing the hasOwnProperty on the Object prototype is fine.
+              !Object.prototype.hasOwnProperty.call(roleDefinition.props, prop)) {
+                Object.assign(roleDefinition.props, _defineProperty$2({}, prop, superClassDefinition.props[prop]));
+              }
+            }
+          }
+        };
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          _loop();
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+});
+var rolesMap = {
+  entries: function entries() {
+    return roles$1;
+  },
+  forEach: function forEach(fn) {
+    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var _iterator3 = _createForOfIteratorHelper$2(roles$1),
+      _step3;
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var _step3$value = _slicedToArray$2(_step3.value, 2),
+          key = _step3$value[0],
+          values = _step3$value[1];
+        fn.call(thisArg, values, key, roles$1);
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+  },
+  get: function get(key) {
+    var item = roles$1.find(function (tuple) {
+      return tuple[0] === key ? true : false;
+    });
+    return item && item[1];
+  },
+  has: function has(key) {
+    return !!rolesMap.get(key);
+  },
+  keys: function keys() {
+    return roles$1.map(function (_ref5) {
+      var _ref6 = _slicedToArray$2(_ref5, 1),
+        key = _ref6[0];
+      return key;
+    });
+  },
+  values: function values() {
+    return roles$1.map(function (_ref7) {
+      var _ref8 = _slicedToArray$2(_ref7, 2),
+        values = _ref8[1];
+      return values;
+    });
+  }
+};
+var _default$a = (0, _iterationDecorator$2.default)(rolesMap, rolesMap.entries());
+rolesMap$1.default = _default$a;
+
+var elementRoleMap$1 = {};
+
+var toStr$a = Object.prototype.toString;
+
+var isArguments$2 = function isArguments(value) {
+	var str = toStr$a.call(value);
+	var isArgs = str === '[object Arguments]';
+	if (!isArgs) {
+		isArgs = str !== '[object Array]' &&
+			value !== null &&
+			typeof value === 'object' &&
+			typeof value.length === 'number' &&
+			value.length >= 0 &&
+			toStr$a.call(value.callee) === '[object Function]';
+	}
+	return isArgs;
+};
+
+var implementation$b;
+var hasRequiredImplementation;
+
+function requireImplementation () {
+	if (hasRequiredImplementation) return implementation$b;
+	hasRequiredImplementation = 1;
+
+	var keysShim;
+	if (!Object.keys) {
+		// modified from https://github.com/es-shims/es5-shim
+		var has = Object.prototype.hasOwnProperty;
+		var toStr = Object.prototype.toString;
+		var isArgs = isArguments$2; // eslint-disable-line global-require
+		var isEnumerable = Object.prototype.propertyIsEnumerable;
+		var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
+		var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
+		var dontEnums = [
+			'toString',
+			'toLocaleString',
+			'valueOf',
+			'hasOwnProperty',
+			'isPrototypeOf',
+			'propertyIsEnumerable',
+			'constructor'
+		];
+		var equalsConstructorPrototype = function (o) {
+			var ctor = o.constructor;
+			return ctor && ctor.prototype === o;
+		};
+		var excludedKeys = {
+			$applicationCache: true,
+			$console: true,
+			$external: true,
+			$frame: true,
+			$frameElement: true,
+			$frames: true,
+			$innerHeight: true,
+			$innerWidth: true,
+			$onmozfullscreenchange: true,
+			$onmozfullscreenerror: true,
+			$outerHeight: true,
+			$outerWidth: true,
+			$pageXOffset: true,
+			$pageYOffset: true,
+			$parent: true,
+			$scrollLeft: true,
+			$scrollTop: true,
+			$scrollX: true,
+			$scrollY: true,
+			$self: true,
+			$webkitIndexedDB: true,
+			$webkitStorageInfo: true,
+			$window: true
+		};
+		var hasAutomationEqualityBug = (function () {
+			/* global window */
+			if (typeof window === 'undefined') { return false; }
+			for (var k in window) {
+				try {
+					if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
+						try {
+							equalsConstructorPrototype(window[k]);
+						} catch (e) {
+							return true;
+						}
+					}
+				} catch (e) {
+					return true;
+				}
+			}
+			return false;
+		}());
+		var equalsConstructorPrototypeIfNotBuggy = function (o) {
+			/* global window */
+			if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
+				return equalsConstructorPrototype(o);
+			}
+			try {
+				return equalsConstructorPrototype(o);
+			} catch (e) {
+				return false;
+			}
+		};
+
+		keysShim = function keys(object) {
+			var isObject = object !== null && typeof object === 'object';
+			var isFunction = toStr.call(object) === '[object Function]';
+			var isArguments = isArgs(object);
+			var isString = isObject && toStr.call(object) === '[object String]';
+			var theKeys = [];
+
+			if (!isObject && !isFunction && !isArguments) {
+				throw new TypeError('Object.keys called on a non-object');
+			}
+
+			var skipProto = hasProtoEnumBug && isFunction;
+			if (isString && object.length > 0 && !has.call(object, 0)) {
+				for (var i = 0; i < object.length; ++i) {
+					theKeys.push(String(i));
+				}
+			}
+
+			if (isArguments && object.length > 0) {
+				for (var j = 0; j < object.length; ++j) {
+					theKeys.push(String(j));
+				}
+			} else {
+				for (var name in object) {
+					if (!(skipProto && name === 'prototype') && has.call(object, name)) {
+						theKeys.push(String(name));
+					}
+				}
+			}
+
+			if (hasDontEnumBug) {
+				var skipConstructor = equalsConstructorPrototypeIfNotBuggy(object);
+
+				for (var k = 0; k < dontEnums.length; ++k) {
+					if (!(skipConstructor && dontEnums[k] === 'constructor') && has.call(object, dontEnums[k])) {
+						theKeys.push(dontEnums[k]);
+					}
+				}
+			}
+			return theKeys;
+		};
+	}
+	implementation$b = keysShim;
+	return implementation$b;
+}
+
+var slice = Array.prototype.slice;
+var isArgs = isArguments$2;
+
+var origKeys = Object.keys;
+var keysShim = origKeys ? function keys(o) { return origKeys(o); } : requireImplementation();
+
+var originalKeys = Object.keys;
+
+keysShim.shim = function shimObjectKeys() {
+	if (Object.keys) {
+		var keysWorksWithArguments = (function () {
+			// Safari 5.0 bug
+			var args = Object.keys(arguments);
+			return args && args.length === arguments.length;
+		}(1, 2));
+		if (!keysWorksWithArguments) {
+			Object.keys = function keys(object) { // eslint-disable-line func-name-matching
+				if (isArgs(object)) {
+					return originalKeys(slice.call(object));
+				}
+				return originalKeys(object);
+			};
+		}
+	} else {
+		Object.keys = keysShim;
+	}
+	return Object.keys || keysShim;
+};
+
+var objectKeys$2 = keysShim;
+
+/** @type {import('.')} */
+var esErrors = Error;
+
+/** @type {import('./eval')} */
+var _eval = EvalError;
+
+/** @type {import('./range')} */
+var range = RangeError;
+
+/** @type {import('./ref')} */
+var ref = ReferenceError;
+
+/** @type {import('./syntax')} */
+var syntax = SyntaxError;
+
+/** @type {import('./type')} */
+var type$2 = TypeError;
+
+/** @type {import('./uri')} */
+var uri = URIError;
+
+/* eslint complexity: [2, 18], max-statements: [2, 33] */
+var shams$1 = function hasSymbols() {
+	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
+	if (typeof Symbol.iterator === 'symbol') { return true; }
+
+	var obj = {};
+	var sym = Symbol('test');
+	var symObj = Object(sym);
+	if (typeof sym === 'string') { return false; }
+
+	if (Object.prototype.toString.call(sym) !== '[object Symbol]') { return false; }
+	if (Object.prototype.toString.call(symObj) !== '[object Symbol]') { return false; }
+
+	// temp disabled per https://github.com/ljharb/object.assign/issues/17
+	// if (sym instanceof Symbol) { return false; }
+	// temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+	// if (!(symObj instanceof Symbol)) { return false; }
+
+	// if (typeof Symbol.prototype.toString !== 'function') { return false; }
+	// if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+	var symVal = 42;
+	obj[sym] = symVal;
+	for (sym in obj) { return false; } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
+	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
+
+	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
+
+	var syms = Object.getOwnPropertySymbols(obj);
+	if (syms.length !== 1 || syms[0] !== sym) { return false; }
+
+	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
+
+	if (typeof Object.getOwnPropertyDescriptor === 'function') {
+		var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
+	}
+
+	return true;
+};
+
+var origSymbol = typeof Symbol !== 'undefined' && Symbol;
+var hasSymbolSham = shams$1;
+
+var hasSymbols$5 = function hasNativeSymbols() {
+	if (typeof origSymbol !== 'function') { return false; }
+	if (typeof Symbol !== 'function') { return false; }
+	if (typeof origSymbol('foo') !== 'symbol') { return false; }
+	if (typeof Symbol('bar') !== 'symbol') { return false; }
+
+	return hasSymbolSham();
+};
+
+var test$7 = {
+	__proto__: null,
+	foo: {}
+};
+
+var $Object$1 = Object;
+
+/** @type {import('.')} */
+var hasProto$1 = function hasProto() {
+	// @ts-expect-error: TS errors on an inherited property for some reason
+	return { __proto__: test$7 }.foo === test$7.foo
+		&& !(test$7 instanceof $Object$1);
+};
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var toStr$9 = Object.prototype.toString;
+var max = Math.max;
+var funcType = '[object Function]';
+
+var concatty = function concatty(a, b) {
+    var arr = [];
+
+    for (var i = 0; i < a.length; i += 1) {
+        arr[i] = a[i];
+    }
+    for (var j = 0; j < b.length; j += 1) {
+        arr[j + a.length] = b[j];
+    }
+
+    return arr;
+};
+
+var slicy = function slicy(arrLike, offset) {
+    var arr = [];
+    for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
+        arr[j] = arrLike[i];
+    }
+    return arr;
+};
+
+var joiny = function (arr, joiner) {
+    var str = '';
+    for (var i = 0; i < arr.length; i += 1) {
+        str += arr[i];
+        if (i + 1 < arr.length) {
+            str += joiner;
+        }
+    }
+    return str;
+};
+
+var implementation$a = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr$9.apply(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slicy(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                concatty(args, arguments)
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        }
+        return target.apply(
+            that,
+            concatty(args, arguments)
+        );
+
+    };
+
+    var boundLength = max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs[i] = '$' + i;
+    }
+
+    bound = Function('binder', 'return function (' + joiny(boundArgs, ',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+var implementation$9 = implementation$a;
+
+var functionBind = Function.prototype.bind || implementation$9;
+
+var call = Function.prototype.call;
+var $hasOwn = Object.prototype.hasOwnProperty;
+var bind$1 = functionBind;
+
+/** @type {import('.')} */
+var hasown = bind$1.call(call, $hasOwn);
+
+var undefined$1;
+
+var $Error = esErrors;
+var $EvalError = _eval;
+var $RangeError = range;
+var $ReferenceError = ref;
+var $SyntaxError$1 = syntax;
+var $TypeError$5 = type$2;
+var $URIError = uri;
+
+var $Function = Function;
+
+// eslint-disable-next-line consistent-return
+var getEvalledConstructor = function (expressionSyntax) {
+	try {
+		return $Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
+	} catch (e) {}
+};
+
+var $gOPD$2 = Object.getOwnPropertyDescriptor;
+if ($gOPD$2) {
+	try {
+		$gOPD$2({}, '');
+	} catch (e) {
+		$gOPD$2 = null; // this is IE 8, which has a broken gOPD
+	}
+}
+
+var throwTypeError = function () {
+	throw new $TypeError$5();
+};
+var ThrowTypeError = $gOPD$2
+	? (function () {
+		try {
+			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+			arguments.callee; // IE 8 does not throw here
+			return throwTypeError;
+		} catch (calleeThrows) {
+			try {
+				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
+				return $gOPD$2(arguments, 'callee').get;
+			} catch (gOPDthrows) {
+				return throwTypeError;
+			}
+		}
+	}())
+	: throwTypeError;
+
+var hasSymbols$4 = hasSymbols$5();
+var hasProto = hasProto$1();
+
+var getProto$1 = Object.getPrototypeOf || (
+	hasProto
+		? function (x) { return x.__proto__; } // eslint-disable-line no-proto
+		: null
+);
+
+var needsEval = {};
+
+var TypedArray = typeof Uint8Array === 'undefined' || !getProto$1 ? undefined$1 : getProto$1(Uint8Array);
+
+var INTRINSICS = {
+	__proto__: null,
+	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined$1 : AggregateError,
+	'%Array%': Array,
+	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined$1 : ArrayBuffer,
+	'%ArrayIteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1([][Symbol.iterator]()) : undefined$1,
+	'%AsyncFromSyncIteratorPrototype%': undefined$1,
+	'%AsyncFunction%': needsEval,
+	'%AsyncGenerator%': needsEval,
+	'%AsyncGeneratorFunction%': needsEval,
+	'%AsyncIteratorPrototype%': needsEval,
+	'%Atomics%': typeof Atomics === 'undefined' ? undefined$1 : Atomics,
+	'%BigInt%': typeof BigInt === 'undefined' ? undefined$1 : BigInt,
+	'%BigInt64Array%': typeof BigInt64Array === 'undefined' ? undefined$1 : BigInt64Array,
+	'%BigUint64Array%': typeof BigUint64Array === 'undefined' ? undefined$1 : BigUint64Array,
+	'%Boolean%': Boolean,
+	'%DataView%': typeof DataView === 'undefined' ? undefined$1 : DataView,
+	'%Date%': Date,
+	'%decodeURI%': decodeURI,
+	'%decodeURIComponent%': decodeURIComponent,
+	'%encodeURI%': encodeURI,
+	'%encodeURIComponent%': encodeURIComponent,
+	'%Error%': $Error,
+	'%eval%': eval, // eslint-disable-line no-eval
+	'%EvalError%': $EvalError,
+	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined$1 : Float32Array,
+	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined$1 : Float64Array,
+	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined$1 : FinalizationRegistry,
+	'%Function%': $Function,
+	'%GeneratorFunction%': needsEval,
+	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined$1 : Int8Array,
+	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined$1 : Int16Array,
+	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined$1 : Int32Array,
+	'%isFinite%': isFinite,
+	'%isNaN%': isNaN,
+	'%IteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1(getProto$1([][Symbol.iterator]())) : undefined$1,
+	'%JSON%': typeof JSON === 'object' ? JSON : undefined$1,
+	'%Map%': typeof Map === 'undefined' ? undefined$1 : Map,
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols$4 || !getProto$1 ? undefined$1 : getProto$1(new Map()[Symbol.iterator]()),
+	'%Math%': Math,
+	'%Number%': Number,
+	'%Object%': Object,
+	'%parseFloat%': parseFloat,
+	'%parseInt%': parseInt,
+	'%Promise%': typeof Promise === 'undefined' ? undefined$1 : Promise,
+	'%Proxy%': typeof Proxy === 'undefined' ? undefined$1 : Proxy,
+	'%RangeError%': $RangeError,
+	'%ReferenceError%': $ReferenceError,
+	'%Reflect%': typeof Reflect === 'undefined' ? undefined$1 : Reflect,
+	'%RegExp%': RegExp,
+	'%Set%': typeof Set === 'undefined' ? undefined$1 : Set,
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols$4 || !getProto$1 ? undefined$1 : getProto$1(new Set()[Symbol.iterator]()),
+	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined$1 : SharedArrayBuffer,
+	'%String%': String,
+	'%StringIteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1(''[Symbol.iterator]()) : undefined$1,
+	'%Symbol%': hasSymbols$4 ? Symbol : undefined$1,
+	'%SyntaxError%': $SyntaxError$1,
+	'%ThrowTypeError%': ThrowTypeError,
+	'%TypedArray%': TypedArray,
+	'%TypeError%': $TypeError$5,
+	'%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined$1 : Uint8Array,
+	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined$1 : Uint8ClampedArray,
+	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined$1 : Uint16Array,
+	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined$1 : Uint32Array,
+	'%URIError%': $URIError,
+	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined$1 : WeakMap,
+	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined$1 : WeakRef,
+	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined$1 : WeakSet
+};
+
+if (getProto$1) {
+	try {
+		null.error; // eslint-disable-line no-unused-expressions
+	} catch (e) {
+		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
+		var errorProto = getProto$1(getProto$1(e));
+		INTRINSICS['%Error.prototype%'] = errorProto;
+	}
+}
+
+var doEval = function doEval(name) {
+	var value;
+	if (name === '%AsyncFunction%') {
+		value = getEvalledConstructor('async function () {}');
+	} else if (name === '%GeneratorFunction%') {
+		value = getEvalledConstructor('function* () {}');
+	} else if (name === '%AsyncGeneratorFunction%') {
+		value = getEvalledConstructor('async function* () {}');
+	} else if (name === '%AsyncGenerator%') {
+		var fn = doEval('%AsyncGeneratorFunction%');
+		if (fn) {
+			value = fn.prototype;
+		}
+	} else if (name === '%AsyncIteratorPrototype%') {
+		var gen = doEval('%AsyncGenerator%');
+		if (gen && getProto$1) {
+			value = getProto$1(gen.prototype);
+		}
+	}
+
+	INTRINSICS[name] = value;
+
+	return value;
+};
+
+var LEGACY_ALIASES = {
+	__proto__: null,
+	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
+	'%ArrayPrototype%': ['Array', 'prototype'],
+	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
+	'%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
+	'%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
+	'%ArrayProto_values%': ['Array', 'prototype', 'values'],
+	'%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
+	'%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
+	'%AsyncGeneratorPrototype%': ['AsyncGeneratorFunction', 'prototype', 'prototype'],
+	'%BooleanPrototype%': ['Boolean', 'prototype'],
+	'%DataViewPrototype%': ['DataView', 'prototype'],
+	'%DatePrototype%': ['Date', 'prototype'],
+	'%ErrorPrototype%': ['Error', 'prototype'],
+	'%EvalErrorPrototype%': ['EvalError', 'prototype'],
+	'%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
+	'%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
+	'%FunctionPrototype%': ['Function', 'prototype'],
+	'%Generator%': ['GeneratorFunction', 'prototype'],
+	'%GeneratorPrototype%': ['GeneratorFunction', 'prototype', 'prototype'],
+	'%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
+	'%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
+	'%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
+	'%JSONParse%': ['JSON', 'parse'],
+	'%JSONStringify%': ['JSON', 'stringify'],
+	'%MapPrototype%': ['Map', 'prototype'],
+	'%NumberPrototype%': ['Number', 'prototype'],
+	'%ObjectPrototype%': ['Object', 'prototype'],
+	'%ObjProto_toString%': ['Object', 'prototype', 'toString'],
+	'%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
+	'%PromisePrototype%': ['Promise', 'prototype'],
+	'%PromiseProto_then%': ['Promise', 'prototype', 'then'],
+	'%Promise_all%': ['Promise', 'all'],
+	'%Promise_reject%': ['Promise', 'reject'],
+	'%Promise_resolve%': ['Promise', 'resolve'],
+	'%RangeErrorPrototype%': ['RangeError', 'prototype'],
+	'%ReferenceErrorPrototype%': ['ReferenceError', 'prototype'],
+	'%RegExpPrototype%': ['RegExp', 'prototype'],
+	'%SetPrototype%': ['Set', 'prototype'],
+	'%SharedArrayBufferPrototype%': ['SharedArrayBuffer', 'prototype'],
+	'%StringPrototype%': ['String', 'prototype'],
+	'%SymbolPrototype%': ['Symbol', 'prototype'],
+	'%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
+	'%TypedArrayPrototype%': ['TypedArray', 'prototype'],
+	'%TypeErrorPrototype%': ['TypeError', 'prototype'],
+	'%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
+	'%Uint8ClampedArrayPrototype%': ['Uint8ClampedArray', 'prototype'],
+	'%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
+	'%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
+	'%URIErrorPrototype%': ['URIError', 'prototype'],
+	'%WeakMapPrototype%': ['WeakMap', 'prototype'],
+	'%WeakSetPrototype%': ['WeakSet', 'prototype']
+};
+
+var bind = functionBind;
+var hasOwn$1 = hasown;
+var $concat$1 = bind.call(Function.call, Array.prototype.concat);
+var $spliceApply = bind.call(Function.apply, Array.prototype.splice);
+var $replace$1 = bind.call(Function.call, String.prototype.replace);
+var $strSlice = bind.call(Function.call, String.prototype.slice);
+var $exec$1 = bind.call(Function.call, RegExp.prototype.exec);
+
+/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
+var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
+var stringToPath = function stringToPath(string) {
+	var first = $strSlice(string, 0, 1);
+	var last = $strSlice(string, -1);
+	if (first === '%' && last !== '%') {
+		throw new $SyntaxError$1('invalid intrinsic syntax, expected closing `%`');
+	} else if (last === '%' && first !== '%') {
+		throw new $SyntaxError$1('invalid intrinsic syntax, expected opening `%`');
+	}
+	var result = [];
+	$replace$1(string, rePropName, function (match, number, quote, subString) {
+		result[result.length] = quote ? $replace$1(subString, reEscapeChar, '$1') : number || match;
+	});
+	return result;
+};
+/* end adaptation */
+
+var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
+	var intrinsicName = name;
+	var alias;
+	if (hasOwn$1(LEGACY_ALIASES, intrinsicName)) {
+		alias = LEGACY_ALIASES[intrinsicName];
+		intrinsicName = '%' + alias[0] + '%';
+	}
+
+	if (hasOwn$1(INTRINSICS, intrinsicName)) {
+		var value = INTRINSICS[intrinsicName];
+		if (value === needsEval) {
+			value = doEval(intrinsicName);
+		}
+		if (typeof value === 'undefined' && !allowMissing) {
+			throw new $TypeError$5('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
+		}
+
+		return {
+			alias: alias,
+			name: intrinsicName,
+			value: value
+		};
+	}
+
+	throw new $SyntaxError$1('intrinsic ' + name + ' does not exist!');
+};
+
+var getIntrinsic = function GetIntrinsic(name, allowMissing) {
+	if (typeof name !== 'string' || name.length === 0) {
+		throw new $TypeError$5('intrinsic name must be a non-empty string');
+	}
+	if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
+		throw new $TypeError$5('"allowMissing" argument must be a boolean');
+	}
+
+	if ($exec$1(/^%?[^%]*%?$/, name) === null) {
+		throw new $SyntaxError$1('`%` may not be present anywhere but at the beginning and end of the intrinsic name');
+	}
+	var parts = stringToPath(name);
+	var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
+
+	var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
+	var intrinsicRealName = intrinsic.name;
+	var value = intrinsic.value;
+	var skipFurtherCaching = false;
+
+	var alias = intrinsic.alias;
+	if (alias) {
+		intrinsicBaseName = alias[0];
+		$spliceApply(parts, $concat$1([0, 1], alias));
+	}
+
+	for (var i = 1, isOwn = true; i < parts.length; i += 1) {
+		var part = parts[i];
+		var first = $strSlice(part, 0, 1);
+		var last = $strSlice(part, -1);
+		if (
+			(
+				(first === '"' || first === "'" || first === '`')
+				|| (last === '"' || last === "'" || last === '`')
+			)
+			&& first !== last
+		) {
+			throw new $SyntaxError$1('property names with quotes must have matching quotes');
+		}
+		if (part === 'constructor' || !isOwn) {
+			skipFurtherCaching = true;
+		}
+
+		intrinsicBaseName += '.' + part;
+		intrinsicRealName = '%' + intrinsicBaseName + '%';
+
+		if (hasOwn$1(INTRINSICS, intrinsicRealName)) {
+			value = INTRINSICS[intrinsicRealName];
+		} else if (value != null) {
+			if (!(part in value)) {
+				if (!allowMissing) {
+					throw new $TypeError$5('base intrinsic for ' + name + ' exists, but the property is not available.');
+				}
+				return void undefined$1;
+			}
+			if ($gOPD$2 && (i + 1) >= parts.length) {
+				var desc = $gOPD$2(value, part);
+				isOwn = !!desc;
+
+				// By convention, when a data property is converted to an accessor
+				// property to emulate a data property that does not suffer from
+				// the override mistake, that accessor's getter is marked with
+				// an `originalValue` property. Here, when we detect this, we
+				// uphold the illusion by pretending to see that original data
+				// property, i.e., returning the value rather than the getter
+				// itself.
+				if (isOwn && 'get' in desc && !('originalValue' in desc.get)) {
+					value = desc.get;
+				} else {
+					value = value[part];
+				}
+			} else {
+				isOwn = hasOwn$1(value, part);
+				value = value[part];
+			}
+
+			if (isOwn && !skipFurtherCaching) {
+				INTRINSICS[intrinsicRealName] = value;
+			}
+		}
+	}
+	return value;
+};
+
+var esDefineProperty;
+var hasRequiredEsDefineProperty;
+
+function requireEsDefineProperty () {
+	if (hasRequiredEsDefineProperty) return esDefineProperty;
+	hasRequiredEsDefineProperty = 1;
+
+	var GetIntrinsic = getIntrinsic;
+
+	/** @type {import('.')} */
+	var $defineProperty = GetIntrinsic('%Object.defineProperty%', true) || false;
+	if ($defineProperty) {
+		try {
+			$defineProperty({}, 'a', { value: 1 });
+		} catch (e) {
+			// IE 8 has a broken defineProperty
+			$defineProperty = false;
+		}
+	}
+
+	esDefineProperty = $defineProperty;
+	return esDefineProperty;
+}
+
+var GetIntrinsic$6 = getIntrinsic;
+
+var $gOPD$1 = GetIntrinsic$6('%Object.getOwnPropertyDescriptor%', true);
+
+if ($gOPD$1) {
+	try {
+		$gOPD$1([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		$gOPD$1 = null;
+	}
+}
+
+var gopd$1 = $gOPD$1;
+
+var $defineProperty$1 = requireEsDefineProperty();
+
+var $SyntaxError = syntax;
+var $TypeError$4 = type$2;
+
+var gopd = gopd$1;
+
+/** @type {import('.')} */
+var defineDataProperty$1 = function defineDataProperty(
+	obj,
+	property,
+	value
+) {
+	if (!obj || (typeof obj !== 'object' && typeof obj !== 'function')) {
+		throw new $TypeError$4('`obj` must be an object or a function`');
+	}
+	if (typeof property !== 'string' && typeof property !== 'symbol') {
+		throw new $TypeError$4('`property` must be a string or a symbol`');
+	}
+	if (arguments.length > 3 && typeof arguments[3] !== 'boolean' && arguments[3] !== null) {
+		throw new $TypeError$4('`nonEnumerable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 4 && typeof arguments[4] !== 'boolean' && arguments[4] !== null) {
+		throw new $TypeError$4('`nonWritable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 5 && typeof arguments[5] !== 'boolean' && arguments[5] !== null) {
+		throw new $TypeError$4('`nonConfigurable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
+		throw new $TypeError$4('`loose`, if provided, must be a boolean');
+	}
+
+	var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
+	var nonWritable = arguments.length > 4 ? arguments[4] : null;
+	var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
+	var loose = arguments.length > 6 ? arguments[6] : false;
+
+	/* @type {false | TypedPropertyDescriptor<unknown>} */
+	var desc = !!gopd && gopd(obj, property);
+
+	if ($defineProperty$1) {
+		$defineProperty$1(obj, property, {
+			configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
+			enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
+			value: value,
+			writable: nonWritable === null && desc ? desc.writable : !nonWritable
+		});
+	} else if (loose || (!nonEnumerable && !nonWritable && !nonConfigurable)) {
+		// must fall back to [[Set]], and was not explicitly asked to make non-enumerable, non-writable, or non-configurable
+		obj[property] = value; // eslint-disable-line no-param-reassign
+	} else {
+		throw new $SyntaxError('This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.');
+	}
+};
+
+var $defineProperty = requireEsDefineProperty();
+
+var hasPropertyDescriptors = function hasPropertyDescriptors() {
+	return !!$defineProperty;
+};
+
+hasPropertyDescriptors.hasArrayLengthDefineBug = function hasArrayLengthDefineBug() {
+	// node v0.6 has a bug where array lengths can be Set but not Defined
+	if (!$defineProperty) {
+		return null;
+	}
+	try {
+		return $defineProperty([], 'length', { value: 1 }).length !== 1;
+	} catch (e) {
+		// In Firefox 4-22, defining length on an array throws an exception.
+		return true;
+	}
+};
+
+var hasPropertyDescriptors_1 = hasPropertyDescriptors;
+
+var keys$2 = objectKeys$2;
+var hasSymbols$3 = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
+
+var toStr$8 = Object.prototype.toString;
+var concat = Array.prototype.concat;
+var defineDataProperty = defineDataProperty$1;
+
+var isFunction = function (fn) {
+	return typeof fn === 'function' && toStr$8.call(fn) === '[object Function]';
+};
+
+var supportsDescriptors$2 = hasPropertyDescriptors_1();
+
+var defineProperty$1 = function (object, name, value, predicate) {
+	if (name in object) {
+		if (predicate === true) {
+			if (object[name] === value) {
+				return;
+			}
+		} else if (!isFunction(predicate) || !predicate()) {
+			return;
+		}
+	}
+
+	if (supportsDescriptors$2) {
+		defineDataProperty(object, name, value, true);
+	} else {
+		defineDataProperty(object, name, value);
+	}
+};
+
+var defineProperties$1 = function (object, map) {
+	var predicates = arguments.length > 2 ? arguments[2] : {};
+	var props = keys$2(map);
+	if (hasSymbols$3) {
+		props = concat.call(props, Object.getOwnPropertySymbols(map));
+	}
+	for (var i = 0; i < props.length; i += 1) {
+		defineProperty$1(object, props[i], map[props[i]], predicates[props[i]]);
+	}
+};
+
+defineProperties$1.supportsDescriptors = !!supportsDescriptors$2;
+
+var defineProperties_1 = defineProperties$1;
+
+var callBind$6 = {exports: {}};
+
+var GetIntrinsic$5 = getIntrinsic;
+var define$5 = defineDataProperty$1;
+var hasDescriptors$1 = hasPropertyDescriptors_1();
+var gOPD$4 = gopd$1;
+
+var $TypeError$3 = type$2;
+var $floor$1 = GetIntrinsic$5('%Math.floor%');
+
+/** @type {import('.')} */
+var setFunctionLength = function setFunctionLength(fn, length) {
+	if (typeof fn !== 'function') {
+		throw new $TypeError$3('`fn` is not a function');
+	}
+	if (typeof length !== 'number' || length < 0 || length > 0xFFFFFFFF || $floor$1(length) !== length) {
+		throw new $TypeError$3('`length` must be a positive 32-bit integer');
+	}
+
+	var loose = arguments.length > 2 && !!arguments[2];
+
+	var functionLengthIsConfigurable = true;
+	var functionLengthIsWritable = true;
+	if ('length' in fn && gOPD$4) {
+		var desc = gOPD$4(fn, 'length');
+		if (desc && !desc.configurable) {
+			functionLengthIsConfigurable = false;
+		}
+		if (desc && !desc.writable) {
+			functionLengthIsWritable = false;
+		}
+	}
+
+	if (functionLengthIsConfigurable || functionLengthIsWritable || !loose) {
+		if (hasDescriptors$1) {
+			define$5(/** @type {Parameters<define>[0]} */ (fn), 'length', length, true, true);
+		} else {
+			define$5(/** @type {Parameters<define>[0]} */ (fn), 'length', length);
+		}
+	}
+	return fn;
+};
+
+(function (module) {
+
+	var bind = functionBind;
+	var GetIntrinsic = getIntrinsic;
+	var setFunctionLength$1 = setFunctionLength;
+
+	var $TypeError = type$2;
+	var $apply = GetIntrinsic('%Function.prototype.apply%');
+	var $call = GetIntrinsic('%Function.prototype.call%');
+	var $reflectApply = GetIntrinsic('%Reflect.apply%', true) || bind.call($call, $apply);
+
+	var $defineProperty = requireEsDefineProperty();
+	var $max = GetIntrinsic('%Math.max%');
+
+	module.exports = function callBind(originalFunction) {
+		if (typeof originalFunction !== 'function') {
+			throw new $TypeError('a function is required');
+		}
+		var func = $reflectApply(bind, $call, arguments);
+		return setFunctionLength$1(
+			func,
+			1 + $max(0, originalFunction.length - (arguments.length - 1)),
+			true
+		);
+	};
+
+	var applyBind = function applyBind() {
+		return $reflectApply(bind, $apply, arguments);
+	};
+
+	if ($defineProperty) {
+		$defineProperty(module.exports, 'apply', { value: applyBind });
+	} else {
+		module.exports.apply = applyBind;
+	} 
+} (callBind$6));
+
+var callBindExports = callBind$6.exports;
+
+var GetIntrinsic$4 = getIntrinsic;
+
+var callBind$5 = callBindExports;
+
+var $indexOf$1 = callBind$5(GetIntrinsic$4('String.prototype.indexOf'));
+
+var callBound$b = function callBoundIntrinsic(name, allowMissing) {
+	var intrinsic = GetIntrinsic$4(name, !!allowMissing);
+	if (typeof intrinsic === 'function' && $indexOf$1(name, '.prototype.') > -1) {
+		return callBind$5(intrinsic);
+	}
+	return intrinsic;
+};
+
+// modified from https://github.com/es-shims/es6-shim
+var objectKeys$1 = objectKeys$2;
+var hasSymbols$2 = shams$1();
+var callBound$a = callBound$b;
+var toObject = Object;
+var $push = callBound$a('Array.prototype.push');
+var $propIsEnumerable = callBound$a('Object.prototype.propertyIsEnumerable');
+var originalGetSymbols = hasSymbols$2 ? Object.getOwnPropertySymbols : null;
+
+// eslint-disable-next-line no-unused-vars
+var implementation$8 = function assign(target, source1) {
+	if (target == null) { throw new TypeError('target must be an object'); }
+	var to = toObject(target); // step 1
+	if (arguments.length === 1) {
+		return to; // step 2
+	}
+	for (var s = 1; s < arguments.length; ++s) {
+		var from = toObject(arguments[s]); // step 3.a.i
+
+		// step 3.a.ii:
+		var keys = objectKeys$1(from);
+		var getSymbols = hasSymbols$2 && (Object.getOwnPropertySymbols || originalGetSymbols);
+		if (getSymbols) {
+			var syms = getSymbols(from);
+			for (var j = 0; j < syms.length; ++j) {
+				var key = syms[j];
+				if ($propIsEnumerable(from, key)) {
+					$push(keys, key);
+				}
+			}
+		}
+
+		// step 3.a.iii:
+		for (var i = 0; i < keys.length; ++i) {
+			var nextKey = keys[i];
+			if ($propIsEnumerable(from, nextKey)) { // step 3.a.iii.2
+				var propValue = from[nextKey]; // step 3.a.iii.2.a
+				to[nextKey] = propValue; // step 3.a.iii.2.b
+			}
+		}
+	}
+
+	return to; // step 4
+};
+
+var implementation$7 = implementation$8;
+
+var lacksProperEnumerationOrder = function () {
+	if (!Object.assign) {
+		return false;
+	}
+	/*
+	 * v8, specifically in node 4.x, has a bug with incorrect property enumeration order
+	 * note: this does not detect the bug unless there's 20 characters
+	 */
+	var str = 'abcdefghijklmnopqrst';
+	var letters = str.split('');
+	var map = {};
+	for (var i = 0; i < letters.length; ++i) {
+		map[letters[i]] = letters[i];
+	}
+	var obj = Object.assign({}, map);
+	var actual = '';
+	for (var k in obj) {
+		actual += k;
+	}
+	return str !== actual;
+};
+
+var assignHasPendingExceptions = function () {
+	if (!Object.assign || !Object.preventExtensions) {
+		return false;
+	}
+	/*
+	 * Firefox 37 still has "pending exception" logic in its Object.assign implementation,
+	 * which is 72% slower than our shim, and Firefox 40's native implementation.
+	 */
+	var thrower = Object.preventExtensions({ 1: 2 });
+	try {
+		Object.assign(thrower, 'xy');
+	} catch (e) {
+		return thrower[1] === 'y';
+	}
+	return false;
+};
+
+var polyfill$4 = function getPolyfill() {
+	if (!Object.assign) {
+		return implementation$7;
+	}
+	if (lacksProperEnumerationOrder()) {
+		return implementation$7;
+	}
+	if (assignHasPendingExceptions()) {
+		return implementation$7;
+	}
+	return Object.assign;
+};
+
+var define$4 = defineProperties_1;
+var getPolyfill$5 = polyfill$4;
+
+var shim$5 = function shimAssign() {
+	var polyfill = getPolyfill$5();
+	define$4(
+		Object,
+		{ assign: polyfill },
+		{ assign: function () { return Object.assign !== polyfill; } }
+	);
+	return polyfill;
+};
+
+var defineProperties = defineProperties_1;
+var callBind$4 = callBindExports;
+
+var implementation$6 = implementation$8;
+var getPolyfill$4 = polyfill$4;
+var shim$4 = shim$5;
+
+var polyfill$3 = callBind$4.apply(getPolyfill$4());
+// eslint-disable-next-line no-unused-vars
+var bound = function assign(target, source1) {
+	return polyfill$3(Object, arguments);
+};
+
+defineProperties(bound, {
+	getPolyfill: getPolyfill$4,
+	implementation: implementation$6,
+	shim: shim$4
+});
+
+var object_assign = bound;
+
+var functionsHaveNames = function functionsHaveNames() {
+	return typeof function f() {}.name === 'string';
+};
+
+var gOPD$3 = Object.getOwnPropertyDescriptor;
+if (gOPD$3) {
+	try {
+		gOPD$3([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		gOPD$3 = null;
+	}
+}
+
+functionsHaveNames.functionsHaveConfigurableNames = function functionsHaveConfigurableNames() {
+	if (!functionsHaveNames() || !gOPD$3) {
+		return false;
+	}
+	var desc = gOPD$3(function () {}, 'name');
+	return !!desc && !!desc.configurable;
+};
+
+var $bind = Function.prototype.bind;
+
+functionsHaveNames.boundFunctionsHaveNames = function boundFunctionsHaveNames() {
+	return functionsHaveNames() && typeof $bind === 'function' && function f() {}.bind().name !== '';
+};
+
+var functionsHaveNames_1 = functionsHaveNames;
+
+var define$3 = defineDataProperty$1;
+var hasDescriptors = hasPropertyDescriptors_1();
+var functionsHaveConfigurableNames = functionsHaveNames_1.functionsHaveConfigurableNames();
+
+var $TypeError$2 = type$2;
+
+/** @type {import('.')} */
+var setFunctionName$1 = function setFunctionName(fn, name) {
+	if (typeof fn !== 'function') {
+		throw new $TypeError$2('`fn` is not a function');
+	}
+	var loose = arguments.length > 2 && !!arguments[2];
+	if (!loose || functionsHaveConfigurableNames) {
+		if (hasDescriptors) {
+			define$3(/** @type {Parameters<define>[0]} */ (fn), 'name', name, true, true);
+		} else {
+			define$3(/** @type {Parameters<define>[0]} */ (fn), 'name', name);
+		}
+	}
+	return fn;
+};
+
+var setFunctionName = setFunctionName$1;
+var $TypeError$1 = type$2;
+
+var $Object = Object;
+
+var implementation$5 = setFunctionName(function flags() {
+	if (this == null || this !== $Object(this)) {
+		throw new $TypeError$1('RegExp.prototype.flags getter called on non-object');
+	}
+	var result = '';
+	if (this.hasIndices) {
+		result += 'd';
+	}
+	if (this.global) {
+		result += 'g';
+	}
+	if (this.ignoreCase) {
+		result += 'i';
+	}
+	if (this.multiline) {
+		result += 'm';
+	}
+	if (this.dotAll) {
+		result += 's';
+	}
+	if (this.unicode) {
+		result += 'u';
+	}
+	if (this.unicodeSets) {
+		result += 'v';
+	}
+	if (this.sticky) {
+		result += 'y';
+	}
+	return result;
+}, 'get flags', true);
+
+var implementation$4 = implementation$5;
+
+var supportsDescriptors$1 = defineProperties_1.supportsDescriptors;
+var $gOPD = Object.getOwnPropertyDescriptor;
+
+var polyfill$2 = function getPolyfill() {
+	if (supportsDescriptors$1 && (/a/mig).flags === 'gim') {
+		var descriptor = $gOPD(RegExp.prototype, 'flags');
+		if (
+			descriptor
+			&& typeof descriptor.get === 'function'
+			&& typeof RegExp.prototype.dotAll === 'boolean'
+			&& typeof RegExp.prototype.hasIndices === 'boolean'
+		) {
+			/* eslint getter-return: 0 */
+			var calls = '';
+			var o = {};
+			Object.defineProperty(o, 'hasIndices', {
+				get: function () {
+					calls += 'd';
+				}
+			});
+			Object.defineProperty(o, 'sticky', {
+				get: function () {
+					calls += 'y';
+				}
+			});
+			if (calls === 'dy') {
+				return descriptor.get;
+			}
+		}
+	}
+	return implementation$4;
+};
+
+var supportsDescriptors = defineProperties_1.supportsDescriptors;
+var getPolyfill$3 = polyfill$2;
+var gOPD$2 = Object.getOwnPropertyDescriptor;
+var defineProperty = Object.defineProperty;
+var TypeErr = TypeError;
+var getProto = Object.getPrototypeOf;
+var regex = /a/;
+
+var shim$3 = function shimFlags() {
+	if (!supportsDescriptors || !getProto) {
+		throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
+	}
+	var polyfill = getPolyfill$3();
+	var proto = getProto(regex);
+	var descriptor = gOPD$2(proto, 'flags');
+	if (!descriptor || descriptor.get !== polyfill) {
+		defineProperty(proto, 'flags', {
+			configurable: true,
+			enumerable: false,
+			get: polyfill
+		});
+	}
+	return polyfill;
+};
+
+var define$2 = defineProperties_1;
+var callBind$3 = callBindExports;
+
+var implementation$3 = implementation$5;
+var getPolyfill$2 = polyfill$2;
+var shim$2 = shim$3;
+
+var flagsBound = callBind$3(getPolyfill$2());
+
+define$2(flagsBound, {
+	getPolyfill: getPolyfill$2,
+	implementation: implementation$3,
+	shim: shim$2
+});
+
+var regexp_prototype_flags = flagsBound;
+
+// this should only run in node >= 13.2, so it
+// does not need any of the intense fallbacks that old node/browsers do
+
+var $iterator = Symbol.iterator;
+var node = function getIterator(iterable) {
+	// alternatively, `iterable[$iterator]?.()`
+	if (iterable != null && typeof iterable[$iterator] !== 'undefined') {
+		return iterable[$iterator]();
+	}
+};
+
+var util_inspect = require$$0.inspect;
+
+var hasMap = typeof Map === 'function' && Map.prototype;
+var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, 'size') : null;
+var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === 'function' ? mapSizeDescriptor.get : null;
+var mapForEach = hasMap && Map.prototype.forEach;
+var hasSet = typeof Set === 'function' && Set.prototype;
+var setSizeDescriptor = Object.getOwnPropertyDescriptor && hasSet ? Object.getOwnPropertyDescriptor(Set.prototype, 'size') : null;
+var setSize = hasSet && setSizeDescriptor && typeof setSizeDescriptor.get === 'function' ? setSizeDescriptor.get : null;
+var setForEach = hasSet && Set.prototype.forEach;
+var hasWeakMap = typeof WeakMap === 'function' && WeakMap.prototype;
+var weakMapHas = hasWeakMap ? WeakMap.prototype.has : null;
+var hasWeakSet = typeof WeakSet === 'function' && WeakSet.prototype;
+var weakSetHas = hasWeakSet ? WeakSet.prototype.has : null;
+var hasWeakRef = typeof WeakRef === 'function' && WeakRef.prototype;
+var weakRefDeref = hasWeakRef ? WeakRef.prototype.deref : null;
+var booleanValueOf = Boolean.prototype.valueOf;
+var objectToString = Object.prototype.toString;
+var functionToString = Function.prototype.toString;
+var $match = String.prototype.match;
+var $slice$1 = String.prototype.slice;
+var $replace = String.prototype.replace;
+var $toUpperCase = String.prototype.toUpperCase;
+var $toLowerCase = String.prototype.toLowerCase;
+var $test = RegExp.prototype.test;
+var $concat = Array.prototype.concat;
+var $join = Array.prototype.join;
+var $arrSlice = Array.prototype.slice;
+var $floor = Math.floor;
+var bigIntValueOf$1 = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
+var gOPS = Object.getOwnPropertySymbols;
+var symToString = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol' ? Symbol.prototype.toString : null;
+var hasShammedSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'object';
+// ie, `has-tostringtag/shams
+var toStringTag = typeof Symbol === 'function' && Symbol.toStringTag && (typeof Symbol.toStringTag === hasShammedSymbols ? 'object' : 'symbol')
+    ? Symbol.toStringTag
+    : null;
+var isEnumerable = Object.prototype.propertyIsEnumerable;
+
+var gPO$1 = (typeof Reflect === 'function' ? Reflect.getPrototypeOf : Object.getPrototypeOf) || (
+    [].__proto__ === Array.prototype // eslint-disable-line no-proto
+        ? function (O) {
+            return O.__proto__; // eslint-disable-line no-proto
+        }
+        : null
+);
+
+function addNumericSeparator(num, str) {
+    if (
+        num === Infinity
+        || num === -Infinity
+        || num !== num
+        || (num && num > -1000 && num < 1000)
+        || $test.call(/e/, str)
+    ) {
+        return str;
+    }
+    var sepRegex = /[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;
+    if (typeof num === 'number') {
+        var int = num < 0 ? -$floor(-num) : $floor(num); // trunc(num)
+        if (int !== num) {
+            var intStr = String(int);
+            var dec = $slice$1.call(str, intStr.length + 1);
+            return $replace.call(intStr, sepRegex, '$&_') + '.' + $replace.call($replace.call(dec, /([0-9]{3})/g, '$&_'), /_$/, '');
+        }
+    }
+    return $replace.call(str, sepRegex, '$&_');
+}
+
+var utilInspect = util_inspect;
+var inspectCustom = utilInspect.custom;
+var inspectSymbol = isSymbol$2(inspectCustom) ? inspectCustom : null;
+
+var objectInspect = function inspect_(obj, options, depth, seen) {
+    var opts = options || {};
+
+    if (has$1(opts, 'quoteStyle') && (opts.quoteStyle !== 'single' && opts.quoteStyle !== 'double')) {
+        throw new TypeError('option "quoteStyle" must be "single" or "double"');
+    }
+    if (
+        has$1(opts, 'maxStringLength') && (typeof opts.maxStringLength === 'number'
+            ? opts.maxStringLength < 0 && opts.maxStringLength !== Infinity
+            : opts.maxStringLength !== null
+        )
+    ) {
+        throw new TypeError('option "maxStringLength", if provided, must be a positive integer, Infinity, or `null`');
+    }
+    var customInspect = has$1(opts, 'customInspect') ? opts.customInspect : true;
+    if (typeof customInspect !== 'boolean' && customInspect !== 'symbol') {
+        throw new TypeError('option "customInspect", if provided, must be `true`, `false`, or `\'symbol\'`');
+    }
+
+    if (
+        has$1(opts, 'indent')
+        && opts.indent !== null
+        && opts.indent !== '\t'
+        && !(parseInt(opts.indent, 10) === opts.indent && opts.indent > 0)
+    ) {
+        throw new TypeError('option "indent" must be "\\t", an integer > 0, or `null`');
+    }
+    if (has$1(opts, 'numericSeparator') && typeof opts.numericSeparator !== 'boolean') {
+        throw new TypeError('option "numericSeparator", if provided, must be `true` or `false`');
+    }
+    var numericSeparator = opts.numericSeparator;
+
+    if (typeof obj === 'undefined') {
+        return 'undefined';
+    }
+    if (obj === null) {
+        return 'null';
+    }
+    if (typeof obj === 'boolean') {
+        return obj ? 'true' : 'false';
+    }
+
+    if (typeof obj === 'string') {
+        return inspectString(obj, opts);
+    }
+    if (typeof obj === 'number') {
+        if (obj === 0) {
+            return Infinity / obj > 0 ? '0' : '-0';
+        }
+        var str = String(obj);
+        return numericSeparator ? addNumericSeparator(obj, str) : str;
+    }
+    if (typeof obj === 'bigint') {
+        var bigIntStr = String(obj) + 'n';
+        return numericSeparator ? addNumericSeparator(obj, bigIntStr) : bigIntStr;
+    }
+
+    var maxDepth = typeof opts.depth === 'undefined' ? 5 : opts.depth;
+    if (typeof depth === 'undefined') { depth = 0; }
+    if (depth >= maxDepth && maxDepth > 0 && typeof obj === 'object') {
+        return isArray$1(obj) ? '[Array]' : '[Object]';
+    }
+
+    var indent = getIndent(opts, depth);
+
+    if (typeof seen === 'undefined') {
+        seen = [];
+    } else if (indexOf(seen, obj) >= 0) {
+        return '[Circular]';
+    }
+
+    function inspect(value, from, noIndent) {
+        if (from) {
+            seen = $arrSlice.call(seen);
+            seen.push(from);
+        }
+        if (noIndent) {
+            var newOpts = {
+                depth: opts.depth
+            };
+            if (has$1(opts, 'quoteStyle')) {
+                newOpts.quoteStyle = opts.quoteStyle;
+            }
+            return inspect_(value, newOpts, depth + 1, seen);
+        }
+        return inspect_(value, opts, depth + 1, seen);
+    }
+
+    if (typeof obj === 'function' && !isRegExp(obj)) { // in older engines, regexes are callable
+        var name = nameOf(obj);
+        var keys = arrObjKeys(obj, inspect);
+        return '[Function' + (name ? ': ' + name : ' (anonymous)') + ']' + (keys.length > 0 ? ' { ' + $join.call(keys, ', ') + ' }' : '');
+    }
+    if (isSymbol$2(obj)) {
+        var symString = hasShammedSymbols ? $replace.call(String(obj), /^(Symbol\(.*\))_[^)]*$/, '$1') : symToString.call(obj);
+        return typeof obj === 'object' && !hasShammedSymbols ? markBoxed(symString) : symString;
+    }
+    if (isElement$3(obj)) {
+        var s = '<' + $toLowerCase.call(String(obj.nodeName));
+        var attrs = obj.attributes || [];
+        for (var i = 0; i < attrs.length; i++) {
+            s += ' ' + attrs[i].name + '=' + wrapQuotes(quote(attrs[i].value), 'double', opts);
+        }
+        s += '>';
+        if (obj.childNodes && obj.childNodes.length) { s += '...'; }
+        s += '</' + $toLowerCase.call(String(obj.nodeName)) + '>';
+        return s;
+    }
+    if (isArray$1(obj)) {
+        if (obj.length === 0) { return '[]'; }
+        var xs = arrObjKeys(obj, inspect);
+        if (indent && !singleLineValues(xs)) {
+            return '[' + indentedJoin(xs, indent) + ']';
+        }
+        return '[ ' + $join.call(xs, ', ') + ' ]';
+    }
+    if (isError(obj)) {
+        var parts = arrObjKeys(obj, inspect);
+        if (!('cause' in Error.prototype) && 'cause' in obj && !isEnumerable.call(obj, 'cause')) {
+            return '{ [' + String(obj) + '] ' + $join.call($concat.call('[cause]: ' + inspect(obj.cause), parts), ', ') + ' }';
+        }
+        if (parts.length === 0) { return '[' + String(obj) + ']'; }
+        return '{ [' + String(obj) + '] ' + $join.call(parts, ', ') + ' }';
+    }
+    if (typeof obj === 'object' && customInspect) {
+        if (inspectSymbol && typeof obj[inspectSymbol] === 'function' && utilInspect) {
+            return utilInspect(obj, { depth: maxDepth - depth });
+        } else if (customInspect !== 'symbol' && typeof obj.inspect === 'function') {
+            return obj.inspect();
+        }
+    }
+    if (isMap$2(obj)) {
+        var mapParts = [];
+        if (mapForEach) {
+            mapForEach.call(obj, function (value, key) {
+                mapParts.push(inspect(key, obj, true) + ' => ' + inspect(value, obj));
+            });
+        }
+        return collectionOf('Map', mapSize.call(obj), mapParts, indent);
+    }
+    if (isSet$2(obj)) {
+        var setParts = [];
+        if (setForEach) {
+            setForEach.call(obj, function (value) {
+                setParts.push(inspect(value, obj));
+            });
+        }
+        return collectionOf('Set', setSize.call(obj), setParts, indent);
+    }
+    if (isWeakMap$1(obj)) {
+        return weakCollectionOf('WeakMap');
+    }
+    if (isWeakSet$1(obj)) {
+        return weakCollectionOf('WeakSet');
+    }
+    if (isWeakRef(obj)) {
+        return weakCollectionOf('WeakRef');
+    }
+    if (isNumber$1(obj)) {
+        return markBoxed(inspect(Number(obj)));
+    }
+    if (isBigInt$1(obj)) {
+        return markBoxed(inspect(bigIntValueOf$1.call(obj)));
+    }
+    if (isBoolean$1(obj)) {
+        return markBoxed(booleanValueOf.call(obj));
+    }
+    if (isString$2(obj)) {
+        return markBoxed(inspect(String(obj)));
+    }
+    // note: in IE 8, sometimes `global !== window` but both are the prototypes of each other
+    /* eslint-env browser */
+    if (typeof window !== 'undefined' && obj === window) {
+        return '{ [object Window] }';
+    }
+    if (obj === commonjsGlobal) {
+        return '{ [object globalThis] }';
+    }
+    if (!isDate$1(obj) && !isRegExp(obj)) {
+        var ys = arrObjKeys(obj, inspect);
+        var isPlainObject = gPO$1 ? gPO$1(obj) === Object.prototype : obj instanceof Object || obj.constructor === Object;
+        var protoTag = obj instanceof Object ? '' : 'null prototype';
+        var stringTag = !isPlainObject && toStringTag && Object(obj) === obj && toStringTag in obj ? $slice$1.call(toStr$7(obj), 8, -1) : protoTag ? 'Object' : '';
+        var constructorTag = isPlainObject || typeof obj.constructor !== 'function' ? '' : obj.constructor.name ? obj.constructor.name + ' ' : '';
+        var tag = constructorTag + (stringTag || protoTag ? '[' + $join.call($concat.call([], stringTag || [], protoTag || []), ': ') + '] ' : '');
+        if (ys.length === 0) { return tag + '{}'; }
+        if (indent) {
+            return tag + '{' + indentedJoin(ys, indent) + '}';
+        }
+        return tag + '{ ' + $join.call(ys, ', ') + ' }';
+    }
+    return String(obj);
+};
+
+function wrapQuotes(s, defaultStyle, opts) {
+    var quoteChar = (opts.quoteStyle || defaultStyle) === 'double' ? '"' : "'";
+    return quoteChar + s + quoteChar;
+}
+
+function quote(s) {
+    return $replace.call(String(s), /"/g, '&quot;');
+}
+
+function isArray$1(obj) { return toStr$7(obj) === '[object Array]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isDate$1(obj) { return toStr$7(obj) === '[object Date]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isRegExp(obj) { return toStr$7(obj) === '[object RegExp]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isError(obj) { return toStr$7(obj) === '[object Error]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isString$2(obj) { return toStr$7(obj) === '[object String]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isNumber$1(obj) { return toStr$7(obj) === '[object Number]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isBoolean$1(obj) { return toStr$7(obj) === '[object Boolean]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+
+// Symbol and BigInt do have Symbol.toStringTag by spec, so that can't be used to eliminate false positives
+function isSymbol$2(obj) {
+    if (hasShammedSymbols) {
+        return obj && typeof obj === 'object' && obj instanceof Symbol;
+    }
+    if (typeof obj === 'symbol') {
+        return true;
+    }
+    if (!obj || typeof obj !== 'object' || !symToString) {
+        return false;
+    }
+    try {
+        symToString.call(obj);
+        return true;
+    } catch (e) {}
+    return false;
+}
+
+function isBigInt$1(obj) {
+    if (!obj || typeof obj !== 'object' || !bigIntValueOf$1) {
+        return false;
+    }
+    try {
+        bigIntValueOf$1.call(obj);
+        return true;
+    } catch (e) {}
+    return false;
+}
+
+var hasOwn = Object.prototype.hasOwnProperty || function (key) { return key in this; };
+function has$1(obj, key) {
+    return hasOwn.call(obj, key);
+}
+
+function toStr$7(obj) {
+    return objectToString.call(obj);
+}
+
+function nameOf(f) {
+    if (f.name) { return f.name; }
+    var m = $match.call(functionToString.call(f), /^function\s*([\w$]+)/);
+    if (m) { return m[1]; }
+    return null;
+}
+
+function indexOf(xs, x) {
+    if (xs.indexOf) { return xs.indexOf(x); }
+    for (var i = 0, l = xs.length; i < l; i++) {
+        if (xs[i] === x) { return i; }
+    }
+    return -1;
+}
+
+function isMap$2(x) {
+    if (!mapSize || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        mapSize.call(x);
+        try {
+            setSize.call(x);
+        } catch (s) {
+            return true;
+        }
+        return x instanceof Map; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isWeakMap$1(x) {
+    if (!weakMapHas || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        weakMapHas.call(x, weakMapHas);
+        try {
+            weakSetHas.call(x, weakSetHas);
+        } catch (s) {
+            return true;
+        }
+        return x instanceof WeakMap; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isWeakRef(x) {
+    if (!weakRefDeref || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        weakRefDeref.call(x);
+        return true;
+    } catch (e) {}
+    return false;
+}
+
+function isSet$2(x) {
+    if (!setSize || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        setSize.call(x);
+        try {
+            mapSize.call(x);
+        } catch (m) {
+            return true;
+        }
+        return x instanceof Set; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isWeakSet$1(x) {
+    if (!weakSetHas || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        weakSetHas.call(x, weakSetHas);
+        try {
+            weakMapHas.call(x, weakMapHas);
+        } catch (s) {
+            return true;
+        }
+        return x instanceof WeakSet; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isElement$3(x) {
+    if (!x || typeof x !== 'object') { return false; }
+    if (typeof HTMLElement !== 'undefined' && x instanceof HTMLElement) {
+        return true;
+    }
+    return typeof x.nodeName === 'string' && typeof x.getAttribute === 'function';
+}
+
+function inspectString(str, opts) {
+    if (str.length > opts.maxStringLength) {
+        var remaining = str.length - opts.maxStringLength;
+        var trailer = '... ' + remaining + ' more character' + (remaining > 1 ? 's' : '');
+        return inspectString($slice$1.call(str, 0, opts.maxStringLength), opts) + trailer;
+    }
+    // eslint-disable-next-line no-control-regex
+    var s = $replace.call($replace.call(str, /(['\\])/g, '\\$1'), /[\x00-\x1f]/g, lowbyte);
+    return wrapQuotes(s, 'single', opts);
+}
+
+function lowbyte(c) {
+    var n = c.charCodeAt(0);
+    var x = {
+        8: 'b',
+        9: 't',
+        10: 'n',
+        12: 'f',
+        13: 'r'
+    }[n];
+    if (x) { return '\\' + x; }
+    return '\\x' + (n < 0x10 ? '0' : '') + $toUpperCase.call(n.toString(16));
+}
+
+function markBoxed(str) {
+    return 'Object(' + str + ')';
+}
+
+function weakCollectionOf(type) {
+    return type + ' { ? }';
+}
+
+function collectionOf(type, size, entries, indent) {
+    var joinedEntries = indent ? indentedJoin(entries, indent) : $join.call(entries, ', ');
+    return type + ' (' + size + ') {' + joinedEntries + '}';
+}
+
+function singleLineValues(xs) {
+    for (var i = 0; i < xs.length; i++) {
+        if (indexOf(xs[i], '\n') >= 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getIndent(opts, depth) {
+    var baseIndent;
+    if (opts.indent === '\t') {
+        baseIndent = '\t';
+    } else if (typeof opts.indent === 'number' && opts.indent > 0) {
+        baseIndent = $join.call(Array(opts.indent + 1), ' ');
+    } else {
+        return null;
+    }
+    return {
+        base: baseIndent,
+        prev: $join.call(Array(depth + 1), baseIndent)
+    };
+}
+
+function indentedJoin(xs, indent) {
+    if (xs.length === 0) { return ''; }
+    var lineJoiner = '\n' + indent.prev + indent.base;
+    return lineJoiner + $join.call(xs, ',' + lineJoiner) + '\n' + indent.prev;
+}
+
+function arrObjKeys(obj, inspect) {
+    var isArr = isArray$1(obj);
+    var xs = [];
+    if (isArr) {
+        xs.length = obj.length;
+        for (var i = 0; i < obj.length; i++) {
+            xs[i] = has$1(obj, i) ? inspect(obj[i], obj) : '';
+        }
+    }
+    var syms = typeof gOPS === 'function' ? gOPS(obj) : [];
+    var symMap;
+    if (hasShammedSymbols) {
+        symMap = {};
+        for (var k = 0; k < syms.length; k++) {
+            symMap['$' + syms[k]] = syms[k];
+        }
+    }
+
+    for (var key in obj) { // eslint-disable-line no-restricted-syntax
+        if (!has$1(obj, key)) { continue; } // eslint-disable-line no-restricted-syntax, no-continue
+        if (isArr && String(Number(key)) === key && key < obj.length) { continue; } // eslint-disable-line no-restricted-syntax, no-continue
+        if (hasShammedSymbols && symMap['$' + key] instanceof Symbol) {
+            // this is to prevent shammed Symbols, which are stored as strings, from being included in the string key section
+            continue; // eslint-disable-line no-restricted-syntax, no-continue
+        } else if ($test.call(/[^\w$]/, key)) {
+            xs.push(inspect(key, obj) + ': ' + inspect(obj[key], obj));
+        } else {
+            xs.push(key + ': ' + inspect(obj[key], obj));
+        }
+    }
+    if (typeof gOPS === 'function') {
+        for (var j = 0; j < syms.length; j++) {
+            if (isEnumerable.call(obj, syms[j])) {
+                xs.push('[' + inspect(syms[j]) + ']: ' + inspect(obj[syms[j]], obj));
+            }
+        }
+    }
+    return xs;
+}
+
+var GetIntrinsic$3 = getIntrinsic;
+var callBound$9 = callBound$b;
+var inspect = objectInspect;
+
+var $TypeError = type$2;
+var $WeakMap$1 = GetIntrinsic$3('%WeakMap%', true);
+var $Map$2 = GetIntrinsic$3('%Map%', true);
+
+var $weakMapGet = callBound$9('WeakMap.prototype.get', true);
+var $weakMapSet = callBound$9('WeakMap.prototype.set', true);
+var $weakMapHas = callBound$9('WeakMap.prototype.has', true);
+var $mapGet$1 = callBound$9('Map.prototype.get', true);
+var $mapSet = callBound$9('Map.prototype.set', true);
+var $mapHas$5 = callBound$9('Map.prototype.has', true);
+
+/*
+* This function traverses the list returning the node corresponding to the given key.
+*
+* That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list. By doing so, all the recently used nodes can be accessed relatively quickly.
+*/
+/** @type {import('.').listGetNode} */
+var listGetNode = function (list, key) { // eslint-disable-line consistent-return
+	/** @type {typeof list | NonNullable<(typeof list)['next']>} */
+	var prev = list;
+	/** @type {(typeof list)['next']} */
+	var curr;
+	for (; (curr = prev.next) !== null; prev = curr) {
+		if (curr.key === key) {
+			prev.next = curr.next;
+			// eslint-disable-next-line no-extra-parens
+			curr.next = /** @type {NonNullable<typeof list.next>} */ (list.next);
+			list.next = curr; // eslint-disable-line no-param-reassign
+			return curr;
+		}
+	}
+};
+
+/** @type {import('.').listGet} */
+var listGet = function (objects, key) {
+	var node = listGetNode(objects, key);
+	return node && node.value;
+};
+/** @type {import('.').listSet} */
+var listSet = function (objects, key, value) {
+	var node = listGetNode(objects, key);
+	if (node) {
+		node.value = value;
+	} else {
+		// Prepend the new node to the beginning of the list
+		objects.next = /** @type {import('.').ListNode<typeof value>} */ ({ // eslint-disable-line no-param-reassign, no-extra-parens
+			key: key,
+			next: objects.next,
+			value: value
+		});
+	}
+};
+/** @type {import('.').listHas} */
+var listHas = function (objects, key) {
+	return !!listGetNode(objects, key);
+};
+
+/** @type {import('.')} */
+var sideChannel = function getSideChannel() {
+	/** @type {WeakMap<object, unknown>} */ var $wm;
+	/** @type {Map<object, unknown>} */ var $m;
+	/** @type {import('.').RootNode<unknown>} */ var $o;
+
+	/** @type {import('.').Channel} */
+	var channel = {
+		assert: function (key) {
+			if (!channel.has(key)) {
+				throw new $TypeError('Side channel does not contain ' + inspect(key));
+			}
+		},
+		get: function (key) { // eslint-disable-line consistent-return
+			if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
+				if ($wm) {
+					return $weakMapGet($wm, key);
+				}
+			} else if ($Map$2) {
+				if ($m) {
+					return $mapGet$1($m, key);
+				}
+			} else {
+				if ($o) { // eslint-disable-line no-lonely-if
+					return listGet($o, key);
+				}
+			}
+		},
+		has: function (key) {
+			if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
+				if ($wm) {
+					return $weakMapHas($wm, key);
+				}
+			} else if ($Map$2) {
+				if ($m) {
+					return $mapHas$5($m, key);
+				}
+			} else {
+				if ($o) { // eslint-disable-line no-lonely-if
+					return listHas($o, key);
+				}
+			}
+			return false;
+		},
+		set: function (key, value) {
+			if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
+				if (!$wm) {
+					$wm = new $WeakMap$1();
+				}
+				$weakMapSet($wm, key, value);
+			} else if ($Map$2) {
+				if (!$m) {
+					$m = new $Map$2();
+				}
+				$mapSet($m, key, value);
+			} else {
+				if (!$o) {
+					// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
+					$o = { key: {}, next: null };
+				}
+				listSet($o, key, value);
+			}
+		}
+	};
+	return channel;
+};
+
+var numberIsNaN = function (value) {
+	return value !== value;
+};
+
+var implementation$2 = function is(a, b) {
+	if (a === 0 && b === 0) {
+		return 1 / a === 1 / b;
+	}
+	if (a === b) {
+		return true;
+	}
+	if (numberIsNaN(a) && numberIsNaN(b)) {
+		return true;
+	}
+	return false;
+};
+
+var implementation$1 = implementation$2;
+
+var polyfill$1 = function getPolyfill() {
+	return typeof Object.is === 'function' ? Object.is : implementation$1;
+};
+
+var getPolyfill$1 = polyfill$1;
+var define$1 = defineProperties_1;
+
+var shim$1 = function shimObjectIs() {
+	var polyfill = getPolyfill$1();
+	define$1(Object, { is: polyfill }, {
+		is: function testObjectIs() {
+			return Object.is !== polyfill;
+		}
+	});
+	return polyfill;
+};
+
+var define = defineProperties_1;
+var callBind$2 = callBindExports;
+
+var implementation = implementation$2;
+var getPolyfill = polyfill$1;
+var shim = shim$1;
+
+var polyfill = callBind$2(getPolyfill(), Object);
+
+define(polyfill, {
+	getPolyfill: getPolyfill,
+	implementation: implementation,
+	shim: shim
+});
+
+var objectIs = polyfill;
+
+var hasSymbols$1 = shams$1;
+
+/** @type {import('.')} */
+var shams = function hasToStringTagShams() {
+	return hasSymbols$1() && !!Symbol.toStringTag;
+};
+
+var hasToStringTag$7 = shams();
+var callBound$8 = callBound$b;
+
+var $toString$4 = callBound$8('Object.prototype.toString');
+
+var isStandardArguments = function isArguments(value) {
+	if (hasToStringTag$7 && value && typeof value === 'object' && Symbol.toStringTag in value) {
+		return false;
+	}
+	return $toString$4(value) === '[object Arguments]';
+};
+
+var isLegacyArguments = function isArguments(value) {
+	if (isStandardArguments(value)) {
+		return true;
+	}
+	return value !== null &&
+		typeof value === 'object' &&
+		typeof value.length === 'number' &&
+		value.length >= 0 &&
+		$toString$4(value) !== '[object Array]' &&
+		$toString$4(value.callee) === '[object Function]';
+};
+
+var supportsStandardArguments = (function () {
+	return isStandardArguments(arguments);
+}());
+
+isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
+
+var isArguments$1 = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
+
+var toString$1 = {}.toString;
+
+var isarray = Array.isArray || function (arr) {
+  return toString$1.call(arr) == '[object Array]';
+};
+
+var callBind$1 = callBindExports;
+var callBound$7 = callBound$b;
+var GetIntrinsic$2 = getIntrinsic;
+
+var $ArrayBuffer = GetIntrinsic$2('%ArrayBuffer%', true);
+/** @type {undefined | ((receiver: ArrayBuffer) => number) | ((receiver: unknown) => never)} */
+var $byteLength$2 = callBound$7('ArrayBuffer.prototype.byteLength', true);
+var $toString$3 = callBound$7('Object.prototype.toString');
+
+// in node 0.10, ArrayBuffers have no prototype methods, but have an own slot-checking `slice` method
+var abSlice = !!$ArrayBuffer && !$byteLength$2 && new $ArrayBuffer(0).slice;
+var $abSlice = !!abSlice && callBind$1(abSlice);
+
+/** @type {import('.')} */
+var isArrayBuffer$2 = $byteLength$2 || $abSlice
+	? function isArrayBuffer(obj) {
+		if (!obj || typeof obj !== 'object') {
+			return false;
+		}
+		try {
+			if ($byteLength$2) {
+				// @ts-expect-error no idea why TS can't handle the overload
+				$byteLength$2(obj);
+			} else {
+				// @ts-expect-error TS chooses not to type-narrow inside a closure
+				$abSlice(obj, 0);
+			}
+			return true;
+		} catch (e) {
+			return false;
+		}
+	}
+	: $ArrayBuffer
+		// in node 0.8, ArrayBuffers have no prototype or own methods, but also no Symbol.toStringTag
+		? function isArrayBuffer(obj) {
+			return $toString$3(obj) === '[object ArrayBuffer]';
+		}
+		: function isArrayBuffer(obj) { // eslint-disable-line no-unused-vars
+			return false;
+		};
+
+var getDay = Date.prototype.getDay;
+var tryDateObject = function tryDateGetDayCall(value) {
+	try {
+		getDay.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+
+var toStr$6 = Object.prototype.toString;
+var dateClass = '[object Date]';
+var hasToStringTag$6 = shams();
+
+var isDateObject = function isDateObject(value) {
+	if (typeof value !== 'object' || value === null) {
+		return false;
+	}
+	return hasToStringTag$6 ? tryDateObject(value) : toStr$6.call(value) === dateClass;
+};
+
+var callBound$6 = callBound$b;
+var hasToStringTag$5 = shams();
+var has;
+var $exec;
+var isRegexMarker;
+var badStringifier;
+
+if (hasToStringTag$5) {
+	has = callBound$6('Object.prototype.hasOwnProperty');
+	$exec = callBound$6('RegExp.prototype.exec');
+	isRegexMarker = {};
+
+	var throwRegexMarker = function () {
+		throw isRegexMarker;
+	};
+	badStringifier = {
+		toString: throwRegexMarker,
+		valueOf: throwRegexMarker
+	};
+
+	if (typeof Symbol.toPrimitive === 'symbol') {
+		badStringifier[Symbol.toPrimitive] = throwRegexMarker;
+	}
+}
+
+var $toString$2 = callBound$6('Object.prototype.toString');
+var gOPD$1 = Object.getOwnPropertyDescriptor;
+var regexClass = '[object RegExp]';
+
+var isRegex$1 = hasToStringTag$5
+	// eslint-disable-next-line consistent-return
+	? function isRegex(value) {
+		if (!value || typeof value !== 'object') {
+			return false;
+		}
+
+		var descriptor = gOPD$1(value, 'lastIndex');
+		var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
+		if (!hasLastIndexDataProperty) {
+			return false;
+		}
+
+		try {
+			$exec(value, badStringifier);
+		} catch (e) {
+			return e === isRegexMarker;
+		}
+	}
+	: function isRegex(value) {
+		// In older browsers, typeof regex incorrectly returns 'function'
+		if (!value || (typeof value !== 'object' && typeof value !== 'function')) {
+			return false;
+		}
+
+		return $toString$2(value) === regexClass;
+	};
+
+var callBound$5 = callBound$b;
+
+var $byteLength$1 = callBound$5('SharedArrayBuffer.prototype.byteLength', true);
+
+/** @type {import('.')} */
+var isSharedArrayBuffer$1 = $byteLength$1
+	? function isSharedArrayBuffer(obj) {
+		if (!obj || typeof obj !== 'object') {
+			return false;
+		}
+		try {
+			$byteLength$1(obj);
+			return true;
+		} catch (e) {
+			return false;
+		}
+	}
+	: function isSharedArrayBuffer(obj) { // eslint-disable-line no-unused-vars
+		return false;
+	};
+
+var strValue = String.prototype.valueOf;
+var tryStringObject = function tryStringObject(value) {
+	try {
+		strValue.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+var toStr$5 = Object.prototype.toString;
+var strClass = '[object String]';
+var hasToStringTag$4 = shams();
+
+var isString$1 = function isString(value) {
+	if (typeof value === 'string') {
+		return true;
+	}
+	if (typeof value !== 'object') {
+		return false;
+	}
+	return hasToStringTag$4 ? tryStringObject(value) : toStr$5.call(value) === strClass;
+};
+
+var numToStr = Number.prototype.toString;
+var tryNumberObject = function tryNumberObject(value) {
+	try {
+		numToStr.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+var toStr$4 = Object.prototype.toString;
+var numClass = '[object Number]';
+var hasToStringTag$3 = shams();
+
+var isNumberObject = function isNumberObject(value) {
+	if (typeof value === 'number') {
+		return true;
+	}
+	if (typeof value !== 'object') {
+		return false;
+	}
+	return hasToStringTag$3 ? tryNumberObject(value) : toStr$4.call(value) === numClass;
+};
+
+var callBound$4 = callBound$b;
+var $boolToStr = callBound$4('Boolean.prototype.toString');
+var $toString$1 = callBound$4('Object.prototype.toString');
+
+var tryBooleanObject = function booleanBrandCheck(value) {
+	try {
+		$boolToStr(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+var boolClass = '[object Boolean]';
+var hasToStringTag$2 = shams();
+
+var isBooleanObject = function isBoolean(value) {
+	if (typeof value === 'boolean') {
+		return true;
+	}
+	if (value === null || typeof value !== 'object') {
+		return false;
+	}
+	return hasToStringTag$2 && Symbol.toStringTag in value ? tryBooleanObject(value) : $toString$1(value) === boolClass;
+};
+
+var isSymbol$1 = {exports: {}};
+
+var toStr$3 = Object.prototype.toString;
+var hasSymbols = hasSymbols$5();
+
+if (hasSymbols) {
+	var symToStr = Symbol.prototype.toString;
+	var symStringRegex = /^Symbol\(.*\)$/;
+	var isSymbolObject = function isRealSymbolObject(value) {
+		if (typeof value.valueOf() !== 'symbol') {
+			return false;
+		}
+		return symStringRegex.test(symToStr.call(value));
+	};
+
+	isSymbol$1.exports = function isSymbol(value) {
+		if (typeof value === 'symbol') {
+			return true;
+		}
+		if (toStr$3.call(value) !== '[object Symbol]') {
+			return false;
+		}
+		try {
+			return isSymbolObject(value);
+		} catch (e) {
+			return false;
+		}
+	};
+} else {
+
+	isSymbol$1.exports = function isSymbol(value) {
+		// this environment does not support Symbols.
+		return false ;
+	};
+}
+
+var isSymbolExports = isSymbol$1.exports;
+
+var isBigint = {exports: {}};
+
+var $BigInt = typeof BigInt !== 'undefined' && BigInt;
+
+var hasBigints = function hasNativeBigInts() {
+	return typeof $BigInt === 'function'
+		&& typeof BigInt === 'function'
+		&& typeof $BigInt(42) === 'bigint' // eslint-disable-line no-magic-numbers
+		&& typeof BigInt(42) === 'bigint'; // eslint-disable-line no-magic-numbers
+};
+
+var hasBigInts = hasBigints();
+
+if (hasBigInts) {
+	var bigIntValueOf = BigInt.prototype.valueOf;
+	var tryBigInt = function tryBigIntObject(value) {
+		try {
+			bigIntValueOf.call(value);
+			return true;
+		} catch (e) {
+		}
+		return false;
+	};
+
+	isBigint.exports = function isBigInt(value) {
+		if (
+			value === null
+			|| typeof value === 'undefined'
+			|| typeof value === 'boolean'
+			|| typeof value === 'string'
+			|| typeof value === 'number'
+			|| typeof value === 'symbol'
+			|| typeof value === 'function'
+		) {
+			return false;
+		}
+		if (typeof value === 'bigint') {
+			return true;
+		}
+
+		return tryBigInt(value);
+	};
+} else {
+	isBigint.exports = function isBigInt(value) {
+		return false ;
+	};
+}
+
+var isBigintExports = isBigint.exports;
+
+var isString = isString$1;
+var isNumber = isNumberObject;
+var isBoolean = isBooleanObject;
+var isSymbol = isSymbolExports;
+var isBigInt = isBigintExports;
+
+// eslint-disable-next-line consistent-return
+var whichBoxedPrimitive$1 = function whichBoxedPrimitive(value) {
+	// eslint-disable-next-line eqeqeq
+	if (value == null || (typeof value !== 'object' && typeof value !== 'function')) {
+		return null;
+	}
+	if (isString(value)) {
+		return 'String';
+	}
+	if (isNumber(value)) {
+		return 'Number';
+	}
+	if (isBoolean(value)) {
+		return 'Boolean';
+	}
+	if (isSymbol(value)) {
+		return 'Symbol';
+	}
+	if (isBigInt(value)) {
+		return 'BigInt';
+	}
+};
+
+/** @const */
+var $Map$1 = typeof Map === 'function' && Map.prototype ? Map : null;
+var $Set$2 = typeof Set === 'function' && Set.prototype ? Set : null;
+
+var exported$2;
+
+if (!$Map$1) {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	exported$2 = function isMap(x) {
+		// `Map` is not present in this environment.
+		return false;
+	};
+}
+
+var $mapHas$4 = $Map$1 ? Map.prototype.has : null;
+var $setHas$4 = $Set$2 ? Set.prototype.has : null;
+if (!exported$2 && !$mapHas$4) {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	exported$2 = function isMap(x) {
+		// `Map` does not have a `has` method
+		return false;
+	};
+}
+
+/** @type {import('.')} */
+var isMap$1 = exported$2 || function isMap(x) {
+	if (!x || typeof x !== 'object') {
+		return false;
+	}
+	try {
+		$mapHas$4.call(x);
+		if ($setHas$4) {
+			try {
+				$setHas$4.call(x);
+			} catch (e) {
+				return true;
+			}
+		}
+		// @ts-expect-error TS can't figure out that $Map is always truthy here
+		return x instanceof $Map$1; // core-js workaround, pre-v2.5.0
+	} catch (e) {}
+	return false;
+};
+
+var $Map = typeof Map === 'function' && Map.prototype ? Map : null;
+var $Set$1 = typeof Set === 'function' && Set.prototype ? Set : null;
+
+var exported$1;
+
+if (!$Set$1) {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	exported$1 = function isSet(x) {
+		// `Set` is not present in this environment.
+		return false;
+	};
+}
+
+var $mapHas$3 = $Map ? Map.prototype.has : null;
+var $setHas$3 = $Set$1 ? Set.prototype.has : null;
+if (!exported$1 && !$setHas$3) {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	exported$1 = function isSet(x) {
+		// `Set` does not have a `has` method
+		return false;
+	};
+}
+
+/** @type {import('.')} */
+var isSet$1 = exported$1 || function isSet(x) {
+	if (!x || typeof x !== 'object') {
+		return false;
+	}
+	try {
+		$setHas$3.call(x);
+		if ($mapHas$3) {
+			try {
+				$mapHas$3.call(x);
+			} catch (e) {
+				return true;
+			}
+		}
+		// @ts-expect-error TS can't figure out that $Set is always truthy here
+		return x instanceof $Set$1; // core-js workaround, pre-v2.5.0
+	} catch (e) {}
+	return false;
+};
+
+var $WeakMap = typeof WeakMap === 'function' && WeakMap.prototype ? WeakMap : null;
+var $WeakSet$1 = typeof WeakSet === 'function' && WeakSet.prototype ? WeakSet : null;
+
+var exported;
+
+if (!$WeakMap) {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	exported = function isWeakMap(x) {
+		// `WeakMap` is not present in this environment.
+		return false;
+	};
+}
+
+var $mapHas$2 = $WeakMap ? $WeakMap.prototype.has : null;
+var $setHas$2 = $WeakSet$1 ? $WeakSet$1.prototype.has : null;
+if (!exported && !$mapHas$2) {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	exported = function isWeakMap(x) {
+		// `WeakMap` does not have a `has` method
+		return false;
+	};
+}
+
+/** @type {import('.')} */
+var isWeakmap = exported || function isWeakMap(x) {
+	if (!x || typeof x !== 'object') {
+		return false;
+	}
+	try {
+		$mapHas$2.call(x, $mapHas$2);
+		if ($setHas$2) {
+			try {
+				$setHas$2.call(x, $setHas$2);
+			} catch (e) {
+				return true;
+			}
+		}
+		// @ts-expect-error TS can't figure out that $WeakMap is always truthy here
+		return x instanceof $WeakMap; // core-js workaround, pre-v3
+	} catch (e) {}
+	return false;
+};
+
+var isWeakset = {exports: {}};
+
+var GetIntrinsic$1 = getIntrinsic;
+var callBound$3 = callBound$b;
+
+var $WeakSet = GetIntrinsic$1('%WeakSet%', true);
+
+var $setHas$1 = callBound$3('WeakSet.prototype.has', true);
+
+if ($setHas$1) {
+	var $mapHas$1 = callBound$3('WeakMap.prototype.has', true);
+
+	/** @type {import('.')} */
+	isWeakset.exports = function isWeakSet(x) {
+		if (!x || typeof x !== 'object') {
+			return false;
+		}
+		try {
+			$setHas$1(x, $setHas$1);
+			if ($mapHas$1) {
+				try {
+					$mapHas$1(x, $mapHas$1);
+				} catch (e) {
+					return true;
+				}
+			}
+			// @ts-expect-error TS can't figure out that $WeakSet is always truthy here
+			return x instanceof $WeakSet; // core-js workaround, pre-v3
+		} catch (e) {}
+		return false;
+	};
+} else {
+	/** @type {import('.')} */
+	// eslint-disable-next-line no-unused-vars
+	isWeakset.exports = function isWeakSet(x) {
+		// `WeakSet` does not exist, or does not have a `has` method
+		return false;
+	};
+}
+
+var isWeaksetExports = isWeakset.exports;
+
+var isMap = isMap$1;
+var isSet = isSet$1;
+var isWeakMap = isWeakmap;
+var isWeakSet = isWeaksetExports;
+
+/** @type {import('.')} */
+var whichCollection$1 = function whichCollection(/** @type {unknown} */ value) {
+	if (value && typeof value === 'object') {
+		if (isMap(value)) {
+			return 'Map';
+		}
+		if (isSet(value)) {
+			return 'Set';
+		}
+		if (isWeakMap(value)) {
+			return 'WeakMap';
+		}
+		if (isWeakSet(value)) {
+			return 'WeakSet';
+		}
+	}
+	return false;
+};
+
+var fnToStr = Function.prototype.toString;
+var reflectApply = typeof Reflect === 'object' && Reflect !== null && Reflect.apply;
+var badArrayLike;
+var isCallableMarker;
+if (typeof reflectApply === 'function' && typeof Object.defineProperty === 'function') {
+	try {
+		badArrayLike = Object.defineProperty({}, 'length', {
+			get: function () {
+				throw isCallableMarker;
+			}
+		});
+		isCallableMarker = {};
+		// eslint-disable-next-line no-throw-literal
+		reflectApply(function () { throw 42; }, null, badArrayLike);
+	} catch (_) {
+		if (_ !== isCallableMarker) {
+			reflectApply = null;
+		}
+	}
+} else {
+	reflectApply = null;
+}
+
+var constructorRegex = /^\s*class\b/;
+var isES6ClassFn = function isES6ClassFunction(value) {
+	try {
+		var fnStr = fnToStr.call(value);
+		return constructorRegex.test(fnStr);
+	} catch (e) {
+		return false; // not a function
+	}
+};
+
+var tryFunctionObject = function tryFunctionToStr(value) {
+	try {
+		if (isES6ClassFn(value)) { return false; }
+		fnToStr.call(value);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+var toStr$2 = Object.prototype.toString;
+var objectClass = '[object Object]';
+var fnClass = '[object Function]';
+var genClass = '[object GeneratorFunction]';
+var ddaClass = '[object HTMLAllCollection]'; // IE 11
+var ddaClass2 = '[object HTML document.all class]';
+var ddaClass3 = '[object HTMLCollection]'; // IE 9-10
+var hasToStringTag$1 = typeof Symbol === 'function' && !!Symbol.toStringTag; // better: use `has-tostringtag`
+
+var isIE68 = !(0 in [,]); // eslint-disable-line no-sparse-arrays, comma-spacing
+
+var isDDA = function isDocumentDotAll() { return false; };
+if (typeof document === 'object') {
+	// Firefox 3 canonicalizes DDA to undefined when it's not accessed directly
+	var all = document.all;
+	if (toStr$2.call(all) === toStr$2.call(document.all)) {
+		isDDA = function isDocumentDotAll(value) {
+			/* globals document: false */
+			// in IE 6-8, typeof document.all is "object" and it's truthy
+			if ((isIE68 || !value) && (typeof value === 'undefined' || typeof value === 'object')) {
+				try {
+					var str = toStr$2.call(value);
+					return (
+						str === ddaClass
+						|| str === ddaClass2
+						|| str === ddaClass3 // opera 12.16
+						|| str === objectClass // IE 6-8
+					) && value('') == null; // eslint-disable-line eqeqeq
+				} catch (e) { /**/ }
+			}
+			return false;
+		};
+	}
+}
+
+var isCallable$2 = reflectApply
+	? function isCallable(value) {
+		if (isDDA(value)) { return true; }
+		if (!value) { return false; }
+		if (typeof value !== 'function' && typeof value !== 'object') { return false; }
+		try {
+			reflectApply(value, null, badArrayLike);
+		} catch (e) {
+			if (e !== isCallableMarker) { return false; }
+		}
+		return !isES6ClassFn(value) && tryFunctionObject(value);
+	}
+	: function isCallable(value) {
+		if (isDDA(value)) { return true; }
+		if (!value) { return false; }
+		if (typeof value !== 'function' && typeof value !== 'object') { return false; }
+		if (hasToStringTag$1) { return tryFunctionObject(value); }
+		if (isES6ClassFn(value)) { return false; }
+		var strClass = toStr$2.call(value);
+		if (strClass !== fnClass && strClass !== genClass && !(/^\[object HTML/).test(strClass)) { return false; }
+		return tryFunctionObject(value);
+	};
+
+var isCallable$1 = isCallable$2;
+
+var toStr$1 = Object.prototype.toString;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var forEachArray = function forEachArray(array, iterator, receiver) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            if (receiver == null) {
+                iterator(array[i], i, array);
+            } else {
+                iterator.call(receiver, array[i], i, array);
+            }
+        }
+    }
+};
+
+var forEachString = function forEachString(string, iterator, receiver) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        if (receiver == null) {
+            iterator(string.charAt(i), i, string);
+        } else {
+            iterator.call(receiver, string.charAt(i), i, string);
+        }
+    }
+};
+
+var forEachObject = function forEachObject(object, iterator, receiver) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            if (receiver == null) {
+                iterator(object[k], k, object);
+            } else {
+                iterator.call(receiver, object[k], k, object);
+            }
+        }
+    }
+};
+
+var forEach$1 = function forEach(list, iterator, thisArg) {
+    if (!isCallable$1(iterator)) {
+        throw new TypeError('iterator must be a function');
+    }
+
+    var receiver;
+    if (arguments.length >= 3) {
+        receiver = thisArg;
+    }
+
+    if (toStr$1.call(list) === '[object Array]') {
+        forEachArray(list, iterator, receiver);
+    } else if (typeof list === 'string') {
+        forEachString(list, iterator, receiver);
+    } else {
+        forEachObject(list, iterator, receiver);
+    }
+};
+
+var forEach_1 = forEach$1;
+
+/** @type {import('.')} */
+var possibleTypedArrayNames = [
+	'Float32Array',
+	'Float64Array',
+	'Int8Array',
+	'Int16Array',
+	'Int32Array',
+	'Uint8Array',
+	'Uint8ClampedArray',
+	'Uint16Array',
+	'Uint32Array',
+	'BigInt64Array',
+	'BigUint64Array'
+];
+
+var possibleNames = possibleTypedArrayNames;
+
+var g$2 = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
+
+/** @type {import('.')} */
+var availableTypedArrays$1 = function availableTypedArrays() {
+	var /** @type {ReturnType<typeof availableTypedArrays>} */ out = [];
+	for (var i = 0; i < possibleNames.length; i++) {
+		if (typeof g$2[possibleNames[i]] === 'function') {
+			// @ts-expect-error
+			out[out.length] = possibleNames[i];
+		}
+	}
+	return out;
+};
+
+var forEach = forEach_1;
+var availableTypedArrays = availableTypedArrays$1;
+var callBind = callBindExports;
+var callBound$2 = callBound$b;
+var gOPD = gopd$1;
+
+/** @type {(O: object) => string} */
+var $toString = callBound$2('Object.prototype.toString');
+var hasToStringTag = shams();
+
+var g$1 = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
+var typedArrays = availableTypedArrays();
+
+var $slice = callBound$2('String.prototype.slice');
+var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
+
+/** @type {<T = unknown>(array: readonly T[], value: unknown) => number} */
+var $indexOf = callBound$2('Array.prototype.indexOf', true) || function indexOf(array, value) {
+	for (var i = 0; i < array.length; i += 1) {
+		if (array[i] === value) {
+			return i;
+		}
+	}
+	return -1;
+};
+
+/** @typedef {(receiver: import('.').TypedArray) => string | typeof Uint8Array.prototype.slice.call | typeof Uint8Array.prototype.set.call} Getter */
+/** @type {{ [k in `\$${import('.').TypedArrayName}`]?: Getter } & { __proto__: null }} */
+var cache = { __proto__: null };
+if (hasToStringTag && gOPD && getPrototypeOf) {
+	forEach(typedArrays, function (typedArray) {
+		var arr = new g$1[typedArray]();
+		if (Symbol.toStringTag in arr) {
+			var proto = getPrototypeOf(arr);
+			// @ts-expect-error TS won't narrow inside a closure
+			var descriptor = gOPD(proto, Symbol.toStringTag);
+			if (!descriptor) {
+				var superProto = getPrototypeOf(proto);
+				// @ts-expect-error TS won't narrow inside a closure
+				descriptor = gOPD(superProto, Symbol.toStringTag);
+			}
+			// @ts-expect-error TODO: fix
+			cache['$' + typedArray] = callBind(descriptor.get);
+		}
+	});
+} else {
+	forEach(typedArrays, function (typedArray) {
+		var arr = new g$1[typedArray]();
+		var fn = arr.slice || arr.set;
+		if (fn) {
+			// @ts-expect-error TODO: fix
+			cache['$' + typedArray] = callBind(fn);
+		}
+	});
+}
+
+/** @type {(value: object) => false | import('.').TypedArrayName} */
+var tryTypedArrays = function tryAllTypedArrays(value) {
+	/** @type {ReturnType<typeof tryAllTypedArrays>} */ var found = false;
+	forEach(
+		// eslint-disable-next-line no-extra-parens
+		/** @type {Record<`\$${TypedArrayName}`, Getter>} */ /** @type {any} */ (cache),
+		/** @type {(getter: Getter, name: `\$${import('.').TypedArrayName}`) => void} */
+		function (getter, typedArray) {
+			if (!found) {
+				try {
+				// @ts-expect-error TODO: fix
+					if ('$' + getter(value) === typedArray) {
+						found = $slice(typedArray, 1);
+					}
+				} catch (e) { /**/ }
+			}
+		}
+	);
+	return found;
+};
+
+/** @type {(value: object) => false | import('.').TypedArrayName} */
+var trySlices = function tryAllSlices(value) {
+	/** @type {ReturnType<typeof tryAllSlices>} */ var found = false;
+	forEach(
+		// eslint-disable-next-line no-extra-parens
+		/** @type {Record<`\$${TypedArrayName}`, Getter>} */ /** @type {any} */ (cache),
+		/** @type {(getter: typeof cache, name: `\$${import('.').TypedArrayName}`) => void} */ function (getter, name) {
+			if (!found) {
+				try {
+					// @ts-expect-error TODO: fix
+					getter(value);
+					found = $slice(name, 1);
+				} catch (e) { /**/ }
+			}
+		}
+	);
+	return found;
+};
+
+/** @type {import('.')} */
+var whichTypedArray$1 = function whichTypedArray(value) {
+	if (!value || typeof value !== 'object') { return false; }
+	if (!hasToStringTag) {
+		/** @type {string} */
+		var tag = $slice($toString(value), 8, -1);
+		if ($indexOf(typedArrays, tag) > -1) {
+			return tag;
+		}
+		if (tag !== 'Object') {
+			return false;
+		}
+		// node < 0.6 hits here on real Typed Arrays
+		return trySlices(value);
+	}
+	if (!gOPD) { return null; } // unknown engine
+	return tryTypedArrays(value);
+};
+
+var callBound$1 = callBound$b;
+var $byteLength = callBound$1('ArrayBuffer.prototype.byteLength', true);
+
+var isArrayBuffer$1 = isArrayBuffer$2;
+
+/** @type {import('.')} */
+var arrayBufferByteLength = function byteLength(ab) {
+	if (!isArrayBuffer$1(ab)) {
+		return NaN;
+	}
+	return $byteLength ? $byteLength(ab) : ab.byteLength;
+}; // in node < 0.11, byteLength is an own nonconfigurable property
+
+var assign = object_assign;
+var callBound = callBound$b;
+var flags = regexp_prototype_flags;
+var GetIntrinsic = getIntrinsic;
+var getIterator = node;
+var getSideChannel = sideChannel;
+var is = objectIs;
+var isArguments = isArguments$1;
+var isArray = isarray;
+var isArrayBuffer = isArrayBuffer$2;
+var isDate = isDateObject;
+var isRegex = isRegex$1;
+var isSharedArrayBuffer = isSharedArrayBuffer$1;
+var objectKeys = objectKeys$2;
+var whichBoxedPrimitive = whichBoxedPrimitive$1;
+var whichCollection = whichCollection$1;
+var whichTypedArray = whichTypedArray$1;
+var byteLength = arrayBufferByteLength;
+
+var sabByteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
+
+var $getTime = callBound('Date.prototype.getTime');
+var gPO = Object.getPrototypeOf;
+var $objToString = callBound('Object.prototype.toString');
+
+var $Set = GetIntrinsic('%Set%', true);
+var $mapHas = callBound('Map.prototype.has', true);
+var $mapGet = callBound('Map.prototype.get', true);
+var $mapSize = callBound('Map.prototype.size', true);
+var $setAdd = callBound('Set.prototype.add', true);
+var $setDelete = callBound('Set.prototype.delete', true);
+var $setHas = callBound('Set.prototype.has', true);
+var $setSize = callBound('Set.prototype.size', true);
+
+// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L401-L414
+function setHasEqualElement(set, val1, opts, channel) {
+  var i = getIterator(set);
+  var result;
+  while ((result = i.next()) && !result.done) {
+    if (internalDeepEqual(val1, result.value, opts, channel)) { // eslint-disable-line no-use-before-define
+      // Remove the matching element to make sure we do not check that again.
+      $setDelete(set, result.value);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L416-L439
+function findLooseMatchingPrimitives(prim) {
+  if (typeof prim === 'undefined') {
+    return null;
+  }
+  if (typeof prim === 'object') { // Only pass in null as object!
+    return void 0;
+  }
+  if (typeof prim === 'symbol') {
+    return false;
+  }
+  if (typeof prim === 'string' || typeof prim === 'number') {
+    // Loose equal entries exist only if the string is possible to convert to a regular number and not NaN.
+    return +prim === +prim; // eslint-disable-line no-implicit-coercion
+  }
+  return true;
+}
+
+// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L449-L460
+function mapMightHaveLoosePrim(a, b, prim, item, opts, channel) {
+  var altValue = findLooseMatchingPrimitives(prim);
+  if (altValue != null) {
+    return altValue;
+  }
+  var curB = $mapGet(b, altValue);
+  var looseOpts = assign({}, opts, { strict: false });
+  if (
+    (typeof curB === 'undefined' && !$mapHas(b, altValue))
+    // eslint-disable-next-line no-use-before-define
+    || !internalDeepEqual(item, curB, looseOpts, channel)
+  ) {
+    return false;
+  }
+  // eslint-disable-next-line no-use-before-define
+  return !$mapHas(a, altValue) && internalDeepEqual(item, curB, looseOpts, channel);
+}
+
+// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L441-L447
+function setMightHaveLoosePrim(a, b, prim) {
+  var altValue = findLooseMatchingPrimitives(prim);
+  if (altValue != null) {
+    return altValue;
+  }
+
+  return $setHas(b, altValue) && !$setHas(a, altValue);
+}
+
+// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L518-L533
+function mapHasEqualEntry(set, map, key1, item1, opts, channel) {
+  var i = getIterator(set);
+  var result;
+  var key2;
+  while ((result = i.next()) && !result.done) {
+    key2 = result.value;
+    if (
+      // eslint-disable-next-line no-use-before-define
+      internalDeepEqual(key1, key2, opts, channel)
+      // eslint-disable-next-line no-use-before-define
+      && internalDeepEqual(item1, $mapGet(map, key2), opts, channel)
+    ) {
+      $setDelete(set, key2);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function internalDeepEqual(actual, expected, options, channel) {
+  var opts = options || {};
+
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (opts.strict ? is(actual, expected) : actual === expected) {
+    return true;
+  }
+
+  var actualBoxed = whichBoxedPrimitive(actual);
+  var expectedBoxed = whichBoxedPrimitive(expected);
+  if (actualBoxed !== expectedBoxed) {
+    return false;
+  }
+
+  // 7.3. Other pairs that do not both pass typeof value == 'object', equivalence is determined by ==.
+  if (!actual || !expected || (typeof actual !== 'object' && typeof expected !== 'object')) {
+    return opts.strict ? is(actual, expected) : actual == expected; // eslint-disable-line eqeqeq
+  }
+
+  /*
+   * 7.4. For all other Object pairs, including Array objects, equivalence is
+   * determined by having the same number of owned properties (as verified
+   * with Object.prototype.hasOwnProperty.call), the same set of keys
+   * (although not necessarily the same order), equivalent values for every
+   * corresponding key, and an identical 'prototype' property. Note: this
+   * accounts for both named and indexed properties on Arrays.
+   */
+  // see https://github.com/nodejs/node/commit/d3aafd02efd3a403d646a3044adcf14e63a88d32 for memos/channel inspiration
+
+  var hasActual = channel.has(actual);
+  var hasExpected = channel.has(expected);
+  var sentinel;
+  if (hasActual && hasExpected) {
+    if (channel.get(actual) === channel.get(expected)) {
+      return true;
+    }
+  } else {
+    sentinel = {};
+  }
+  if (!hasActual) { channel.set(actual, sentinel); }
+  if (!hasExpected) { channel.set(expected, sentinel); }
+
+  // eslint-disable-next-line no-use-before-define
+  return objEquiv(actual, expected, opts, channel);
+}
+
+function isBuffer(x) {
+  if (!x || typeof x !== 'object' || typeof x.length !== 'number') {
+    return false;
+  }
+  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
+    return false;
+  }
+  if (x.length > 0 && typeof x[0] !== 'number') {
+    return false;
+  }
+
+  return !!(x.constructor && x.constructor.isBuffer && x.constructor.isBuffer(x));
+}
+
+function setEquiv(a, b, opts, channel) {
+  if ($setSize(a) !== $setSize(b)) {
+    return false;
+  }
+  var iA = getIterator(a);
+  var iB = getIterator(b);
+  var resultA;
+  var resultB;
+  var set;
+  while ((resultA = iA.next()) && !resultA.done) {
+    if (resultA.value && typeof resultA.value === 'object') {
+      if (!set) { set = new $Set(); }
+      $setAdd(set, resultA.value);
+    } else if (!$setHas(b, resultA.value)) {
+      if (opts.strict) { return false; }
+      if (!setMightHaveLoosePrim(a, b, resultA.value)) {
+        return false;
+      }
+      if (!set) { set = new $Set(); }
+      $setAdd(set, resultA.value);
+    }
+  }
+  if (set) {
+    while ((resultB = iB.next()) && !resultB.done) {
+      // We have to check if a primitive value is already matching and only if it's not, go hunting for it.
+      if (resultB.value && typeof resultB.value === 'object') {
+        if (!setHasEqualElement(set, resultB.value, opts.strict, channel)) {
+          return false;
+        }
+      } else if (
+        !opts.strict
+        && !$setHas(a, resultB.value)
+        && !setHasEqualElement(set, resultB.value, opts.strict, channel)
+      ) {
+        return false;
+      }
+    }
+    return $setSize(set) === 0;
+  }
+  return true;
+}
+
+function mapEquiv(a, b, opts, channel) {
+  if ($mapSize(a) !== $mapSize(b)) {
+    return false;
+  }
+  var iA = getIterator(a);
+  var iB = getIterator(b);
+  var resultA;
+  var resultB;
+  var set;
+  var key;
+  var item1;
+  var item2;
+  while ((resultA = iA.next()) && !resultA.done) {
+    key = resultA.value[0];
+    item1 = resultA.value[1];
+    if (key && typeof key === 'object') {
+      if (!set) { set = new $Set(); }
+      $setAdd(set, key);
+    } else {
+      item2 = $mapGet(b, key);
+      if ((typeof item2 === 'undefined' && !$mapHas(b, key)) || !internalDeepEqual(item1, item2, opts, channel)) {
+        if (opts.strict) {
+          return false;
+        }
+        if (!mapMightHaveLoosePrim(a, b, key, item1, opts, channel)) {
+          return false;
+        }
+        if (!set) { set = new $Set(); }
+        $setAdd(set, key);
+      }
+    }
+  }
+
+  if (set) {
+    while ((resultB = iB.next()) && !resultB.done) {
+      key = resultB.value[0];
+      item2 = resultB.value[1];
+      if (key && typeof key === 'object') {
+        if (!mapHasEqualEntry(set, a, key, item2, opts, channel)) {
+          return false;
+        }
+      } else if (
+        !opts.strict
+        && (!a.has(key) || !internalDeepEqual($mapGet(a, key), item2, opts, channel))
+        && !mapHasEqualEntry(set, a, key, item2, assign({}, opts, { strict: false }), channel)
+      ) {
+        return false;
+      }
+    }
+    return $setSize(set) === 0;
+  }
+  return true;
+}
+
+function objEquiv(a, b, opts, channel) {
+  /* eslint max-statements: [2, 100], max-lines-per-function: [2, 120], max-depth: [2, 5], max-lines: [2, 400] */
+  var i, key;
+
+  if (typeof a !== typeof b) { return false; }
+  if (a == null || b == null) { return false; }
+
+  if ($objToString(a) !== $objToString(b)) { return false; }
+
+  if (isArguments(a) !== isArguments(b)) { return false; }
+
+  var aIsArray = isArray(a);
+  var bIsArray = isArray(b);
+  if (aIsArray !== bIsArray) { return false; }
+
+  // TODO: replace when a cross-realm brand check is available
+  var aIsError = a instanceof Error;
+  var bIsError = b instanceof Error;
+  if (aIsError !== bIsError) { return false; }
+  if (aIsError || bIsError) {
+    if (a.name !== b.name || a.message !== b.message) { return false; }
+  }
+
+  var aIsRegex = isRegex(a);
+  var bIsRegex = isRegex(b);
+  if (aIsRegex !== bIsRegex) { return false; }
+  if ((aIsRegex || bIsRegex) && (a.source !== b.source || flags(a) !== flags(b))) {
+    return false;
+  }
+
+  var aIsDate = isDate(a);
+  var bIsDate = isDate(b);
+  if (aIsDate !== bIsDate) { return false; }
+  if (aIsDate || bIsDate) { // && would work too, because both are true or both false here
+    if ($getTime(a) !== $getTime(b)) { return false; }
+  }
+  if (opts.strict && gPO && gPO(a) !== gPO(b)) { return false; }
+
+  var aWhich = whichTypedArray(a);
+  var bWhich = whichTypedArray(b);
+  if (aWhich !== bWhich) {
+    return false;
+  }
+  if (aWhich || bWhich) { // && would work too, because both are true or both false here
+    if (a.length !== b.length) { return false; }
+    for (i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) { return false; }
+    }
+    return true;
+  }
+
+  var aIsBuffer = isBuffer(a);
+  var bIsBuffer = isBuffer(b);
+  if (aIsBuffer !== bIsBuffer) { return false; }
+  if (aIsBuffer || bIsBuffer) { // && would work too, because both are true or both false here
+    if (a.length !== b.length) { return false; }
+    for (i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) { return false; }
+    }
+    return true;
+  }
+
+  var aIsArrayBuffer = isArrayBuffer(a);
+  var bIsArrayBuffer = isArrayBuffer(b);
+  if (aIsArrayBuffer !== bIsArrayBuffer) { return false; }
+  if (aIsArrayBuffer || bIsArrayBuffer) { // && would work too, because both are true or both false here
+    if (byteLength(a) !== byteLength(b)) { return false; }
+    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
+  }
+
+  var aIsSAB = isSharedArrayBuffer(a);
+  var bIsSAB = isSharedArrayBuffer(b);
+  if (aIsSAB !== bIsSAB) { return false; }
+  if (aIsSAB || bIsSAB) { // && would work too, because both are true or both false here
+    if (sabByteLength(a) !== sabByteLength(b)) { return false; }
+    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
+  }
+
+  if (typeof a !== typeof b) { return false; }
+
+  var ka = objectKeys(a);
+  var kb = objectKeys(b);
+  // having the same number of owned properties (keys incorporates hasOwnProperty)
+  if (ka.length !== kb.length) { return false; }
+
+  // the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  // ~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i]) { return false; } // eslint-disable-line eqeqeq
+  }
+
+  // equivalent values for every corresponding key, and ~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!internalDeepEqual(a[key], b[key], opts, channel)) { return false; }
+  }
+
+  var aCollection = whichCollection(a);
+  var bCollection = whichCollection(b);
+  if (aCollection !== bCollection) {
+    return false;
+  }
+  if (aCollection === 'Set' || bCollection === 'Set') { // aCollection === bCollection
+    return setEquiv(a, b, opts, channel);
+  }
+  if (aCollection === 'Map') { // aCollection === bCollection
+    return mapEquiv(a, b, opts, channel);
+  }
+
+  return true;
+}
+
+var deepEqual = function deepEqual(a, b, opts) {
+  return internalDeepEqual(a, b, opts, getSideChannel());
+};
+
+Object.defineProperty(elementRoleMap$1, "__esModule", {
+  value: true
+});
+elementRoleMap$1.default = void 0;
+var _deepEqual = _interopRequireDefault$5(deepEqual);
+var _iterationDecorator$1 = _interopRequireDefault$5(iterationDecorator$1);
+var _rolesMap$2 = _interopRequireDefault$5(rolesMap$1);
+function _interopRequireDefault$5(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _slicedToArray$1(arr, i) { return _arrayWithHoles$1(arr) || _iterableToArrayLimit$1(arr, i) || _unsupportedIterableToArray$1(arr, i) || _nonIterableRest$1(); }
+function _nonIterableRest$1() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit$1(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles$1(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray$1(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$1(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen); }
+function _arrayLikeToArray$1(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+var elementRoles$1 = [];
+var keys$1 = _rolesMap$2.default.keys();
+for (var i$1 = 0; i$1 < keys$1.length; i$1++) {
+  var key = keys$1[i$1];
+  var role = _rolesMap$2.default.get(key);
+  if (role) {
+    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
+    for (var k = 0; k < concepts.length; k++) {
+      var relation = concepts[k];
+      if (relation.module === 'HTML') {
+        var concept = relation.concept;
+        if (concept) {
+          (function () {
+            var conceptStr = JSON.stringify(concept);
+            var elementRoleRelation = elementRoles$1.find(function (relation) {
+              return JSON.stringify(relation[0]) === conceptStr;
+            });
+            var roles = void 0;
+            if (elementRoleRelation) {
+              roles = elementRoleRelation[1];
+            } else {
+              roles = [];
+            }
+            var isUnique = true;
+            for (var _i = 0; _i < roles.length; _i++) {
+              if (roles[_i] === key) {
+                isUnique = false;
+                break;
+              }
+            }
+            if (isUnique) {
+              roles.push(key);
+            }
+            elementRoles$1.push([concept, roles]);
+          })();
+        }
+      }
+    }
+  }
+}
+var elementRoleMap = {
+  entries: function entries() {
+    return elementRoles$1;
+  },
+  forEach: function forEach(fn) {
+    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var _iterator = _createForOfIteratorHelper$1(elementRoles$1),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _step$value = _slicedToArray$1(_step.value, 2),
+          _key = _step$value[0],
+          values = _step$value[1];
+        fn.call(thisArg, values, _key, elementRoles$1);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  },
+  get: function get(key) {
+    var item = elementRoles$1.find(function (tuple) {
+      return (0, _deepEqual.default)(key, tuple[0]);
+    });
+    return item && item[1];
+  },
+  has: function has(key) {
+    return !!elementRoleMap.get(key);
+  },
+  keys: function keys() {
+    return elementRoles$1.map(function (_ref) {
+      var _ref2 = _slicedToArray$1(_ref, 1),
+        key = _ref2[0];
+      return key;
+    });
+  },
+  values: function values() {
+    return elementRoles$1.map(function (_ref3) {
+      var _ref4 = _slicedToArray$1(_ref3, 2),
+        values = _ref4[1];
+      return values;
+    });
+  }
+};
+var _default$9 = (0, _iterationDecorator$1.default)(elementRoleMap, elementRoleMap.entries());
+elementRoleMap$1.default = _default$9;
+
+var roleElementMap$1 = {};
+
+Object.defineProperty(roleElementMap$1, "__esModule", {
+  value: true
+});
+roleElementMap$1.default = void 0;
+var _iterationDecorator = _interopRequireDefault$4(iterationDecorator$1);
+var _rolesMap$1 = _interopRequireDefault$4(rolesMap$1);
+function _interopRequireDefault$4(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+var roleElement = [];
+var keys = _rolesMap$1.default.keys();
+var _loop = function _loop(i) {
+  var key = keys[i];
+  var role = _rolesMap$1.default.get(key);
+  if (role) {
+    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
+    for (var k = 0; k < concepts.length; k++) {
+      var relation = concepts[k];
+      if (relation.module === 'HTML') {
+        var concept = relation.concept;
+        if (concept) {
+          var roleElementRelation = roleElement.find(function (item) {
+            return item[0] === key;
+          });
+          var relationConcepts = void 0;
+          if (roleElementRelation) {
+            relationConcepts = roleElementRelation[1];
+          } else {
+            relationConcepts = [];
+          }
+          relationConcepts.push(concept);
+          roleElement.push([key, relationConcepts]);
+        }
+      }
+    }
+  }
+};
+for (var i = 0; i < keys.length; i++) {
+  _loop(i);
+}
+var roleElementMap = {
+  entries: function entries() {
+    return roleElement;
+  },
+  forEach: function forEach(fn) {
+    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var _iterator = _createForOfIteratorHelper(roleElement),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _step$value = _slicedToArray(_step.value, 2),
+          key = _step$value[0],
+          values = _step$value[1];
+        fn.call(thisArg, values, key, roleElement);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  },
+  get: function get(key) {
+    var item = roleElement.find(function (tuple) {
+      return tuple[0] === key ? true : false;
+    });
+    return item && item[1];
+  },
+  has: function has(key) {
+    return !!roleElementMap.get(key);
+  },
+  keys: function keys() {
+    return roleElement.map(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 1),
+        key = _ref2[0];
+      return key;
+    });
+  },
+  values: function values() {
+    return roleElement.map(function (_ref3) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+        values = _ref4[1];
+      return values;
+    });
+  }
+};
+var _default$8 = (0, _iterationDecorator.default)(roleElementMap, roleElementMap.entries());
+roleElementMap$1.default = _default$8;
+
+Object.defineProperty(lib, "__esModule", {
+  value: true
+});
+var roles_1 = lib.roles = roleElements_1 = lib.roleElements = elementRoles_1 = lib.elementRoles = lib.dom = lib.aria = void 0;
+var _ariaPropsMap = _interopRequireDefault$3(ariaPropsMap$1);
+var _domMap = _interopRequireDefault$3(domMap$1);
+var _rolesMap = _interopRequireDefault$3(rolesMap$1);
+var _elementRoleMap = _interopRequireDefault$3(elementRoleMap$1);
+var _roleElementMap = _interopRequireDefault$3(roleElementMap$1);
+function _interopRequireDefault$3(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var aria = _ariaPropsMap.default;
+lib.aria = aria;
+var dom = _domMap.default;
+lib.dom = dom;
+var roles = _rolesMap.default;
+roles_1 = lib.roles = roles;
+var elementRoles = _elementRoleMap.default;
+var elementRoles_1 = lib.elementRoles = elementRoles;
+var roleElements = _roleElementMap.default;
+var roleElements_1 = lib.roleElements = roleElements;
+
+var ansiStyles$2 = {exports: {}};
+
+var colorName;
+var hasRequiredColorName;
+
+function requireColorName () {
+	if (hasRequiredColorName) return colorName;
+	hasRequiredColorName = 1;
+
+	colorName = {
+		"aliceblue": [240, 248, 255],
+		"antiquewhite": [250, 235, 215],
+		"aqua": [0, 255, 255],
+		"aquamarine": [127, 255, 212],
+		"azure": [240, 255, 255],
+		"beige": [245, 245, 220],
+		"bisque": [255, 228, 196],
+		"black": [0, 0, 0],
+		"blanchedalmond": [255, 235, 205],
+		"blue": [0, 0, 255],
+		"blueviolet": [138, 43, 226],
+		"brown": [165, 42, 42],
+		"burlywood": [222, 184, 135],
+		"cadetblue": [95, 158, 160],
+		"chartreuse": [127, 255, 0],
+		"chocolate": [210, 105, 30],
+		"coral": [255, 127, 80],
+		"cornflowerblue": [100, 149, 237],
+		"cornsilk": [255, 248, 220],
+		"crimson": [220, 20, 60],
+		"cyan": [0, 255, 255],
+		"darkblue": [0, 0, 139],
+		"darkcyan": [0, 139, 139],
+		"darkgoldenrod": [184, 134, 11],
+		"darkgray": [169, 169, 169],
+		"darkgreen": [0, 100, 0],
+		"darkgrey": [169, 169, 169],
+		"darkkhaki": [189, 183, 107],
+		"darkmagenta": [139, 0, 139],
+		"darkolivegreen": [85, 107, 47],
+		"darkorange": [255, 140, 0],
+		"darkorchid": [153, 50, 204],
+		"darkred": [139, 0, 0],
+		"darksalmon": [233, 150, 122],
+		"darkseagreen": [143, 188, 143],
+		"darkslateblue": [72, 61, 139],
+		"darkslategray": [47, 79, 79],
+		"darkslategrey": [47, 79, 79],
+		"darkturquoise": [0, 206, 209],
+		"darkviolet": [148, 0, 211],
+		"deeppink": [255, 20, 147],
+		"deepskyblue": [0, 191, 255],
+		"dimgray": [105, 105, 105],
+		"dimgrey": [105, 105, 105],
+		"dodgerblue": [30, 144, 255],
+		"firebrick": [178, 34, 34],
+		"floralwhite": [255, 250, 240],
+		"forestgreen": [34, 139, 34],
+		"fuchsia": [255, 0, 255],
+		"gainsboro": [220, 220, 220],
+		"ghostwhite": [248, 248, 255],
+		"gold": [255, 215, 0],
+		"goldenrod": [218, 165, 32],
+		"gray": [128, 128, 128],
+		"green": [0, 128, 0],
+		"greenyellow": [173, 255, 47],
+		"grey": [128, 128, 128],
+		"honeydew": [240, 255, 240],
+		"hotpink": [255, 105, 180],
+		"indianred": [205, 92, 92],
+		"indigo": [75, 0, 130],
+		"ivory": [255, 255, 240],
+		"khaki": [240, 230, 140],
+		"lavender": [230, 230, 250],
+		"lavenderblush": [255, 240, 245],
+		"lawngreen": [124, 252, 0],
+		"lemonchiffon": [255, 250, 205],
+		"lightblue": [173, 216, 230],
+		"lightcoral": [240, 128, 128],
+		"lightcyan": [224, 255, 255],
+		"lightgoldenrodyellow": [250, 250, 210],
+		"lightgray": [211, 211, 211],
+		"lightgreen": [144, 238, 144],
+		"lightgrey": [211, 211, 211],
+		"lightpink": [255, 182, 193],
+		"lightsalmon": [255, 160, 122],
+		"lightseagreen": [32, 178, 170],
+		"lightskyblue": [135, 206, 250],
+		"lightslategray": [119, 136, 153],
+		"lightslategrey": [119, 136, 153],
+		"lightsteelblue": [176, 196, 222],
+		"lightyellow": [255, 255, 224],
+		"lime": [0, 255, 0],
+		"limegreen": [50, 205, 50],
+		"linen": [250, 240, 230],
+		"magenta": [255, 0, 255],
+		"maroon": [128, 0, 0],
+		"mediumaquamarine": [102, 205, 170],
+		"mediumblue": [0, 0, 205],
+		"mediumorchid": [186, 85, 211],
+		"mediumpurple": [147, 112, 219],
+		"mediumseagreen": [60, 179, 113],
+		"mediumslateblue": [123, 104, 238],
+		"mediumspringgreen": [0, 250, 154],
+		"mediumturquoise": [72, 209, 204],
+		"mediumvioletred": [199, 21, 133],
+		"midnightblue": [25, 25, 112],
+		"mintcream": [245, 255, 250],
+		"mistyrose": [255, 228, 225],
+		"moccasin": [255, 228, 181],
+		"navajowhite": [255, 222, 173],
+		"navy": [0, 0, 128],
+		"oldlace": [253, 245, 230],
+		"olive": [128, 128, 0],
+		"olivedrab": [107, 142, 35],
+		"orange": [255, 165, 0],
+		"orangered": [255, 69, 0],
+		"orchid": [218, 112, 214],
+		"palegoldenrod": [238, 232, 170],
+		"palegreen": [152, 251, 152],
+		"paleturquoise": [175, 238, 238],
+		"palevioletred": [219, 112, 147],
+		"papayawhip": [255, 239, 213],
+		"peachpuff": [255, 218, 185],
+		"peru": [205, 133, 63],
+		"pink": [255, 192, 203],
+		"plum": [221, 160, 221],
+		"powderblue": [176, 224, 230],
+		"purple": [128, 0, 128],
+		"rebeccapurple": [102, 51, 153],
+		"red": [255, 0, 0],
+		"rosybrown": [188, 143, 143],
+		"royalblue": [65, 105, 225],
+		"saddlebrown": [139, 69, 19],
+		"salmon": [250, 128, 114],
+		"sandybrown": [244, 164, 96],
+		"seagreen": [46, 139, 87],
+		"seashell": [255, 245, 238],
+		"sienna": [160, 82, 45],
+		"silver": [192, 192, 192],
+		"skyblue": [135, 206, 235],
+		"slateblue": [106, 90, 205],
+		"slategray": [112, 128, 144],
+		"slategrey": [112, 128, 144],
+		"snow": [255, 250, 250],
+		"springgreen": [0, 255, 127],
+		"steelblue": [70, 130, 180],
+		"tan": [210, 180, 140],
+		"teal": [0, 128, 128],
+		"thistle": [216, 191, 216],
+		"tomato": [255, 99, 71],
+		"turquoise": [64, 224, 208],
+		"violet": [238, 130, 238],
+		"wheat": [245, 222, 179],
+		"white": [255, 255, 255],
+		"whitesmoke": [245, 245, 245],
+		"yellow": [255, 255, 0],
+		"yellowgreen": [154, 205, 50]
+	};
+	return colorName;
+}
+
+/* MIT license */
+
+var conversions;
+var hasRequiredConversions;
+
+function requireConversions () {
+	if (hasRequiredConversions) return conversions;
+	hasRequiredConversions = 1;
+	/* eslint-disable no-mixed-operators */
+	const cssKeywords = requireColorName();
+
+	// NOTE: conversions should only return primitive values (i.e. arrays, or
+	//       values that give correct `typeof` results).
+	//       do not use box values types (i.e. Number(), String(), etc.)
+
+	const reverseKeywords = {};
+	for (const key of Object.keys(cssKeywords)) {
+		reverseKeywords[cssKeywords[key]] = key;
+	}
+
+	const convert = {
+		rgb: {channels: 3, labels: 'rgb'},
+		hsl: {channels: 3, labels: 'hsl'},
+		hsv: {channels: 3, labels: 'hsv'},
+		hwb: {channels: 3, labels: 'hwb'},
+		cmyk: {channels: 4, labels: 'cmyk'},
+		xyz: {channels: 3, labels: 'xyz'},
+		lab: {channels: 3, labels: 'lab'},
+		lch: {channels: 3, labels: 'lch'},
+		hex: {channels: 1, labels: ['hex']},
+		keyword: {channels: 1, labels: ['keyword']},
+		ansi16: {channels: 1, labels: ['ansi16']},
+		ansi256: {channels: 1, labels: ['ansi256']},
+		hcg: {channels: 3, labels: ['h', 'c', 'g']},
+		apple: {channels: 3, labels: ['r16', 'g16', 'b16']},
+		gray: {channels: 1, labels: ['gray']}
+	};
+
+	conversions = convert;
+
+	// Hide .channels and .labels properties
+	for (const model of Object.keys(convert)) {
+		if (!('channels' in convert[model])) {
+			throw new Error('missing channels property: ' + model);
+		}
+
+		if (!('labels' in convert[model])) {
+			throw new Error('missing channel labels property: ' + model);
+		}
+
+		if (convert[model].labels.length !== convert[model].channels) {
+			throw new Error('channel and label counts mismatch: ' + model);
+		}
+
+		const {channels, labels} = convert[model];
+		delete convert[model].channels;
+		delete convert[model].labels;
+		Object.defineProperty(convert[model], 'channels', {value: channels});
+		Object.defineProperty(convert[model], 'labels', {value: labels});
+	}
+
+	convert.rgb.hsl = function (rgb) {
+		const r = rgb[0] / 255;
+		const g = rgb[1] / 255;
+		const b = rgb[2] / 255;
+		const min = Math.min(r, g, b);
+		const max = Math.max(r, g, b);
+		const delta = max - min;
+		let h;
+		let s;
+
+		if (max === min) {
+			h = 0;
+		} else if (r === max) {
+			h = (g - b) / delta;
+		} else if (g === max) {
+			h = 2 + (b - r) / delta;
+		} else if (b === max) {
+			h = 4 + (r - g) / delta;
+		}
+
+		h = Math.min(h * 60, 360);
+
+		if (h < 0) {
+			h += 360;
+		}
+
+		const l = (min + max) / 2;
+
+		if (max === min) {
+			s = 0;
+		} else if (l <= 0.5) {
+			s = delta / (max + min);
+		} else {
+			s = delta / (2 - max - min);
+		}
+
+		return [h, s * 100, l * 100];
+	};
+
+	convert.rgb.hsv = function (rgb) {
+		let rdif;
+		let gdif;
+		let bdif;
+		let h;
+		let s;
+
+		const r = rgb[0] / 255;
+		const g = rgb[1] / 255;
+		const b = rgb[2] / 255;
+		const v = Math.max(r, g, b);
+		const diff = v - Math.min(r, g, b);
+		const diffc = function (c) {
+			return (v - c) / 6 / diff + 1 / 2;
+		};
+
+		if (diff === 0) {
+			h = 0;
+			s = 0;
+		} else {
+			s = diff / v;
+			rdif = diffc(r);
+			gdif = diffc(g);
+			bdif = diffc(b);
+
+			if (r === v) {
+				h = bdif - gdif;
+			} else if (g === v) {
+				h = (1 / 3) + rdif - bdif;
+			} else if (b === v) {
+				h = (2 / 3) + gdif - rdif;
+			}
+
+			if (h < 0) {
+				h += 1;
+			} else if (h > 1) {
+				h -= 1;
+			}
+		}
+
+		return [
+			h * 360,
+			s * 100,
+			v * 100
+		];
+	};
+
+	convert.rgb.hwb = function (rgb) {
+		const r = rgb[0];
+		const g = rgb[1];
+		let b = rgb[2];
+		const h = convert.rgb.hsl(rgb)[0];
+		const w = 1 / 255 * Math.min(r, Math.min(g, b));
+
+		b = 1 - 1 / 255 * Math.max(r, Math.max(g, b));
+
+		return [h, w * 100, b * 100];
+	};
+
+	convert.rgb.cmyk = function (rgb) {
+		const r = rgb[0] / 255;
+		const g = rgb[1] / 255;
+		const b = rgb[2] / 255;
+
+		const k = Math.min(1 - r, 1 - g, 1 - b);
+		const c = (1 - r - k) / (1 - k) || 0;
+		const m = (1 - g - k) / (1 - k) || 0;
+		const y = (1 - b - k) / (1 - k) || 0;
+
+		return [c * 100, m * 100, y * 100, k * 100];
+	};
+
+	function comparativeDistance(x, y) {
+		/*
+			See https://en.m.wikipedia.org/wiki/Euclidean_distance#Squared_Euclidean_distance
+		*/
+		return (
+			((x[0] - y[0]) ** 2) +
+			((x[1] - y[1]) ** 2) +
+			((x[2] - y[2]) ** 2)
+		);
+	}
+
+	convert.rgb.keyword = function (rgb) {
+		const reversed = reverseKeywords[rgb];
+		if (reversed) {
+			return reversed;
+		}
+
+		let currentClosestDistance = Infinity;
+		let currentClosestKeyword;
+
+		for (const keyword of Object.keys(cssKeywords)) {
+			const value = cssKeywords[keyword];
+
+			// Compute comparative distance
+			const distance = comparativeDistance(rgb, value);
+
+			// Check if its less, if so set as closest
+			if (distance < currentClosestDistance) {
+				currentClosestDistance = distance;
+				currentClosestKeyword = keyword;
+			}
+		}
+
+		return currentClosestKeyword;
+	};
+
+	convert.keyword.rgb = function (keyword) {
+		return cssKeywords[keyword];
+	};
+
+	convert.rgb.xyz = function (rgb) {
+		let r = rgb[0] / 255;
+		let g = rgb[1] / 255;
+		let b = rgb[2] / 255;
+
+		// Assume sRGB
+		r = r > 0.04045 ? (((r + 0.055) / 1.055) ** 2.4) : (r / 12.92);
+		g = g > 0.04045 ? (((g + 0.055) / 1.055) ** 2.4) : (g / 12.92);
+		b = b > 0.04045 ? (((b + 0.055) / 1.055) ** 2.4) : (b / 12.92);
+
+		const x = (r * 0.4124) + (g * 0.3576) + (b * 0.1805);
+		const y = (r * 0.2126) + (g * 0.7152) + (b * 0.0722);
+		const z = (r * 0.0193) + (g * 0.1192) + (b * 0.9505);
+
+		return [x * 100, y * 100, z * 100];
+	};
+
+	convert.rgb.lab = function (rgb) {
+		const xyz = convert.rgb.xyz(rgb);
+		let x = xyz[0];
+		let y = xyz[1];
+		let z = xyz[2];
+
+		x /= 95.047;
+		y /= 100;
+		z /= 108.883;
+
+		x = x > 0.008856 ? (x ** (1 / 3)) : (7.787 * x) + (16 / 116);
+		y = y > 0.008856 ? (y ** (1 / 3)) : (7.787 * y) + (16 / 116);
+		z = z > 0.008856 ? (z ** (1 / 3)) : (7.787 * z) + (16 / 116);
+
+		const l = (116 * y) - 16;
+		const a = 500 * (x - y);
+		const b = 200 * (y - z);
+
+		return [l, a, b];
+	};
+
+	convert.hsl.rgb = function (hsl) {
+		const h = hsl[0] / 360;
+		const s = hsl[1] / 100;
+		const l = hsl[2] / 100;
+		let t2;
+		let t3;
+		let val;
+
+		if (s === 0) {
+			val = l * 255;
+			return [val, val, val];
+		}
+
+		if (l < 0.5) {
+			t2 = l * (1 + s);
+		} else {
+			t2 = l + s - l * s;
+		}
+
+		const t1 = 2 * l - t2;
+
+		const rgb = [0, 0, 0];
+		for (let i = 0; i < 3; i++) {
+			t3 = h + 1 / 3 * -(i - 1);
+			if (t3 < 0) {
+				t3++;
+			}
+
+			if (t3 > 1) {
+				t3--;
+			}
+
+			if (6 * t3 < 1) {
+				val = t1 + (t2 - t1) * 6 * t3;
+			} else if (2 * t3 < 1) {
+				val = t2;
+			} else if (3 * t3 < 2) {
+				val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
+			} else {
+				val = t1;
+			}
+
+			rgb[i] = val * 255;
+		}
+
+		return rgb;
+	};
+
+	convert.hsl.hsv = function (hsl) {
+		const h = hsl[0];
+		let s = hsl[1] / 100;
+		let l = hsl[2] / 100;
+		let smin = s;
+		const lmin = Math.max(l, 0.01);
+
+		l *= 2;
+		s *= (l <= 1) ? l : 2 - l;
+		smin *= lmin <= 1 ? lmin : 2 - lmin;
+		const v = (l + s) / 2;
+		const sv = l === 0 ? (2 * smin) / (lmin + smin) : (2 * s) / (l + s);
+
+		return [h, sv * 100, v * 100];
+	};
+
+	convert.hsv.rgb = function (hsv) {
+		const h = hsv[0] / 60;
+		const s = hsv[1] / 100;
+		let v = hsv[2] / 100;
+		const hi = Math.floor(h) % 6;
+
+		const f = h - Math.floor(h);
+		const p = 255 * v * (1 - s);
+		const q = 255 * v * (1 - (s * f));
+		const t = 255 * v * (1 - (s * (1 - f)));
+		v *= 255;
+
+		switch (hi) {
+			case 0:
+				return [v, t, p];
+			case 1:
+				return [q, v, p];
+			case 2:
+				return [p, v, t];
+			case 3:
+				return [p, q, v];
+			case 4:
+				return [t, p, v];
+			case 5:
+				return [v, p, q];
+		}
+	};
+
+	convert.hsv.hsl = function (hsv) {
+		const h = hsv[0];
+		const s = hsv[1] / 100;
+		const v = hsv[2] / 100;
+		const vmin = Math.max(v, 0.01);
+		let sl;
+		let l;
+
+		l = (2 - s) * v;
+		const lmin = (2 - s) * vmin;
+		sl = s * vmin;
+		sl /= (lmin <= 1) ? lmin : 2 - lmin;
+		sl = sl || 0;
+		l /= 2;
+
+		return [h, sl * 100, l * 100];
+	};
+
+	// http://dev.w3.org/csswg/css-color/#hwb-to-rgb
+	convert.hwb.rgb = function (hwb) {
+		const h = hwb[0] / 360;
+		let wh = hwb[1] / 100;
+		let bl = hwb[2] / 100;
+		const ratio = wh + bl;
+		let f;
+
+		// Wh + bl cant be > 1
+		if (ratio > 1) {
+			wh /= ratio;
+			bl /= ratio;
+		}
+
+		const i = Math.floor(6 * h);
+		const v = 1 - bl;
+		f = 6 * h - i;
+
+		if ((i & 0x01) !== 0) {
+			f = 1 - f;
+		}
+
+		const n = wh + f * (v - wh); // Linear interpolation
+
+		let r;
+		let g;
+		let b;
+		/* eslint-disable max-statements-per-line,no-multi-spaces */
+		switch (i) {
+			default:
+			case 6:
+			case 0: r = v;  g = n;  b = wh; break;
+			case 1: r = n;  g = v;  b = wh; break;
+			case 2: r = wh; g = v;  b = n; break;
+			case 3: r = wh; g = n;  b = v; break;
+			case 4: r = n;  g = wh; b = v; break;
+			case 5: r = v;  g = wh; b = n; break;
+		}
+		/* eslint-enable max-statements-per-line,no-multi-spaces */
+
+		return [r * 255, g * 255, b * 255];
+	};
+
+	convert.cmyk.rgb = function (cmyk) {
+		const c = cmyk[0] / 100;
+		const m = cmyk[1] / 100;
+		const y = cmyk[2] / 100;
+		const k = cmyk[3] / 100;
+
+		const r = 1 - Math.min(1, c * (1 - k) + k);
+		const g = 1 - Math.min(1, m * (1 - k) + k);
+		const b = 1 - Math.min(1, y * (1 - k) + k);
+
+		return [r * 255, g * 255, b * 255];
+	};
+
+	convert.xyz.rgb = function (xyz) {
+		const x = xyz[0] / 100;
+		const y = xyz[1] / 100;
+		const z = xyz[2] / 100;
+		let r;
+		let g;
+		let b;
+
+		r = (x * 3.2406) + (y * -1.5372) + (z * -0.4986);
+		g = (x * -0.9689) + (y * 1.8758) + (z * 0.0415);
+		b = (x * 0.0557) + (y * -0.2040) + (z * 1.0570);
+
+		// Assume sRGB
+		r = r > 0.0031308
+			? ((1.055 * (r ** (1.0 / 2.4))) - 0.055)
+			: r * 12.92;
+
+		g = g > 0.0031308
+			? ((1.055 * (g ** (1.0 / 2.4))) - 0.055)
+			: g * 12.92;
+
+		b = b > 0.0031308
+			? ((1.055 * (b ** (1.0 / 2.4))) - 0.055)
+			: b * 12.92;
+
+		r = Math.min(Math.max(0, r), 1);
+		g = Math.min(Math.max(0, g), 1);
+		b = Math.min(Math.max(0, b), 1);
+
+		return [r * 255, g * 255, b * 255];
+	};
+
+	convert.xyz.lab = function (xyz) {
+		let x = xyz[0];
+		let y = xyz[1];
+		let z = xyz[2];
+
+		x /= 95.047;
+		y /= 100;
+		z /= 108.883;
+
+		x = x > 0.008856 ? (x ** (1 / 3)) : (7.787 * x) + (16 / 116);
+		y = y > 0.008856 ? (y ** (1 / 3)) : (7.787 * y) + (16 / 116);
+		z = z > 0.008856 ? (z ** (1 / 3)) : (7.787 * z) + (16 / 116);
+
+		const l = (116 * y) - 16;
+		const a = 500 * (x - y);
+		const b = 200 * (y - z);
+
+		return [l, a, b];
+	};
+
+	convert.lab.xyz = function (lab) {
+		const l = lab[0];
+		const a = lab[1];
+		const b = lab[2];
+		let x;
+		let y;
+		let z;
+
+		y = (l + 16) / 116;
+		x = a / 500 + y;
+		z = y - b / 200;
+
+		const y2 = y ** 3;
+		const x2 = x ** 3;
+		const z2 = z ** 3;
+		y = y2 > 0.008856 ? y2 : (y - 16 / 116) / 7.787;
+		x = x2 > 0.008856 ? x2 : (x - 16 / 116) / 7.787;
+		z = z2 > 0.008856 ? z2 : (z - 16 / 116) / 7.787;
+
+		x *= 95.047;
+		y *= 100;
+		z *= 108.883;
+
+		return [x, y, z];
+	};
+
+	convert.lab.lch = function (lab) {
+		const l = lab[0];
+		const a = lab[1];
+		const b = lab[2];
+		let h;
+
+		const hr = Math.atan2(b, a);
+		h = hr * 360 / 2 / Math.PI;
+
+		if (h < 0) {
+			h += 360;
+		}
+
+		const c = Math.sqrt(a * a + b * b);
+
+		return [l, c, h];
+	};
+
+	convert.lch.lab = function (lch) {
+		const l = lch[0];
+		const c = lch[1];
+		const h = lch[2];
+
+		const hr = h / 360 * 2 * Math.PI;
+		const a = c * Math.cos(hr);
+		const b = c * Math.sin(hr);
+
+		return [l, a, b];
+	};
+
+	convert.rgb.ansi16 = function (args, saturation = null) {
+		const [r, g, b] = args;
+		let value = saturation === null ? convert.rgb.hsv(args)[2] : saturation; // Hsv -> ansi16 optimization
+
+		value = Math.round(value / 50);
+
+		if (value === 0) {
+			return 30;
+		}
+
+		let ansi = 30
+			+ ((Math.round(b / 255) << 2)
+			| (Math.round(g / 255) << 1)
+			| Math.round(r / 255));
+
+		if (value === 2) {
+			ansi += 60;
+		}
+
+		return ansi;
+	};
+
+	convert.hsv.ansi16 = function (args) {
+		// Optimization here; we already know the value and don't need to get
+		// it converted for us.
+		return convert.rgb.ansi16(convert.hsv.rgb(args), args[2]);
+	};
+
+	convert.rgb.ansi256 = function (args) {
+		const r = args[0];
+		const g = args[1];
+		const b = args[2];
+
+		// We use the extended greyscale palette here, with the exception of
+		// black and white. normal palette only has 4 greyscale shades.
+		if (r === g && g === b) {
+			if (r < 8) {
+				return 16;
+			}
+
+			if (r > 248) {
+				return 231;
+			}
+
+			return Math.round(((r - 8) / 247) * 24) + 232;
+		}
+
+		const ansi = 16
+			+ (36 * Math.round(r / 255 * 5))
+			+ (6 * Math.round(g / 255 * 5))
+			+ Math.round(b / 255 * 5);
+
+		return ansi;
+	};
+
+	convert.ansi16.rgb = function (args) {
+		let color = args % 10;
+
+		// Handle greyscale
+		if (color === 0 || color === 7) {
+			if (args > 50) {
+				color += 3.5;
+			}
+
+			color = color / 10.5 * 255;
+
+			return [color, color, color];
+		}
+
+		const mult = (~~(args > 50) + 1) * 0.5;
+		const r = ((color & 1) * mult) * 255;
+		const g = (((color >> 1) & 1) * mult) * 255;
+		const b = (((color >> 2) & 1) * mult) * 255;
+
+		return [r, g, b];
+	};
+
+	convert.ansi256.rgb = function (args) {
+		// Handle greyscale
+		if (args >= 232) {
+			const c = (args - 232) * 10 + 8;
+			return [c, c, c];
+		}
+
+		args -= 16;
+
+		let rem;
+		const r = Math.floor(args / 36) / 5 * 255;
+		const g = Math.floor((rem = args % 36) / 6) / 5 * 255;
+		const b = (rem % 6) / 5 * 255;
+
+		return [r, g, b];
+	};
+
+	convert.rgb.hex = function (args) {
+		const integer = ((Math.round(args[0]) & 0xFF) << 16)
+			+ ((Math.round(args[1]) & 0xFF) << 8)
+			+ (Math.round(args[2]) & 0xFF);
+
+		const string = integer.toString(16).toUpperCase();
+		return '000000'.substring(string.length) + string;
+	};
+
+	convert.hex.rgb = function (args) {
+		const match = args.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);
+		if (!match) {
+			return [0, 0, 0];
+		}
+
+		let colorString = match[0];
+
+		if (match[0].length === 3) {
+			colorString = colorString.split('').map(char => {
+				return char + char;
+			}).join('');
+		}
+
+		const integer = parseInt(colorString, 16);
+		const r = (integer >> 16) & 0xFF;
+		const g = (integer >> 8) & 0xFF;
+		const b = integer & 0xFF;
+
+		return [r, g, b];
+	};
+
+	convert.rgb.hcg = function (rgb) {
+		const r = rgb[0] / 255;
+		const g = rgb[1] / 255;
+		const b = rgb[2] / 255;
+		const max = Math.max(Math.max(r, g), b);
+		const min = Math.min(Math.min(r, g), b);
+		const chroma = (max - min);
+		let grayscale;
+		let hue;
+
+		if (chroma < 1) {
+			grayscale = min / (1 - chroma);
+		} else {
+			grayscale = 0;
+		}
+
+		if (chroma <= 0) {
+			hue = 0;
+		} else
+		if (max === r) {
+			hue = ((g - b) / chroma) % 6;
+		} else
+		if (max === g) {
+			hue = 2 + (b - r) / chroma;
+		} else {
+			hue = 4 + (r - g) / chroma;
+		}
+
+		hue /= 6;
+		hue %= 1;
+
+		return [hue * 360, chroma * 100, grayscale * 100];
+	};
+
+	convert.hsl.hcg = function (hsl) {
+		const s = hsl[1] / 100;
+		const l = hsl[2] / 100;
+
+		const c = l < 0.5 ? (2.0 * s * l) : (2.0 * s * (1.0 - l));
+
+		let f = 0;
+		if (c < 1.0) {
+			f = (l - 0.5 * c) / (1.0 - c);
+		}
+
+		return [hsl[0], c * 100, f * 100];
+	};
+
+	convert.hsv.hcg = function (hsv) {
+		const s = hsv[1] / 100;
+		const v = hsv[2] / 100;
+
+		const c = s * v;
+		let f = 0;
+
+		if (c < 1.0) {
+			f = (v - c) / (1 - c);
+		}
+
+		return [hsv[0], c * 100, f * 100];
+	};
+
+	convert.hcg.rgb = function (hcg) {
+		const h = hcg[0] / 360;
+		const c = hcg[1] / 100;
+		const g = hcg[2] / 100;
+
+		if (c === 0.0) {
+			return [g * 255, g * 255, g * 255];
+		}
+
+		const pure = [0, 0, 0];
+		const hi = (h % 1) * 6;
+		const v = hi % 1;
+		const w = 1 - v;
+		let mg = 0;
+
+		/* eslint-disable max-statements-per-line */
+		switch (Math.floor(hi)) {
+			case 0:
+				pure[0] = 1; pure[1] = v; pure[2] = 0; break;
+			case 1:
+				pure[0] = w; pure[1] = 1; pure[2] = 0; break;
+			case 2:
+				pure[0] = 0; pure[1] = 1; pure[2] = v; break;
+			case 3:
+				pure[0] = 0; pure[1] = w; pure[2] = 1; break;
+			case 4:
+				pure[0] = v; pure[1] = 0; pure[2] = 1; break;
+			default:
+				pure[0] = 1; pure[1] = 0; pure[2] = w;
+		}
+		/* eslint-enable max-statements-per-line */
+
+		mg = (1.0 - c) * g;
+
+		return [
+			(c * pure[0] + mg) * 255,
+			(c * pure[1] + mg) * 255,
+			(c * pure[2] + mg) * 255
+		];
+	};
+
+	convert.hcg.hsv = function (hcg) {
+		const c = hcg[1] / 100;
+		const g = hcg[2] / 100;
+
+		const v = c + g * (1.0 - c);
+		let f = 0;
+
+		if (v > 0.0) {
+			f = c / v;
+		}
+
+		return [hcg[0], f * 100, v * 100];
+	};
+
+	convert.hcg.hsl = function (hcg) {
+		const c = hcg[1] / 100;
+		const g = hcg[2] / 100;
+
+		const l = g * (1.0 - c) + 0.5 * c;
+		let s = 0;
+
+		if (l > 0.0 && l < 0.5) {
+			s = c / (2 * l);
+		} else
+		if (l >= 0.5 && l < 1.0) {
+			s = c / (2 * (1 - l));
+		}
+
+		return [hcg[0], s * 100, l * 100];
+	};
+
+	convert.hcg.hwb = function (hcg) {
+		const c = hcg[1] / 100;
+		const g = hcg[2] / 100;
+		const v = c + g * (1.0 - c);
+		return [hcg[0], (v - c) * 100, (1 - v) * 100];
+	};
+
+	convert.hwb.hcg = function (hwb) {
+		const w = hwb[1] / 100;
+		const b = hwb[2] / 100;
+		const v = 1 - b;
+		const c = v - w;
+		let g = 0;
+
+		if (c < 1) {
+			g = (v - c) / (1 - c);
+		}
+
+		return [hwb[0], c * 100, g * 100];
+	};
+
+	convert.apple.rgb = function (apple) {
+		return [(apple[0] / 65535) * 255, (apple[1] / 65535) * 255, (apple[2] / 65535) * 255];
+	};
+
+	convert.rgb.apple = function (rgb) {
+		return [(rgb[0] / 255) * 65535, (rgb[1] / 255) * 65535, (rgb[2] / 255) * 65535];
+	};
+
+	convert.gray.rgb = function (args) {
+		return [args[0] / 100 * 255, args[0] / 100 * 255, args[0] / 100 * 255];
+	};
+
+	convert.gray.hsl = function (args) {
+		return [0, 0, args[0]];
+	};
+
+	convert.gray.hsv = convert.gray.hsl;
+
+	convert.gray.hwb = function (gray) {
+		return [0, 100, gray[0]];
+	};
+
+	convert.gray.cmyk = function (gray) {
+		return [0, 0, 0, gray[0]];
+	};
+
+	convert.gray.lab = function (gray) {
+		return [gray[0], 0, 0];
+	};
+
+	convert.gray.hex = function (gray) {
+		const val = Math.round(gray[0] / 100 * 255) & 0xFF;
+		const integer = (val << 16) + (val << 8) + val;
+
+		const string = integer.toString(16).toUpperCase();
+		return '000000'.substring(string.length) + string;
+	};
+
+	convert.rgb.gray = function (rgb) {
+		const val = (rgb[0] + rgb[1] + rgb[2]) / 3;
+		return [val / 255 * 100];
+	};
+	return conversions;
+}
+
+var route;
+var hasRequiredRoute;
+
+function requireRoute () {
+	if (hasRequiredRoute) return route;
+	hasRequiredRoute = 1;
+	const conversions = requireConversions();
+
+	/*
+		This function routes a model to all other models.
+
+		all functions that are routed have a property `.conversion` attached
+		to the returned synthetic function. This property is an array
+		of strings, each with the steps in between the 'from' and 'to'
+		color models (inclusive).
+
+		conversions that are not possible simply are not included.
+	*/
+
+	function buildGraph() {
+		const graph = {};
+		// https://jsperf.com/object-keys-vs-for-in-with-closure/3
+		const models = Object.keys(conversions);
+
+		for (let len = models.length, i = 0; i < len; i++) {
+			graph[models[i]] = {
+				// http://jsperf.com/1-vs-infinity
+				// micro-opt, but this is simple.
+				distance: -1,
+				parent: null
+			};
+		}
+
+		return graph;
+	}
+
+	// https://en.wikipedia.org/wiki/Breadth-first_search
+	function deriveBFS(fromModel) {
+		const graph = buildGraph();
+		const queue = [fromModel]; // Unshift -> queue -> pop
+
+		graph[fromModel].distance = 0;
+
+		while (queue.length) {
+			const current = queue.pop();
+			const adjacents = Object.keys(conversions[current]);
+
+			for (let len = adjacents.length, i = 0; i < len; i++) {
+				const adjacent = adjacents[i];
+				const node = graph[adjacent];
+
+				if (node.distance === -1) {
+					node.distance = graph[current].distance + 1;
+					node.parent = current;
+					queue.unshift(adjacent);
+				}
+			}
+		}
+
+		return graph;
+	}
+
+	function link(from, to) {
+		return function (args) {
+			return to(from(args));
+		};
+	}
+
+	function wrapConversion(toModel, graph) {
+		const path = [graph[toModel].parent, toModel];
+		let fn = conversions[graph[toModel].parent][toModel];
+
+		let cur = graph[toModel].parent;
+		while (graph[cur].parent) {
+			path.unshift(graph[cur].parent);
+			fn = link(conversions[graph[cur].parent][cur], fn);
+			cur = graph[cur].parent;
+		}
+
+		fn.conversion = path;
+		return fn;
+	}
+
+	route = function (fromModel) {
+		const graph = deriveBFS(fromModel);
+		const conversion = {};
+
+		const models = Object.keys(graph);
+		for (let len = models.length, i = 0; i < len; i++) {
+			const toModel = models[i];
+			const node = graph[toModel];
+
+			if (node.parent === null) {
+				// No possible conversion, or this node is the source model.
+				continue;
+			}
+
+			conversion[toModel] = wrapConversion(toModel, graph);
+		}
+
+		return conversion;
+	};
+	return route;
+}
+
+var colorConvert;
+var hasRequiredColorConvert;
+
+function requireColorConvert () {
+	if (hasRequiredColorConvert) return colorConvert;
+	hasRequiredColorConvert = 1;
+	const conversions = requireConversions();
+	const route = requireRoute();
+
+	const convert = {};
+
+	const models = Object.keys(conversions);
+
+	function wrapRaw(fn) {
+		const wrappedFn = function (...args) {
+			const arg0 = args[0];
+			if (arg0 === undefined || arg0 === null) {
+				return arg0;
+			}
+
+			if (arg0.length > 1) {
+				args = arg0;
+			}
+
+			return fn(args);
+		};
+
+		// Preserve .conversion property if there is one
+		if ('conversion' in fn) {
+			wrappedFn.conversion = fn.conversion;
+		}
+
+		return wrappedFn;
+	}
+
+	function wrapRounded(fn) {
+		const wrappedFn = function (...args) {
+			const arg0 = args[0];
+
+			if (arg0 === undefined || arg0 === null) {
+				return arg0;
+			}
+
+			if (arg0.length > 1) {
+				args = arg0;
+			}
+
+			const result = fn(args);
+
+			// We're assuming the result is an array here.
+			// see notice in conversions.js; don't use box types
+			// in conversion functions.
+			if (typeof result === 'object') {
+				for (let len = result.length, i = 0; i < len; i++) {
+					result[i] = Math.round(result[i]);
+				}
+			}
+
+			return result;
+		};
+
+		// Preserve .conversion property if there is one
+		if ('conversion' in fn) {
+			wrappedFn.conversion = fn.conversion;
+		}
+
+		return wrappedFn;
+	}
+
+	models.forEach(fromModel => {
+		convert[fromModel] = {};
+
+		Object.defineProperty(convert[fromModel], 'channels', {value: conversions[fromModel].channels});
+		Object.defineProperty(convert[fromModel], 'labels', {value: conversions[fromModel].labels});
+
+		const routes = route(fromModel);
+		const routeModels = Object.keys(routes);
+
+		routeModels.forEach(toModel => {
+			const fn = routes[toModel];
+
+			convert[fromModel][toModel] = wrapRounded(fn);
+			convert[fromModel][toModel].raw = wrapRaw(fn);
+		});
+	});
+
+	colorConvert = convert;
+	return colorConvert;
+}
+
+ansiStyles$2.exports;
+
+(function (module) {
+
+	const wrapAnsi16 = (fn, offset) => (...args) => {
+		const code = fn(...args);
+		return `\u001B[${code + offset}m`;
+	};
+
+	const wrapAnsi256 = (fn, offset) => (...args) => {
+		const code = fn(...args);
+		return `\u001B[${38 + offset};5;${code}m`;
+	};
+
+	const wrapAnsi16m = (fn, offset) => (...args) => {
+		const rgb = fn(...args);
+		return `\u001B[${38 + offset};2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
+	};
+
+	const ansi2ansi = n => n;
+	const rgb2rgb = (r, g, b) => [r, g, b];
+
+	const setLazyProperty = (object, property, get) => {
+		Object.defineProperty(object, property, {
+			get: () => {
+				const value = get();
+
+				Object.defineProperty(object, property, {
+					value,
+					enumerable: true,
+					configurable: true
+				});
+
+				return value;
+			},
+			enumerable: true,
+			configurable: true
+		});
+	};
+
+	/** @type {typeof import('color-convert')} */
+	let colorConvert;
+	const makeDynamicStyles = (wrap, targetSpace, identity, isBackground) => {
+		if (colorConvert === undefined) {
+			colorConvert = requireColorConvert();
+		}
+
+		const offset = isBackground ? 10 : 0;
+		const styles = {};
+
+		for (const [sourceSpace, suite] of Object.entries(colorConvert)) {
+			const name = sourceSpace === 'ansi16' ? 'ansi' : sourceSpace;
+			if (sourceSpace === targetSpace) {
+				styles[name] = wrap(identity, offset);
+			} else if (typeof suite === 'object') {
+				styles[name] = wrap(suite[targetSpace], offset);
+			}
+		}
+
+		return styles;
+	};
+
+	function assembleStyles() {
+		const codes = new Map();
+		const styles = {
+			modifier: {
+				reset: [0, 0],
+				// 21 isn't widely supported and 22 does the same thing
+				bold: [1, 22],
+				dim: [2, 22],
+				italic: [3, 23],
+				underline: [4, 24],
+				inverse: [7, 27],
+				hidden: [8, 28],
+				strikethrough: [9, 29]
+			},
+			color: {
+				black: [30, 39],
+				red: [31, 39],
+				green: [32, 39],
+				yellow: [33, 39],
+				blue: [34, 39],
+				magenta: [35, 39],
+				cyan: [36, 39],
+				white: [37, 39],
+
+				// Bright color
+				blackBright: [90, 39],
+				redBright: [91, 39],
+				greenBright: [92, 39],
+				yellowBright: [93, 39],
+				blueBright: [94, 39],
+				magentaBright: [95, 39],
+				cyanBright: [96, 39],
+				whiteBright: [97, 39]
+			},
+			bgColor: {
+				bgBlack: [40, 49],
+				bgRed: [41, 49],
+				bgGreen: [42, 49],
+				bgYellow: [43, 49],
+				bgBlue: [44, 49],
+				bgMagenta: [45, 49],
+				bgCyan: [46, 49],
+				bgWhite: [47, 49],
+
+				// Bright color
+				bgBlackBright: [100, 49],
+				bgRedBright: [101, 49],
+				bgGreenBright: [102, 49],
+				bgYellowBright: [103, 49],
+				bgBlueBright: [104, 49],
+				bgMagentaBright: [105, 49],
+				bgCyanBright: [106, 49],
+				bgWhiteBright: [107, 49]
+			}
+		};
+
+		// Alias bright black as gray (and grey)
+		styles.color.gray = styles.color.blackBright;
+		styles.bgColor.bgGray = styles.bgColor.bgBlackBright;
+		styles.color.grey = styles.color.blackBright;
+		styles.bgColor.bgGrey = styles.bgColor.bgBlackBright;
+
+		for (const [groupName, group] of Object.entries(styles)) {
+			for (const [styleName, style] of Object.entries(group)) {
+				styles[styleName] = {
+					open: `\u001B[${style[0]}m`,
+					close: `\u001B[${style[1]}m`
+				};
+
+				group[styleName] = styles[styleName];
+
+				codes.set(style[0], style[1]);
+			}
+
+			Object.defineProperty(styles, groupName, {
+				value: group,
+				enumerable: false
+			});
+		}
+
+		Object.defineProperty(styles, 'codes', {
+			value: codes,
+			enumerable: false
+		});
+
+		styles.color.close = '\u001B[39m';
+		styles.bgColor.close = '\u001B[49m';
+
+		setLazyProperty(styles.color, 'ansi', () => makeDynamicStyles(wrapAnsi16, 'ansi16', ansi2ansi, false));
+		setLazyProperty(styles.color, 'ansi256', () => makeDynamicStyles(wrapAnsi256, 'ansi256', ansi2ansi, false));
+		setLazyProperty(styles.color, 'ansi16m', () => makeDynamicStyles(wrapAnsi16m, 'rgb', rgb2rgb, false));
+		setLazyProperty(styles.bgColor, 'ansi', () => makeDynamicStyles(wrapAnsi16, 'ansi16', ansi2ansi, true));
+		setLazyProperty(styles.bgColor, 'ansi256', () => makeDynamicStyles(wrapAnsi256, 'ansi256', ansi2ansi, true));
+		setLazyProperty(styles.bgColor, 'ansi16m', () => makeDynamicStyles(wrapAnsi16m, 'rgb', rgb2rgb, true));
+
+		return styles;
+	}
+
+	// Make the export immutable
+	Object.defineProperty(module, 'exports', {
+		enumerable: true,
+		get: assembleStyles
+	}); 
+} (ansiStyles$2));
+
+var ansiStylesExports$1 = ansiStyles$2.exports;
+
+var hasFlag$1 = (flag, argv = process.argv) => {
+	const prefix = flag.startsWith('-') ? '' : (flag.length === 1 ? '-' : '--');
+	const position = argv.indexOf(prefix + flag);
+	const terminatorPosition = argv.indexOf('--');
+	return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
+};
+
+const os = require$$0$1;
+const tty = require$$1;
+const hasFlag = hasFlag$1;
+
+const {env} = process;
+
+let forceColor;
+if (hasFlag('no-color') ||
+	hasFlag('no-colors') ||
+	hasFlag('color=false') ||
+	hasFlag('color=never')) {
+	forceColor = 0;
+} else if (hasFlag('color') ||
+	hasFlag('colors') ||
+	hasFlag('color=true') ||
+	hasFlag('color=always')) {
+	forceColor = 1;
+}
+
+if ('FORCE_COLOR' in env) {
+	if (env.FORCE_COLOR === 'true') {
+		forceColor = 1;
+	} else if (env.FORCE_COLOR === 'false') {
+		forceColor = 0;
+	} else {
+		forceColor = env.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env.FORCE_COLOR, 10), 3);
+	}
+}
+
+function translateLevel(level) {
+	if (level === 0) {
+		return false;
+	}
+
+	return {
+		level,
+		hasBasic: true,
+		has256: level >= 2,
+		has16m: level >= 3
+	};
+}
+
+function supportsColor(haveStream, streamIsTTY) {
+	if (forceColor === 0) {
+		return 0;
+	}
+
+	if (hasFlag('color=16m') ||
+		hasFlag('color=full') ||
+		hasFlag('color=truecolor')) {
+		return 3;
+	}
+
+	if (hasFlag('color=256')) {
+		return 2;
+	}
+
+	if (haveStream && !streamIsTTY && forceColor === undefined) {
+		return 0;
+	}
+
+	const min = forceColor || 0;
+
+	if (env.TERM === 'dumb') {
+		return min;
+	}
+
+	if (process.platform === 'win32') {
+		// Windows 10 build 10586 is the first Windows release that supports 256 colors.
+		// Windows 10 build 14931 is the first release that supports 16m/TrueColor.
+		const osRelease = os.release().split('.');
+		if (
+			Number(osRelease[0]) >= 10 &&
+			Number(osRelease[2]) >= 10586
+		) {
+			return Number(osRelease[2]) >= 14931 ? 3 : 2;
+		}
+
+		return 1;
+	}
+
+	if ('CI' in env) {
+		if (['TRAVIS', 'CIRCLECI', 'APPVEYOR', 'GITLAB_CI', 'GITHUB_ACTIONS', 'BUILDKITE'].some(sign => sign in env) || env.CI_NAME === 'codeship') {
+			return 1;
+		}
+
+		return min;
+	}
+
+	if ('TEAMCITY_VERSION' in env) {
+		return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+	}
+
+	if (env.COLORTERM === 'truecolor') {
+		return 3;
+	}
+
+	if ('TERM_PROGRAM' in env) {
+		const version = parseInt((env.TERM_PROGRAM_VERSION || '').split('.')[0], 10);
+
+		switch (env.TERM_PROGRAM) {
+			case 'iTerm.app':
+				return version >= 3 ? 3 : 2;
+			case 'Apple_Terminal':
+				return 2;
+			// No default
+		}
+	}
+
+	if (/-256(color)?$/i.test(env.TERM)) {
+		return 2;
+	}
+
+	if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+		return 1;
+	}
+
+	if ('COLORTERM' in env) {
+		return 1;
+	}
+
+	return min;
+}
+
+function getSupportLevel(stream) {
+	const level = supportsColor(stream, stream && stream.isTTY);
+	return translateLevel(level);
+}
+
+var supportsColor_1 = {
+	supportsColor: getSupportLevel,
+	stdout: translateLevel(supportsColor(true, tty.isatty(1))),
+	stderr: translateLevel(supportsColor(true, tty.isatty(2)))
+};
+
+const stringReplaceAll$1 = (string, substring, replacer) => {
+	let index = string.indexOf(substring);
+	if (index === -1) {
+		return string;
+	}
+
+	const substringLength = substring.length;
+	let endIndex = 0;
+	let returnValue = '';
+	do {
+		returnValue += string.substr(endIndex, index - endIndex) + substring + replacer;
+		endIndex = index + substringLength;
+		index = string.indexOf(substring, endIndex);
+	} while (index !== -1);
+
+	returnValue += string.substr(endIndex);
+	return returnValue;
+};
+
+const stringEncaseCRLFWithFirstIndex$1 = (string, prefix, postfix, index) => {
+	let endIndex = 0;
+	let returnValue = '';
+	do {
+		const gotCR = string[index - 1] === '\r';
+		returnValue += string.substr(endIndex, (gotCR ? index - 1 : index) - endIndex) + prefix + (gotCR ? '\r\n' : '\n') + postfix;
+		endIndex = index + 1;
+		index = string.indexOf('\n', endIndex);
+	} while (index !== -1);
+
+	returnValue += string.substr(endIndex);
+	return returnValue;
+};
+
+var util = {
+	stringReplaceAll: stringReplaceAll$1,
+	stringEncaseCRLFWithFirstIndex: stringEncaseCRLFWithFirstIndex$1
+};
+
+var templates;
+var hasRequiredTemplates;
+
+function requireTemplates () {
+	if (hasRequiredTemplates) return templates;
+	hasRequiredTemplates = 1;
+	const TEMPLATE_REGEX = /(?:\\(u(?:[a-f\d]{4}|\{[a-f\d]{1,6}\})|x[a-f\d]{2}|.))|(?:\{(~)?(\w+(?:\([^)]*\))?(?:\.\w+(?:\([^)]*\))?)*)(?:[ \t]|(?=\r?\n)))|(\})|((?:.|[\r\n\f])+?)/gi;
+	const STYLE_REGEX = /(?:^|\.)(\w+)(?:\(([^)]*)\))?/g;
+	const STRING_REGEX = /^(['"])((?:\\.|(?!\1)[^\\])*)\1$/;
+	const ESCAPE_REGEX = /\\(u(?:[a-f\d]{4}|\{[a-f\d]{1,6}\})|x[a-f\d]{2}|.)|([^\\])/gi;
+
+	const ESCAPES = new Map([
+		['n', '\n'],
+		['r', '\r'],
+		['t', '\t'],
+		['b', '\b'],
+		['f', '\f'],
+		['v', '\v'],
+		['0', '\0'],
+		['\\', '\\'],
+		['e', '\u001B'],
+		['a', '\u0007']
+	]);
+
+	function unescape(c) {
+		const u = c[0] === 'u';
+		const bracket = c[1] === '{';
+
+		if ((u && !bracket && c.length === 5) || (c[0] === 'x' && c.length === 3)) {
+			return String.fromCharCode(parseInt(c.slice(1), 16));
+		}
+
+		if (u && bracket) {
+			return String.fromCodePoint(parseInt(c.slice(2, -1), 16));
+		}
+
+		return ESCAPES.get(c) || c;
+	}
+
+	function parseArguments(name, arguments_) {
+		const results = [];
+		const chunks = arguments_.trim().split(/\s*,\s*/g);
+		let matches;
+
+		for (const chunk of chunks) {
+			const number = Number(chunk);
+			if (!Number.isNaN(number)) {
+				results.push(number);
+			} else if ((matches = chunk.match(STRING_REGEX))) {
+				results.push(matches[2].replace(ESCAPE_REGEX, (m, escape, character) => escape ? unescape(escape) : character));
+			} else {
+				throw new Error(`Invalid Chalk template style argument: ${chunk} (in style '${name}')`);
+			}
+		}
+
+		return results;
+	}
+
+	function parseStyle(style) {
+		STYLE_REGEX.lastIndex = 0;
+
+		const results = [];
+		let matches;
+
+		while ((matches = STYLE_REGEX.exec(style)) !== null) {
+			const name = matches[1];
+
+			if (matches[2]) {
+				const args = parseArguments(name, matches[2]);
+				results.push([name].concat(args));
+			} else {
+				results.push([name]);
+			}
+		}
+
+		return results;
+	}
+
+	function buildStyle(chalk, styles) {
+		const enabled = {};
+
+		for (const layer of styles) {
+			for (const style of layer.styles) {
+				enabled[style[0]] = layer.inverse ? null : style.slice(1);
+			}
+		}
+
+		let current = chalk;
+		for (const [styleName, styles] of Object.entries(enabled)) {
+			if (!Array.isArray(styles)) {
+				continue;
+			}
+
+			if (!(styleName in current)) {
+				throw new Error(`Unknown Chalk style: ${styleName}`);
+			}
+
+			current = styles.length > 0 ? current[styleName](...styles) : current[styleName];
+		}
+
+		return current;
+	}
+
+	templates = (chalk, temporary) => {
+		const styles = [];
+		const chunks = [];
+		let chunk = [];
+
+		// eslint-disable-next-line max-params
+		temporary.replace(TEMPLATE_REGEX, (m, escapeCharacter, inverse, style, close, character) => {
+			if (escapeCharacter) {
+				chunk.push(unescape(escapeCharacter));
+			} else if (style) {
+				const string = chunk.join('');
+				chunk = [];
+				chunks.push(styles.length === 0 ? string : buildStyle(chalk, styles)(string));
+				styles.push({inverse, styles: parseStyle(style)});
+			} else if (close) {
+				if (styles.length === 0) {
+					throw new Error('Found extraneous } in Chalk template literal');
+				}
+
+				chunks.push(buildStyle(chalk, styles)(chunk.join('')));
+				chunk = [];
+				styles.pop();
+			} else {
+				chunk.push(character);
+			}
+		});
+
+		chunks.push(chunk.join(''));
+
+		if (styles.length > 0) {
+			const errMsg = `Chalk template literal is missing ${styles.length} closing bracket${styles.length === 1 ? '' : 's'} (\`}\`)`;
+			throw new Error(errMsg);
+		}
+
+		return chunks.join('');
+	};
+	return templates;
+}
+
+const ansiStyles$1 = ansiStylesExports$1;
+const {stdout: stdoutColor, stderr: stderrColor} = supportsColor_1;
+const {
+	stringReplaceAll,
+	stringEncaseCRLFWithFirstIndex
+} = util;
+
+// `supportsColor.level` → `ansiStyles.color[name]` mapping
+const levelMapping = [
+	'ansi',
+	'ansi',
+	'ansi256',
+	'ansi16m'
+];
+
+const styles = Object.create(null);
+
+const applyOptions = (object, options = {}) => {
+	if (options.level > 3 || options.level < 0) {
+		throw new Error('The `level` option should be an integer from 0 to 3');
+	}
+
+	// Detect level if not set manually
+	const colorLevel = stdoutColor ? stdoutColor.level : 0;
+	object.level = options.level === undefined ? colorLevel : options.level;
+};
+
+class ChalkClass {
+	constructor(options) {
+		return chalkFactory(options);
+	}
+}
+
+const chalkFactory = options => {
+	const chalk = {};
+	applyOptions(chalk, options);
+
+	chalk.template = (...arguments_) => chalkTag(chalk.template, ...arguments_);
+
+	Object.setPrototypeOf(chalk, Chalk.prototype);
+	Object.setPrototypeOf(chalk.template, chalk);
+
+	chalk.template.constructor = () => {
+		throw new Error('`chalk.constructor()` is deprecated. Use `new chalk.Instance()` instead.');
+	};
+
+	chalk.template.Instance = ChalkClass;
+
+	return chalk.template;
+};
+
+function Chalk(options) {
+	return chalkFactory(options);
+}
+
+for (const [styleName, style] of Object.entries(ansiStyles$1)) {
+	styles[styleName] = {
+		get() {
+			const builder = createBuilder(this, createStyler(style.open, style.close, this._styler), this._isEmpty);
+			Object.defineProperty(this, styleName, {value: builder});
+			return builder;
+		}
+	};
+}
+
+styles.visible = {
+	get() {
+		const builder = createBuilder(this, this._styler, true);
+		Object.defineProperty(this, 'visible', {value: builder});
+		return builder;
+	}
+};
+
+const usedModels = ['rgb', 'hex', 'keyword', 'hsl', 'hsv', 'hwb', 'ansi', 'ansi256'];
+
+for (const model of usedModels) {
+	styles[model] = {
+		get() {
+			const {level} = this;
+			return function (...arguments_) {
+				const styler = createStyler(ansiStyles$1.color[levelMapping[level]][model](...arguments_), ansiStyles$1.color.close, this._styler);
+				return createBuilder(this, styler, this._isEmpty);
+			};
+		}
+	};
+}
+
+for (const model of usedModels) {
+	const bgModel = 'bg' + model[0].toUpperCase() + model.slice(1);
+	styles[bgModel] = {
+		get() {
+			const {level} = this;
+			return function (...arguments_) {
+				const styler = createStyler(ansiStyles$1.bgColor[levelMapping[level]][model](...arguments_), ansiStyles$1.bgColor.close, this._styler);
+				return createBuilder(this, styler, this._isEmpty);
+			};
+		}
+	};
+}
+
+const proto = Object.defineProperties(() => {}, {
+	...styles,
+	level: {
+		enumerable: true,
+		get() {
+			return this._generator.level;
+		},
+		set(level) {
+			this._generator.level = level;
+		}
+	}
+});
+
+const createStyler = (open, close, parent) => {
+	let openAll;
+	let closeAll;
+	if (parent === undefined) {
+		openAll = open;
+		closeAll = close;
+	} else {
+		openAll = parent.openAll + open;
+		closeAll = close + parent.closeAll;
+	}
+
+	return {
+		open,
+		close,
+		openAll,
+		closeAll,
+		parent
+	};
+};
+
+const createBuilder = (self, _styler, _isEmpty) => {
+	const builder = (...arguments_) => {
+		// Single argument is hot path, implicit coercion is faster than anything
+		// eslint-disable-next-line no-implicit-coercion
+		return applyStyle(builder, (arguments_.length === 1) ? ('' + arguments_[0]) : arguments_.join(' '));
+	};
+
+	// `__proto__` is used because we must return a function, but there is
+	// no way to create a function with a different prototype
+	builder.__proto__ = proto; // eslint-disable-line no-proto
+
+	builder._generator = self;
+	builder._styler = _styler;
+	builder._isEmpty = _isEmpty;
+
+	return builder;
+};
+
+const applyStyle = (self, string) => {
+	if (self.level <= 0 || !string) {
+		return self._isEmpty ? '' : string;
+	}
+
+	let styler = self._styler;
+
+	if (styler === undefined) {
+		return string;
+	}
+
+	const {openAll, closeAll} = styler;
+	if (string.indexOf('\u001B') !== -1) {
+		while (styler !== undefined) {
+			// Replace any instances already present with a re-opening code
+			// otherwise only the part of the string until said closing code
+			// will be colored, and the rest will simply be 'plain'.
+			string = stringReplaceAll(string, styler.close, styler.open);
+
+			styler = styler.parent;
+		}
+	}
+
+	// We can move both next actions out of loop, because remaining actions in loop won't have
+	// any/visible effect on parts we add here. Close the styling before a linebreak and reopen
+	// after next line to fix a bleed issue on macOS: https://github.com/chalk/chalk/pull/92
+	const lfIndex = string.indexOf('\n');
+	if (lfIndex !== -1) {
+		string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
+	}
+
+	return openAll + string + closeAll;
+};
+
+let template;
+const chalkTag = (chalk, ...strings) => {
+	const [firstString] = strings;
+
+	if (!Array.isArray(firstString)) {
+		// If chalk() was called by itself or with a string,
+		// return the string itself as a string.
+		return strings.join(' ');
+	}
+
+	const arguments_ = strings.slice(1);
+	const parts = [firstString.raw[0]];
+
+	for (let i = 1; i < firstString.length; i++) {
+		parts.push(
+			String(arguments_[i - 1]).replace(/[{}\\]/g, '\\$&'),
+			String(firstString.raw[i])
+		);
+	}
+
+	if (template === undefined) {
+		template = requireTemplates();
+	}
+
+	return template(chalk, parts.join(''));
+};
+
+Object.defineProperties(Chalk.prototype, styles);
+
+const chalk$1 = Chalk(); // eslint-disable-line new-cap
+chalk$1.supportsColor = stdoutColor;
+chalk$1.stderr = Chalk({level: stderrColor ? stderrColor.level : 0}); // eslint-disable-line new-cap
+chalk$1.stderr.supportsColor = stderrColor;
+
+// For TypeScript
+chalk$1.Level = {
+	None: 0,
+	Basic: 1,
+	Ansi256: 2,
+	TrueColor: 3,
+	0: 'None',
+	1: 'Basic',
+	2: 'Ansi256',
+	3: 'TrueColor'
+};
+
+var source = chalk$1;
+
+var chalk$2 = /*@__PURE__*/getDefaultExportFromCjs(source);
+
+var baseIsEqual = _baseIsEqual;
+
+/**
+ * This method is like `_.isEqual` except that it accepts `customizer` which
+ * is invoked to compare values. If `customizer` returns `undefined`, comparisons
+ * are handled by the method instead. The `customizer` is invoked with up to
+ * six arguments: (objValue, othValue [, index|key, object, other, stack]).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * function isGreeting(value) {
+ *   return /^h(?:i|ello)$/.test(value);
+ * }
+ *
+ * function customizer(objValue, othValue) {
+ *   if (isGreeting(objValue) && isGreeting(othValue)) {
+ *     return true;
+ *   }
+ * }
+ *
+ * var array = ['hello', 'goodbye'];
+ * var other = ['hi', 'goodbye'];
+ *
+ * _.isEqualWith(array, other, customizer);
+ * // => true
+ */
+function isEqualWith(value, other, customizer) {
+  customizer = typeof customizer == 'function' ? customizer : undefined;
+  var result = customizer ? customizer(value, other) : undefined;
+  return result === undefined ? baseIsEqual(value, other, undefined, customizer) : !!result;
+}
+
+var isEqualWith_1 = isEqualWith;
+
+var isEqualWith$1 = /*@__PURE__*/getDefaultExportFromCjs(isEqualWith_1);
+
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+
+function baseFindIndex$1(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    if (predicate(array[index], index, array)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+var _baseFindIndex = baseFindIndex$1;
+
+/**
+ * The base implementation of `_.isNaN` without support for number objects.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ */
+
+function baseIsNaN$1(value) {
+  return value !== value;
+}
+
+var _baseIsNaN = baseIsNaN$1;
+
+/**
+ * A specialized version of `_.indexOf` which performs strict equality
+ * comparisons of values, i.e. `===`.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+
+function strictIndexOf$1(array, value, fromIndex) {
+  var index = fromIndex - 1,
+      length = array.length;
+
+  while (++index < length) {
+    if (array[index] === value) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+var _strictIndexOf = strictIndexOf$1;
+
+var baseFindIndex = _baseFindIndex,
+    baseIsNaN = _baseIsNaN,
+    strictIndexOf = _strictIndexOf;
+
+/**
+ * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseIndexOf$1(array, value, fromIndex) {
+  return value === value
+    ? strictIndexOf(array, value, fromIndex)
+    : baseFindIndex(array, baseIsNaN, fromIndex);
+}
+
+var _baseIndexOf = baseIndexOf$1;
+
+var baseIndexOf = _baseIndexOf;
+
+/**
+ * A specialized version of `_.includes` for arrays without support for
+ * specifying an index to search from.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+function arrayIncludes$1(array, value) {
+  var length = array == null ? 0 : array.length;
+  return !!length && baseIndexOf(array, value, 0) > -1;
+}
+
+var _arrayIncludes = arrayIncludes$1;
+
+/**
+ * This function is like `arrayIncludes` except that it accepts a comparator.
+ *
+ * @private
+ * @param {Array} [array] The array to inspect.
+ * @param {*} target The value to search for.
+ * @param {Function} comparator The comparator invoked per element.
+ * @returns {boolean} Returns `true` if `target` is found, else `false`.
+ */
+
+function arrayIncludesWith$1(array, value, comparator) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (comparator(value, array[index])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+var _arrayIncludesWith = arrayIncludesWith$1;
+
+/**
+ * This method returns `undefined`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.3.0
+ * @category Util
+ * @example
+ *
+ * _.times(2, _.noop);
+ * // => [undefined, undefined]
+ */
+
+function noop$1() {
+  // No operation performed.
+}
+
+var noop_1 = noop$1;
+
+var Set$1 = _Set,
+    noop = noop_1,
+    setToArray$1 = _setToArray;
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Creates a set object of `values`.
+ *
+ * @private
+ * @param {Array} values The values to add to the set.
+ * @returns {Object} Returns the new set.
+ */
+var createSet$1 = !(Set$1 && (1 / setToArray$1(new Set$1([,-0]))[1]) == INFINITY) ? noop : function(values) {
+  return new Set$1(values);
+};
+
+var _createSet = createSet$1;
+
+var SetCache = _SetCache,
+    arrayIncludes = _arrayIncludes,
+    arrayIncludesWith = _arrayIncludesWith,
+    cacheHas = _cacheHas,
+    createSet = _createSet,
+    setToArray = _setToArray;
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * The base implementation of `_.uniqBy` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} [iteratee] The iteratee invoked per element.
+ * @param {Function} [comparator] The comparator invoked per element.
+ * @returns {Array} Returns the new duplicate free array.
+ */
+function baseUniq$1(array, iteratee, comparator) {
+  var index = -1,
+      includes = arrayIncludes,
+      length = array.length,
+      isCommon = true,
+      result = [],
+      seen = result;
+
+  if (comparator) {
+    isCommon = false;
+    includes = arrayIncludesWith;
+  }
+  else if (length >= LARGE_ARRAY_SIZE) {
+    var set = iteratee ? null : createSet(array);
+    if (set) {
+      return setToArray(set);
+    }
+    isCommon = false;
+    includes = cacheHas;
+    seen = new SetCache;
+  }
+  else {
+    seen = iteratee ? [] : result;
+  }
+  outer:
+  while (++index < length) {
+    var value = array[index],
+        computed = iteratee ? iteratee(value) : value;
+
+    value = (comparator || value !== 0) ? value : 0;
+    if (isCommon && computed === computed) {
+      var seenIndex = seen.length;
+      while (seenIndex--) {
+        if (seen[seenIndex] === computed) {
+          continue outer;
+        }
+      }
+      if (iteratee) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+    else if (!includes(seen, computed, comparator)) {
+      if (seen !== result) {
+        seen.push(computed);
+      }
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+var _baseUniq = baseUniq$1;
+
+var baseUniq = _baseUniq;
+
+/**
+ * Creates a duplicate-free version of an array, using
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons, in which only the first occurrence of each element
+ * is kept. The order of result values is determined by the order they occur
+ * in the array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to inspect.
+ * @returns {Array} Returns the new duplicate free array.
+ * @example
+ *
+ * _.uniq([2, 1, 2]);
+ * // => [2, 1]
+ */
+function uniq(array) {
+  return (array && array.length) ? baseUniq(array) : [];
+}
+
+var uniq_1 = uniq;
+
+var uniq$1 = /*@__PURE__*/getDefaultExportFromCjs(uniq_1);
+
+var css_escape = {exports: {}};
+
+/*! https://mths.be/cssescape v1.5.1 by @mathias | MIT license */
+
+(function (module, exports) {
+(function(root, factory) {
+		// https://github.com/umdjs/umd/blob/master/returnExports.js
+		{
+			// For Node.js.
+			module.exports = factory(root);
+		}
+	}(typeof commonjsGlobal != 'undefined' ? commonjsGlobal : commonjsGlobal, function(root) {
+
+		if (root.CSS && root.CSS.escape) {
+			return root.CSS.escape;
+		}
+
+		// https://drafts.csswg.org/cssom/#serialize-an-identifier
+		var cssEscape = function(value) {
+			if (arguments.length == 0) {
+				throw new TypeError('`CSS.escape` requires an argument.');
+			}
+			var string = String(value);
+			var length = string.length;
+			var index = -1;
+			var codeUnit;
+			var result = '';
+			var firstCodeUnit = string.charCodeAt(0);
+			while (++index < length) {
+				codeUnit = string.charCodeAt(index);
+				// Note: there’s no need to special-case astral symbols, surrogate
+				// pairs, or lone surrogates.
+
+				// If the character is NULL (U+0000), then the REPLACEMENT CHARACTER
+				// (U+FFFD).
+				if (codeUnit == 0x0000) {
+					result += '\uFFFD';
+					continue;
+				}
+
+				if (
+					// If the character is in the range [\1-\1F] (U+0001 to U+001F) or is
+					// U+007F, […]
+					(codeUnit >= 0x0001 && codeUnit <= 0x001F) || codeUnit == 0x007F ||
+					// If the character is the first character and is in the range [0-9]
+					// (U+0030 to U+0039), […]
+					(index == 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039) ||
+					// If the character is the second character and is in the range [0-9]
+					// (U+0030 to U+0039) and the first character is a `-` (U+002D), […]
+					(
+						index == 1 &&
+						codeUnit >= 0x0030 && codeUnit <= 0x0039 &&
+						firstCodeUnit == 0x002D
+					)
+				) {
+					// https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
+					result += '\\' + codeUnit.toString(16) + ' ';
+					continue;
+				}
+
+				if (
+					// If the character is the first character and is a `-` (U+002D), and
+					// there is no second character, […]
+					index == 0 &&
+					length == 1 &&
+					codeUnit == 0x002D
+				) {
+					result += '\\' + string.charAt(index);
+					continue;
+				}
+
+				// If the character is not handled by one of the above rules and is
+				// greater than or equal to U+0080, is `-` (U+002D) or `_` (U+005F), or
+				// is in one of the ranges [0-9] (U+0030 to U+0039), [A-Z] (U+0041 to
+				// U+005A), or [a-z] (U+0061 to U+007A), […]
+				if (
+					codeUnit >= 0x0080 ||
+					codeUnit == 0x002D ||
+					codeUnit == 0x005F ||
+					codeUnit >= 0x0030 && codeUnit <= 0x0039 ||
+					codeUnit >= 0x0041 && codeUnit <= 0x005A ||
+					codeUnit >= 0x0061 && codeUnit <= 0x007A
+				) {
+					// the character itself
+					result += string.charAt(index);
+					continue;
+				}
+
+				// Otherwise, the escaped character.
+				// https://drafts.csswg.org/cssom/#escape-a-character
+				result += '\\' + string.charAt(index);
+
+			}
+			return result;
+		};
+
+		if (!root.CSS) {
+			root.CSS = {};
+		}
+
+		root.CSS.escape = cssEscape;
+		return cssEscape;
+
+	})); 
+} (css_escape));
+
+var css_escapeExports = css_escape.exports;
+var escape = /*@__PURE__*/getDefaultExportFromCjs(css_escapeExports);
+
+class GenericTypeError extends Error {
+  constructor(expectedString, received, matcherFn, context) {
+    super();
+
+    /* istanbul ignore next */
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, matcherFn);
+    }
+    let withType = '';
+    try {
+      withType = context.utils.printWithType(
+        'Received',
+        received,
+        context.utils.printReceived,
+      );
+    } catch (e) {
+      // Can throw for Document:
+      // https://github.com/jsdom/jsdom/issues/2304
+    }
+    this.message = [
+      context.utils.matcherHint(
+        `${context.isNot ? '.not' : ''}.${matcherFn.name}`,
+        'received',
+        '',
+      ),
+      '',
+      // eslint-disable-next-line new-cap
+      `${context.utils.RECEIVED_COLOR(
+        'received',
+      )} value must ${expectedString}.`,
+      withType,
+    ].join('\n');
+  }
+}
+
+class HtmlElementTypeError extends GenericTypeError {
+  constructor(...args) {
+    super('be an HTMLElement or an SVGElement', ...args);
+  }
+}
+
+class NodeTypeError extends GenericTypeError {
+  constructor(...args) {
+    super('be a Node', ...args);
+  }
+}
+
+function checkHasWindow(htmlElement, ErrorClass, ...args) {
+  if (
+    !htmlElement ||
+    !htmlElement.ownerDocument ||
+    !htmlElement.ownerDocument.defaultView
+  ) {
+    throw new ErrorClass(htmlElement, ...args)
+  }
+}
+
+function checkNode(node, ...args) {
+  checkHasWindow(node, NodeTypeError, ...args);
+  const window = node.ownerDocument.defaultView;
+
+  if (!(node instanceof window.Node)) {
+    throw new NodeTypeError(node, ...args)
+  }
+}
+
+function checkHtmlElement(htmlElement, ...args) {
+  checkHasWindow(htmlElement, HtmlElementTypeError, ...args);
+  const window = htmlElement.ownerDocument.defaultView;
+
+  if (
+    !(htmlElement instanceof window.HTMLElement) &&
+    !(htmlElement instanceof window.SVGElement)
+  ) {
+    throw new HtmlElementTypeError(htmlElement, ...args)
+  }
+}
+
+class InvalidCSSError extends Error {
+  constructor(received, matcherFn, context) {
+    super();
+
+    /* istanbul ignore next */
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, matcherFn);
+    }
+    this.message = [
+      received.message,
+      '',
+      // eslint-disable-next-line new-cap
+      context.utils.RECEIVED_COLOR(`Failing css:`),
+      // eslint-disable-next-line new-cap
+      context.utils.RECEIVED_COLOR(`${received.css}`),
+    ].join('\n');
+  }
+}
+
+function parseCSS(css, ...args) {
+  const ast = $149c1bd638913645$export$98e6a39c04603d36(`selector { ${css} }`, {silent: true}).stylesheet;
+
+  if (ast.parsingErrors && ast.parsingErrors.length > 0) {
+    const {reason, line} = ast.parsingErrors[0];
+
+    throw new InvalidCSSError(
+      {
+        css,
+        message: `Syntax error parsing expected css: ${reason} on line: ${line}`,
+      },
+      ...args,
+    )
+  }
+
+  const parsedRules = ast.rules[0].declarations
+    .filter(d => d.type === 'declaration')
+    .reduce(
+      (obj, {property, value}) => Object.assign(obj, {[property]: value}),
+      {},
+    );
+  return parsedRules
+}
+
+function display(context, value) {
+  return typeof value === 'string' ? value : context.utils.stringify(value)
+}
+
+function getMessage(
+  context,
+  matcher,
+  expectedLabel,
+  expectedValue,
+  receivedLabel,
+  receivedValue,
+) {
+  return [
+    `${matcher}\n`,
+    // eslint-disable-next-line new-cap
+    `${expectedLabel}:\n${context.utils.EXPECTED_COLOR(
+      redent$1(display(context, expectedValue), 2),
+    )}`,
+    // eslint-disable-next-line new-cap
+    `${receivedLabel}:\n${context.utils.RECEIVED_COLOR(
+      redent$1(display(context, receivedValue), 2),
+    )}`,
+  ].join('\n')
+}
+
+function matches$1(textToMatch, matcher) {
+  if (matcher instanceof RegExp) {
+    return matcher.test(textToMatch)
+  } else {
+    return textToMatch.includes(String(matcher))
+  }
+}
+
+function deprecate(name, replacementText) {
+  // Notify user that they are using deprecated functionality.
+  // eslint-disable-next-line no-console
+  console.warn(
+    `Warning: ${name} has been deprecated and will be removed in future updates.`,
+    replacementText,
+  );
+}
+
+function normalize$1(text) {
+  return text.replace(/\s+/g, ' ').trim()
+}
+
+function getTag(element) {
+  return element.tagName && element.tagName.toLowerCase()
+}
+
+function getSelectValue({multiple, options}) {
+  const selectedOptions = [...options].filter(option => option.selected);
+
+  if (multiple) {
+    return [...selectedOptions].map(opt => opt.value)
+  }
+  /* istanbul ignore if */
+  if (selectedOptions.length === 0) {
+    return undefined // Couldn't make this happen, but just in case
+  }
+  return selectedOptions[0].value
+}
+
+function getInputValue(inputElement) {
+  switch (inputElement.type) {
+    case 'number':
+      return inputElement.value === '' ? null : Number(inputElement.value)
+    case 'checkbox':
+      return inputElement.checked
+    default:
+      return inputElement.value
+  }
+}
+
+function getSingleElementValue(element) {
+  /* istanbul ignore if */
+  if (!element) {
+    return undefined
+  }
+  switch (element.tagName.toLowerCase()) {
+    case 'input':
+      return getInputValue(element)
+    case 'select':
+      return getSelectValue(element)
+    default:
+      return element.value
+  }
+}
+
+function compareArraysAsSet(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return isEqual$1(new Set(a), new Set(b))
+  }
+  return undefined
+}
+
+function toSentence(
+  array,
+  {wordConnector = ', ', lastWordConnector = ' and '} = {},
+) {
+  return [array.slice(0, -1).join(wordConnector), array[array.length - 1]].join(
+    array.length > 1 ? lastWordConnector : '',
+  )
+}
+
+function toBeInTheDOM(element, container) {
+  deprecate(
+    'toBeInTheDOM',
+    'Please use toBeInTheDocument for searching the entire document and toContainElement for searching a specific container.',
+  );
+
+  if (element) {
+    checkHtmlElement(element, toBeInTheDOM, this);
+  }
+
+  if (container) {
+    checkHtmlElement(container, toBeInTheDOM, this);
+  }
+
+  return {
+    pass: container ? container.contains(element) : !!element,
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeInTheDOM`,
+          'element',
+          '',
+        ),
+        '',
+        'Received:',
+        `  ${this.utils.printReceived(
+          element ? element.cloneNode(false) : element,
+        )}`,
+      ].join('\n')
+    },
+  }
+}
+
+function toBeInTheDocument(element) {
+  if (element !== null || !this.isNot) {
+    checkHtmlElement(element, toBeInTheDocument, this);
+  }
+
+  const pass =
+    element === null
+      ? false
+      : element.ownerDocument === element.getRootNode({composed: true});
+
+  const errorFound = () => {
+    return `expected document not to contain element, found ${this.utils.stringify(
+      element.cloneNode(true),
+    )} instead`
+  };
+  const errorNotFound = () => {
+    return `element could not be found in the document`
+  };
+
+  return {
+    pass,
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeInTheDocument`,
+          'element',
+          '',
+        ),
+        '',
+        // eslint-disable-next-line new-cap
+        this.utils.RECEIVED_COLOR(this.isNot ? errorFound() : errorNotFound()),
+      ].join('\n')
+    },
+  }
+}
+
+function toBeEmpty(element) {
+  deprecate(
+    'toBeEmpty',
+    'Please use instead toBeEmptyDOMElement for finding empty nodes in the DOM.',
+  );
+  checkHtmlElement(element, toBeEmpty, this);
+
+  return {
+    pass: element.innerHTML === '',
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeEmpty`,
+          'element',
+          '',
+        ),
+        '',
+        'Received:',
+        `  ${this.utils.printReceived(element.innerHTML)}`,
+      ].join('\n')
+    },
+  }
+}
+
+function toBeEmptyDOMElement(element) {
+  checkHtmlElement(element, toBeEmptyDOMElement, this);
+
+  return {
+    pass: isEmptyElement(element),
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeEmptyDOMElement`,
+          'element',
+          '',
+        ),
+        '',
+        'Received:',
+        `  ${this.utils.printReceived(element.innerHTML)}`,
+      ].join('\n')
+    },
+  }
+}
+
+/**
+ * Identifies if an element doesn't contain child nodes (excluding comments)
+ * ℹ Node.COMMENT_NODE can't be used because of the following issue 
+ * https://github.com/jsdom/jsdom/issues/2220
+ *
+ * @param {*} element an HtmlElement or SVGElement
+ * @return {*} true if the element only contains comments or none
+ */
+function isEmptyElement(element){
+  const nonCommentChildNodes = [...element.childNodes].filter(node => node.nodeType !== 8);
+  return nonCommentChildNodes.length === 0;
+}
+
+function toContainElement(container, element) {
+  checkHtmlElement(container, toContainElement, this);
+
+  if (element !== null) {
+    checkHtmlElement(element, toContainElement, this);
+  }
+
+  return {
+    pass: container.contains(element),
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toContainElement`,
+          'element',
+          'element',
+        ),
+        '',
+        // eslint-disable-next-line new-cap
+        this.utils.RECEIVED_COLOR(`${this.utils.stringify(
+          container.cloneNode(false),
+        )} ${
+          this.isNot ? 'contains:' : 'does not contain:'
+        } ${this.utils.stringify(element ? element.cloneNode(false) : element)}
+        `),
+      ].join('\n')
+    },
+  }
+}
+
+function getNormalizedHtml(container, htmlText) {
+  const div = container.ownerDocument.createElement('div');
+  div.innerHTML = htmlText;
+  return div.innerHTML
+}
+
+function toContainHTML(container, htmlText) {
+  checkHtmlElement(container, toContainHTML, this);
+
+  if (typeof htmlText !== 'string') {
+    throw new Error(`.toContainHTML() expects a string value, got ${htmlText}`)
+  }
+
+  return {
+    pass: container.outerHTML.includes(getNormalizedHtml(container, htmlText)),
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toContainHTML`,
+          'element',
+          '',
+        ),
+        'Expected:',
+        // eslint-disable-next-line new-cap
+        `  ${this.utils.EXPECTED_COLOR(htmlText)}`,
+        'Received:',
+        `  ${this.utils.printReceived(container.cloneNode(true))}`,
+      ].join('\n')
+    },
+  }
+}
+
+function toHaveTextContent(
+  node,
+  checkWith,
+  options = {normalizeWhitespace: true},
+) {
+  checkNode(node, toHaveTextContent, this);
+
+  const textContent = options.normalizeWhitespace
+    ? normalize$1(node.textContent)
+    : node.textContent.replace(/\u00a0/g, ' '); // Replace &nbsp; with normal spaces
+
+  const checkingWithEmptyString = textContent !== '' && checkWith === '';
+
+  return {
+    pass: !checkingWithEmptyString && matches$1(textContent, checkWith),
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      return getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toHaveTextContent`,
+          'element',
+          '',
+        ),
+        checkingWithEmptyString
+          ? `Checking with empty string will always match, use .toBeEmptyDOMElement() instead`
+          : `Expected element ${to} have text content`,
+        checkWith,
+        'Received',
+        textContent,
+      )
+    },
+  }
+}
+
+function toHaveAccessibleDescription(
+  htmlElement,
+  expectedAccessibleDescription,
+) {
+  checkHtmlElement(htmlElement, toHaveAccessibleDescription, this);
+  const actualAccessibleDescription = computeAccessibleDescription$1(htmlElement);
+  const missingExpectedValue = arguments.length === 1;
+
+  let pass = false;
+  if (missingExpectedValue) {
+    // When called without an expected value we only want to validate that the element has an
+    // accessible description, whatever it may be.
+    pass = actualAccessibleDescription !== '';
+  } else {
+    pass =
+      expectedAccessibleDescription instanceof RegExp
+        ? expectedAccessibleDescription.test(actualAccessibleDescription)
+        : this.equals(
+            actualAccessibleDescription,
+            expectedAccessibleDescription,
+          );
+  }
+
+  return {
+    pass,
+
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      return getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.${toHaveAccessibleDescription.name}`,
+          'element',
+          '',
+        ),
+        `Expected element ${to} have accessible description`,
+        expectedAccessibleDescription,
+        'Received',
+        actualAccessibleDescription,
+      )
+    },
+  }
+}
+
+const ariaInvalidName = 'aria-invalid';
+const validStates = ['false'];
+
+// See `aria-errormessage` spec at https://www.w3.org/TR/wai-aria-1.2/#aria-errormessage
+function toHaveAccessibleErrorMessage(
+  htmlElement,
+  expectedAccessibleErrorMessage,
+) {
+  checkHtmlElement(htmlElement, toHaveAccessibleErrorMessage, this);
+  const to = this.isNot ? 'not to' : 'to';
+  const method = this.isNot
+    ? '.not.toHaveAccessibleErrorMessage'
+    : '.toHaveAccessibleErrorMessage';
+
+  // Enforce Valid Id
+  const errormessageId = htmlElement.getAttribute('aria-errormessage');
+  const errormessageIdInvalid = !!errormessageId && /\s+/.test(errormessageId);
+
+  if (errormessageIdInvalid) {
+    return {
+      pass: false,
+      message: () => {
+        return getMessage(
+          this,
+          this.utils.matcherHint(method, 'element'),
+          "Expected element's `aria-errormessage` attribute to be empty or a single, valid ID",
+          '',
+          'Received',
+          `aria-errormessage="${errormessageId}"`,
+        )
+      },
+    }
+  }
+
+  // See `aria-invalid` spec at https://www.w3.org/TR/wai-aria-1.2/#aria-invalid
+  const ariaInvalidVal = htmlElement.getAttribute(ariaInvalidName);
+  const fieldValid =
+    !htmlElement.hasAttribute(ariaInvalidName) ||
+    validStates.includes(ariaInvalidVal);
+
+  // Enforce Valid `aria-invalid` Attribute
+  if (fieldValid) {
+    return {
+      pass: false,
+      message: () => {
+        return getMessage(
+          this,
+          this.utils.matcherHint(method, 'element'),
+          'Expected element to be marked as invalid with attribute',
+          `${ariaInvalidName}="${String(true)}"`,
+          'Received',
+          htmlElement.hasAttribute('aria-invalid')
+            ? `${ariaInvalidName}="${htmlElement.getAttribute(ariaInvalidName)}`
+            : null,
+        )
+      },
+    }
+  }
+
+  const error = normalize$1(
+    htmlElement.ownerDocument.getElementById(errormessageId)?.textContent ?? '',
+  );
+
+  return {
+    pass:
+      expectedAccessibleErrorMessage === undefined
+        ? Boolean(error)
+        : expectedAccessibleErrorMessage instanceof RegExp
+        ? expectedAccessibleErrorMessage.test(error)
+        : this.equals(error, expectedAccessibleErrorMessage),
+
+    message: () => {
+      return getMessage(
+        this,
+        this.utils.matcherHint(method, 'element'),
+        `Expected element ${to} have accessible error message`,
+        expectedAccessibleErrorMessage ?? '',
+        'Received',
+        error,
+      )
+    },
+  }
+}
+
+const elementRoleList$1 = buildElementRoleList$1(elementRoles_1);
+
+function toHaveRole(htmlElement, expectedRole) {
+  checkHtmlElement(htmlElement, toHaveRole, this);
+
+  const actualRoles = getExplicitOrImplicitRoles(htmlElement);
+  const pass = actualRoles.some(el => el === expectedRole);
+
+  return {
+    pass,
+
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      return getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.${toHaveRole.name}`,
+          'element',
+          '',
+        ),
+        `Expected element ${to} have role`,
+        expectedRole,
+        'Received',
+        actualRoles.join(', '),
+      )
+    },
+  }
+}
+
+function getExplicitOrImplicitRoles(htmlElement) {
+  const hasExplicitRole = htmlElement.hasAttribute('role');
+
+  if (hasExplicitRole) {
+    const roleValue = htmlElement.getAttribute('role');
+
+    // Handle fallback roles, such as role="switch button"
+    // testing-library gates this behind the `queryFallbacks` flag; it is
+    // unclear why, but it makes sense to support this pattern out of the box
+    // https://testing-library.com/docs/queries/byrole/#queryfallbacks
+    return roleValue.split(' ').filter(Boolean)
+  }
+
+  const implicitRoles = getImplicitAriaRoles$1(htmlElement);
+
+  return implicitRoles
+}
+
+function getImplicitAriaRoles$1(currentNode) {
+  for (const {match, roles} of elementRoleList$1) {
+    if (match(currentNode)) {
+      return [...roles]
+    }
+  }
+
+  /* istanbul ignore next */
+  return [] // this does not get reached in practice, since elements have at least a 'generic' role
+}
+
+/**
+ * Transform the roles map (with required attributes and constraints) to a list
+ * of roles. Each item in the list has functions to match an element against it.
+ *
+ * Essentially copied over from [dom-testing-library's
+ * helpers](https://github.com/testing-library/dom-testing-library/blob/bd04cf95a1ed85a2238f7dfc1a77d5d16b4f59dc/src/role-helpers.js#L80)
+ *
+ * TODO: If we are truly just copying over stuff, would it make sense to move
+ * this to a separate package?
+ *
+ * TODO: This technique relies on CSS selectors; are those consistently
+ * available in all jest-dom environments? Why do other matchers in this package
+ * not use them like this?
+ */
+function buildElementRoleList$1(elementRolesMap) {
+  function makeElementSelector({name, attributes}) {
+    return `${name}${attributes
+      .map(({name: attributeName, value, constraints = []}) => {
+        const shouldNotExist = constraints.indexOf('undefined') !== -1;
+        if (shouldNotExist) {
+          return `:not([${attributeName}])`
+        } else if (value) {
+          return `[${attributeName}="${value}"]`
+        } else {
+          return `[${attributeName}]`
+        }
+      })
+      .join('')}`
+  }
+
+  function getSelectorSpecificity({attributes = []}) {
+    return attributes.length
+  }
+
+  function bySelectorSpecificity(
+    {specificity: leftSpecificity},
+    {specificity: rightSpecificity},
+  ) {
+    return rightSpecificity - leftSpecificity
+  }
+
+  function match(element) {
+    let {attributes = []} = element;
+
+    // https://github.com/testing-library/dom-testing-library/issues/814
+    const typeTextIndex = attributes.findIndex(
+      attribute =>
+        attribute.value &&
+        attribute.name === 'type' &&
+        attribute.value === 'text',
+    );
+
+    if (typeTextIndex >= 0) {
+      // not using splice to not mutate the attributes array
+      attributes = [
+        ...attributes.slice(0, typeTextIndex),
+        ...attributes.slice(typeTextIndex + 1),
+      ];
+    }
+
+    const selector = makeElementSelector({...element, attributes});
+
+    return node => {
+      if (typeTextIndex >= 0 && node.type !== 'text') {
+        return false
+      }
+
+      return node.matches(selector)
+    }
+  }
+
+  let result = [];
+
+  for (const [element, roles] of elementRolesMap.entries()) {
+    result = [
+      ...result,
+      {
+        match: match(element),
+        roles: Array.from(roles),
+        specificity: getSelectorSpecificity(element),
+      },
+    ];
+  }
+
+  return result.sort(bySelectorSpecificity)
+}
+
+function toHaveAccessibleName(htmlElement, expectedAccessibleName) {
+  checkHtmlElement(htmlElement, toHaveAccessibleName, this);
+  const actualAccessibleName = computeAccessibleName$1(htmlElement);
+  const missingExpectedValue = arguments.length === 1;
+
+  let pass = false;
+  if (missingExpectedValue) {
+    // When called without an expected value we only want to validate that the element has an
+    // accessible name, whatever it may be.
+    pass = actualAccessibleName !== '';
+  } else {
+    pass =
+      expectedAccessibleName instanceof RegExp
+        ? expectedAccessibleName.test(actualAccessibleName)
+        : this.equals(actualAccessibleName, expectedAccessibleName);
+  }
+
+  return {
+    pass,
+
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      return getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.${toHaveAccessibleName.name}`,
+          'element',
+          '',
+        ),
+        `Expected element ${to} have accessible name`,
+        expectedAccessibleName,
+        'Received',
+        actualAccessibleName,
+      )
+    },
+  }
+}
+
+function printAttribute(stringify, name, value) {
+  return value === undefined ? name : `${name}=${stringify(value)}`
+}
+
+function getAttributeComment(stringify, name, value) {
+  return value === undefined
+    ? `element.hasAttribute(${stringify(name)})`
+    : `element.getAttribute(${stringify(name)}) === ${stringify(value)}`
+}
+
+function toHaveAttribute(htmlElement, name, expectedValue) {
+  checkHtmlElement(htmlElement, toHaveAttribute, this);
+  const isExpectedValuePresent = expectedValue !== undefined;
+  const hasAttribute = htmlElement.hasAttribute(name);
+  const receivedValue = htmlElement.getAttribute(name);
+  return {
+    pass: isExpectedValuePresent
+      ? hasAttribute && this.equals(receivedValue, expectedValue)
+      : hasAttribute,
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      const receivedAttribute = hasAttribute
+        ? printAttribute(this.utils.stringify, name, receivedValue)
+        : null;
+      const matcher = this.utils.matcherHint(
+        `${this.isNot ? '.not' : ''}.toHaveAttribute`,
+        'element',
+        this.utils.printExpected(name),
+        {
+          secondArgument: isExpectedValuePresent
+            ? this.utils.printExpected(expectedValue)
+            : undefined,
+          comment: getAttributeComment(
+            this.utils.stringify,
+            name,
+            expectedValue,
+          ),
+        },
+      );
+      return getMessage(
+        this,
+        matcher,
+        `Expected the element ${to} have attribute`,
+        printAttribute(this.utils.stringify, name, expectedValue),
+        'Received',
+        receivedAttribute,
+      )
+    },
+  }
+}
+
+function getExpectedClassNamesAndOptions(params) {
+  const lastParam = params.pop();
+  let expectedClassNames, options;
+
+  if (typeof lastParam === 'object' && !(lastParam instanceof RegExp)) {
+    expectedClassNames = params;
+    options = lastParam;
+  } else {
+    expectedClassNames = params.concat(lastParam);
+    options = {exact: false};
+  }
+  return {expectedClassNames, options}
+}
+
+function splitClassNames(str) {
+  if (!str) return []
+  return str.split(/\s+/).filter(s => s.length > 0)
+}
+
+function isSubset$1(subset, superset) {
+  return subset.every(strOrRegexp =>
+    typeof strOrRegexp === 'string'
+      ? superset.includes(strOrRegexp)
+      : superset.some(className => strOrRegexp.test(className)),
+  )
+}
+
+function toHaveClass(htmlElement, ...params) {
+  checkHtmlElement(htmlElement, toHaveClass, this);
+  const {expectedClassNames, options} = getExpectedClassNamesAndOptions(params);
+
+  const received = splitClassNames(htmlElement.getAttribute('class'));
+  const expected = expectedClassNames.reduce(
+    (acc, className) =>
+      acc.concat(
+        typeof className === 'string' || !className
+          ? splitClassNames(className)
+          : className,
+      ),
+    [],
+  );
+
+  const hasRegExp = expected.some(className => className instanceof RegExp);
+  if (options.exact && hasRegExp) {
+    throw new Error('Exact option does not support RegExp expected class names')
+  }
+
+  if (options.exact) {
+    return {
+      pass: isSubset$1(expected, received) && expected.length === received.length,
+      message: () => {
+        const to = this.isNot ? 'not to' : 'to';
+        return getMessage(
+          this,
+          this.utils.matcherHint(
+            `${this.isNot ? '.not' : ''}.toHaveClass`,
+            'element',
+            this.utils.printExpected(expected.join(' ')),
+          ),
+          `Expected the element ${to} have EXACTLY defined classes`,
+          expected.join(' '),
+          'Received',
+          received.join(' '),
+        )
+      },
+    }
+  }
+
+  return expected.length > 0
+    ? {
+        pass: isSubset$1(expected, received),
+        message: () => {
+          const to = this.isNot ? 'not to' : 'to';
+          return getMessage(
+            this,
+            this.utils.matcherHint(
+              `${this.isNot ? '.not' : ''}.toHaveClass`,
+              'element',
+              this.utils.printExpected(expected.join(' ')),
+            ),
+            `Expected the element ${to} have class`,
+            expected.join(' '),
+            'Received',
+            received.join(' '),
+          )
+        },
+      }
+    : {
+        pass: this.isNot ? received.length > 0 : false,
+        message: () =>
+          this.isNot
+            ? getMessage(
+                this,
+                this.utils.matcherHint('.not.toHaveClass', 'element', ''),
+                'Expected the element to have classes',
+                '(none)',
+                'Received',
+                received.join(' '),
+              )
+            : [
+                this.utils.matcherHint(`.toHaveClass`, 'element'),
+                'At least one expected class must be provided.',
+              ].join('\n'),
+      }
+}
+
+function getStyleDeclaration(document, css) {
+  const styles = {};
+
+  // The next block is necessary to normalize colors
+  const copy = document.createElement('div');
+  Object.keys(css).forEach(property => {
+    copy.style[property] = css[property];
+    styles[property] = copy.style[property];
+  });
+
+  return styles
+}
+
+function isSubset(styles, computedStyle) {
+  return (
+    !!Object.keys(styles).length &&
+    Object.entries(styles).every(([prop, value]) => {
+      const isCustomProperty = prop.startsWith('--');
+      const spellingVariants = [prop];
+      if (!isCustomProperty) spellingVariants.push(prop.toLowerCase());
+
+      return spellingVariants.some(
+        name =>
+          computedStyle[name] === value ||
+          computedStyle.getPropertyValue(name) === value,
+      )
+    })
+  )
+}
+
+function printoutStyles(styles) {
+  return Object.keys(styles)
+    .sort()
+    .map(prop => `${prop}: ${styles[prop]};`)
+    .join('\n')
+}
+
+// Highlights only style rules that were expected but were not found in the
+// received computed styles
+function expectedDiff(diffFn, expected, computedStyles) {
+  const received = Array.from(computedStyles)
+    .filter(prop => expected[prop] !== undefined)
+    .reduce(
+      (obj, prop) =>
+        Object.assign(obj, {[prop]: computedStyles.getPropertyValue(prop)}),
+      {},
+    );
+  const diffOutput = diffFn(printoutStyles(expected), printoutStyles(received));
+  // Remove the "+ Received" annotation because this is a one-way diff
+  return diffOutput.replace(`${chalk$2.red('+ Received')}\n`, '')
+}
+
+function toHaveStyle(htmlElement, css) {
+  checkHtmlElement(htmlElement, toHaveStyle, this);
+  const parsedCSS =
+    typeof css === 'object' ? css : parseCSS(css, toHaveStyle, this);
+  const {getComputedStyle} = htmlElement.ownerDocument.defaultView;
+
+  const expected = getStyleDeclaration(htmlElement.ownerDocument, parsedCSS);
+  const received = getComputedStyle(htmlElement);
+
+  return {
+    pass: isSubset(expected, received),
+    message: () => {
+      const matcher = `${this.isNot ? '.not' : ''}.toHaveStyle`;
+      return [
+        this.utils.matcherHint(matcher, 'element', ''),
+        expectedDiff(this.utils.diff, expected, received),
+      ].join('\n\n')
+    },
+  }
+}
+
+function toHaveFocus(element) {
+  checkHtmlElement(element, toHaveFocus, this);
+
+  return {
+    pass: element.ownerDocument.activeElement === element,
+    message: () => {
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toHaveFocus`,
+          'element',
+          '',
+        ),
+        '',
+        ...(this.isNot
+          ? [
+              'Received element is focused:',
+              `  ${this.utils.printReceived(element)}`,
+            ]
+          : [
+              'Expected element with focus:',
+              `  ${this.utils.printExpected(element)}`,
+              'Received element with focus:',
+              `  ${this.utils.printReceived(
+                element.ownerDocument.activeElement,
+              )}`,
+            ]),
+      ].join('\n')
+    },
+  }
+}
+
+// Returns the combined value of several elements that have the same name
+// e.g. radio buttons or groups of checkboxes
+function getMultiElementValue(elements) {
+  const types = uniq$1(elements.map(element => element.type));
+  if (types.length !== 1) {
+    throw new Error(
+      'Multiple form elements with the same name must be of the same type',
+    )
+  }
+  switch (types[0]) {
+    case 'radio': {
+      const theChosenOne = elements.find(radio => radio.checked);
+      return theChosenOne ? theChosenOne.value : undefined
+    }
+    case 'checkbox':
+      return elements
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value)
+    default:
+      // NOTE: Not even sure this is a valid use case, but just in case...
+      return elements.map(element => element.value)
+  }
+}
+
+function getFormValue(container, name) {
+  const elements = [...container.querySelectorAll(`[name="${escape(name)}"]`)];
+  /* istanbul ignore if */
+  if (elements.length === 0) {
+    return undefined // shouldn't happen, but just in case
+  }
+  switch (elements.length) {
+    case 1:
+      return getSingleElementValue(elements[0])
+    default:
+      return getMultiElementValue(elements)
+  }
+}
+
+// Strips the `[]` suffix off a form value name
+function getPureName(name) {
+  return /\[\]$/.test(name) ? name.slice(0, -2) : name
+}
+
+function getAllFormValues(container) {
+  const names = Array.from(container.elements).map(element => element.name);
+  return names.reduce(
+    (obj, name) => ({
+      ...obj,
+      [getPureName(name)]: getFormValue(container, name),
+    }),
+    {},
+  )
+}
+
+function toHaveFormValues(formElement, expectedValues) {
+  checkHtmlElement(formElement, toHaveFormValues, this);
+  if (!formElement.elements) {
+    // TODO: Change condition to use instanceof against the appropriate element classes instead
+    throw new Error('toHaveFormValues must be called on a form or a fieldset')
+  }
+  const formValues = getAllFormValues(formElement);
+  return {
+    pass: Object.entries(expectedValues).every(([name, expectedValue]) =>
+      isEqualWith$1(formValues[name], expectedValue, compareArraysAsSet),
+    ),
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      const matcher = `${this.isNot ? '.not' : ''}.toHaveFormValues`;
+      const commonKeyValues = Object.keys(formValues)
+        .filter(key => expectedValues.hasOwnProperty(key))
+        .reduce((obj, key) => ({...obj, [key]: formValues[key]}), {});
+      return [
+        this.utils.matcherHint(matcher, 'element', ''),
+        `Expected the element ${to} have form values`,
+        this.utils.diff(expectedValues, commonKeyValues),
+      ].join('\n\n')
+    },
+  }
+}
+
+function isStyleVisible(element) {
+  const {getComputedStyle} = element.ownerDocument.defaultView;
+
+  const {display, visibility, opacity} = getComputedStyle(element);
+  return (
+    display !== 'none' &&
+    visibility !== 'hidden' &&
+    visibility !== 'collapse' &&
+    opacity !== '0' &&
+    opacity !== 0
+  )
+}
+
+function isAttributeVisible(element, previousElement) {
+  let detailsVisibility;
+
+  if (previousElement) {
+    detailsVisibility =
+      element.nodeName === 'DETAILS' && previousElement.nodeName !== 'SUMMARY'
+        ? element.hasAttribute('open')
+        : true;
+  } else {
+    detailsVisibility =
+      element.nodeName === 'DETAILS' ? element.hasAttribute('open') : true;
+  }
+
+  return !element.hasAttribute('hidden') && detailsVisibility
+}
+
+function isElementVisible(element, previousElement) {
+  return (
+    isStyleVisible(element) &&
+    isAttributeVisible(element, previousElement) &&
+    (!element.parentElement || isElementVisible(element.parentElement, element))
+  )
+}
+
+function toBeVisible(element) {
+  checkHtmlElement(element, toBeVisible, this);
+  const isInDocument =
+    element.ownerDocument === element.getRootNode({composed: true});
+  const isVisible = isInDocument && isElementVisible(element);
+  return {
+    pass: isVisible,
+    message: () => {
+      const is = isVisible ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeVisible`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} visible${
+          isInDocument ? '' : ' (element is not in the document)'
+        }:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+// form elements that support 'disabled'
+const FORM_TAGS$2 = [
+  'fieldset',
+  'input',
+  'select',
+  'optgroup',
+  'option',
+  'button',
+  'textarea',
+];
+
+/*
+ * According to specification:
+ * If <fieldset> is disabled, the form controls that are its descendants,
+ * except descendants of its first optional <legend> element, are disabled
+ *
+ * https://html.spec.whatwg.org/multipage/form-elements.html#concept-fieldset-disabled
+ *
+ * This method tests whether element is first legend child of fieldset parent
+ */
+function isFirstLegendChildOfFieldset(element, parent) {
+  return (
+    getTag(element) === 'legend' &&
+    getTag(parent) === 'fieldset' &&
+    element.isSameNode(
+      Array.from(parent.children).find(child => getTag(child) === 'legend'),
+    )
+  )
+}
+
+function isElementDisabledByParent(element, parent) {
+  return (
+    isElementDisabled(parent) && !isFirstLegendChildOfFieldset(element, parent)
+  )
+}
+
+function isCustomElement(tag) {
+  return tag.includes('-')
+}
+
+/*
+ * Only certain form elements and custom elements can actually be disabled:
+ * https://html.spec.whatwg.org/multipage/semantics-other.html#disabled-elements
+ */
+function canElementBeDisabled(element) {
+  const tag = getTag(element);
+  return FORM_TAGS$2.includes(tag) || isCustomElement(tag)
+}
+
+function isElementDisabled(element) {
+  return canElementBeDisabled(element) && element.hasAttribute('disabled')
+}
+
+function isAncestorDisabled(element) {
+  const parent = element.parentElement;
+  return (
+    Boolean(parent) &&
+    (isElementDisabledByParent(element, parent) || isAncestorDisabled(parent))
+  )
+}
+
+function isElementOrAncestorDisabled(element) {
+  return (
+    canElementBeDisabled(element) &&
+    (isElementDisabled(element) || isAncestorDisabled(element))
+  )
+}
+
+function toBeDisabled(element) {
+  checkHtmlElement(element, toBeDisabled, this);
+
+  const isDisabled = isElementOrAncestorDisabled(element);
+
+  return {
+    pass: isDisabled,
+    message: () => {
+      const is = isDisabled ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeDisabled`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} disabled:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+function toBeEnabled(element) {
+  checkHtmlElement(element, toBeEnabled, this);
+
+  const isEnabled = !isElementOrAncestorDisabled(element);
+
+  return {
+    pass: isEnabled,
+    message: () => {
+      const is = isEnabled ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeEnabled`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} enabled:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+// form elements that support 'required'
+const FORM_TAGS$1 = ['select', 'textarea'];
+
+const ARIA_FORM_TAGS = ['input', 'select', 'textarea'];
+
+const UNSUPPORTED_INPUT_TYPES = [
+  'color',
+  'hidden',
+  'range',
+  'submit',
+  'image',
+  'reset',
+];
+
+const SUPPORTED_ARIA_ROLES = [
+  'combobox',
+  'gridcell',
+  'radiogroup',
+  'spinbutton',
+  'tree',
+];
+
+function isRequiredOnFormTagsExceptInput(element) {
+  return FORM_TAGS$1.includes(getTag(element)) && element.hasAttribute('required')
+}
+
+function isRequiredOnSupportedInput(element) {
+  return (
+    getTag(element) === 'input' &&
+    element.hasAttribute('required') &&
+    ((element.hasAttribute('type') &&
+      !UNSUPPORTED_INPUT_TYPES.includes(element.getAttribute('type'))) ||
+      !element.hasAttribute('type'))
+  )
+}
+
+function isElementRequiredByARIA(element) {
+  return (
+    element.hasAttribute('aria-required') &&
+    element.getAttribute('aria-required') === 'true' &&
+    (ARIA_FORM_TAGS.includes(getTag(element)) ||
+      (element.hasAttribute('role') &&
+        SUPPORTED_ARIA_ROLES.includes(element.getAttribute('role'))))
+  )
+}
+
+function toBeRequired(element) {
+  checkHtmlElement(element, toBeRequired, this);
+
+  const isRequired =
+    isRequiredOnFormTagsExceptInput(element) ||
+    isRequiredOnSupportedInput(element) ||
+    isElementRequiredByARIA(element);
+
+  return {
+    pass: isRequired,
+    message: () => {
+      const is = isRequired ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeRequired`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} required:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+const FORM_TAGS = ['form', 'input', 'select', 'textarea'];
+
+function isElementHavingAriaInvalid(element) {
+  return (
+    element.hasAttribute('aria-invalid') &&
+    element.getAttribute('aria-invalid') !== 'false'
+  )
+}
+
+function isSupportsValidityMethod(element) {
+  return FORM_TAGS.includes(getTag(element))
+}
+
+function isElementInvalid(element) {
+  const isHaveAriaInvalid = isElementHavingAriaInvalid(element);
+  if (isSupportsValidityMethod(element)) {
+    return isHaveAriaInvalid || !element.checkValidity()
+  } else {
+    return isHaveAriaInvalid
+  }
+}
+
+function toBeInvalid(element) {
+  checkHtmlElement(element, toBeInvalid, this);
+
+  const isInvalid = isElementInvalid(element);
+
+  return {
+    pass: isInvalid,
+    message: () => {
+      const is = isInvalid ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeInvalid`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} currently invalid:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+function toBeValid(element) {
+  checkHtmlElement(element, toBeValid, this);
+
+  const isValid = !isElementInvalid(element);
+
+  return {
+    pass: isValid,
+    message: () => {
+      const is = isValid ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeValid`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} currently valid:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+function toHaveValue(htmlElement, expectedValue) {
+  checkHtmlElement(htmlElement, toHaveValue, this);
+
+  if (
+    htmlElement.tagName.toLowerCase() === 'input' &&
+    ['checkbox', 'radio'].includes(htmlElement.type)
+  ) {
+    throw new Error(
+      'input with type=checkbox or type=radio cannot be used with .toHaveValue(). Use .toBeChecked() for type=checkbox or .toHaveFormValues() instead',
+    )
+  }
+
+  const receivedValue = getSingleElementValue(htmlElement);
+  const expectsValue = expectedValue !== undefined;
+
+  let expectedTypedValue = expectedValue;
+  let receivedTypedValue = receivedValue;
+  if (expectedValue == receivedValue && expectedValue !== receivedValue) {
+    expectedTypedValue = `${expectedValue} (${typeof expectedValue})`;
+    receivedTypedValue = `${receivedValue} (${typeof receivedValue})`;
+  }
+
+  return {
+    pass: expectsValue
+      ? isEqualWith$1(receivedValue, expectedValue, compareArraysAsSet)
+      : Boolean(receivedValue),
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      const matcher = this.utils.matcherHint(
+        `${this.isNot ? '.not' : ''}.toHaveValue`,
+        'element',
+        expectedValue,
+      );
+      return getMessage(
+        this,
+        matcher,
+        `Expected the element ${to} have value`,
+        expectsValue ? expectedTypedValue : '(any)',
+        'Received',
+        receivedTypedValue,
+      )
+    },
+  }
+}
+
+function toHaveDisplayValue(htmlElement, expectedValue) {
+  checkHtmlElement(htmlElement, toHaveDisplayValue, this);
+  const tagName = htmlElement.tagName.toLowerCase();
+
+  if (!['select', 'input', 'textarea'].includes(tagName)) {
+    throw new Error(
+      '.toHaveDisplayValue() currently supports only input, textarea or select elements, try with another matcher instead.',
+    )
+  }
+
+  if (tagName === 'input' && ['radio', 'checkbox'].includes(htmlElement.type)) {
+    throw new Error(
+      `.toHaveDisplayValue() currently does not support input[type="${htmlElement.type}"], try with another matcher instead.`,
+    )
+  }
+
+  const values = getValues(tagName, htmlElement);
+  const expectedValues = getExpectedValues(expectedValue);
+  const numberOfMatchesWithValues = expectedValues.filter(expected =>
+    values.some(value =>
+      expected instanceof RegExp
+        ? expected.test(value)
+        : this.equals(value, String(expected)),
+    ),
+  ).length;
+
+  const matchedWithAllValues = numberOfMatchesWithValues === values.length;
+  const matchedWithAllExpectedValues =
+    numberOfMatchesWithValues === expectedValues.length;
+
+  return {
+    pass: matchedWithAllValues && matchedWithAllExpectedValues,
+    message: () =>
+      getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toHaveDisplayValue`,
+          'element',
+          '',
+        ),
+        `Expected element ${this.isNot ? 'not ' : ''}to have display value`,
+        expectedValue,
+        'Received',
+        values,
+      ),
+  }
+}
+
+function getValues(tagName, htmlElement) {
+  return tagName === 'select'
+    ? Array.from(htmlElement)
+        .filter(option => option.selected)
+        .map(option => option.textContent)
+    : [htmlElement.value]
+}
+
+function getExpectedValues(expectedValue) {
+  return expectedValue instanceof Array ? expectedValue : [expectedValue]
+}
+
+function toBeChecked(element) {
+  checkHtmlElement(element, toBeChecked, this);
+
+  const isValidInput = () => {
+    return (
+      element.tagName.toLowerCase() === 'input' &&
+      ['checkbox', 'radio'].includes(element.type)
+    )
+  };
+
+  const isValidAriaElement = () => {
+    return (
+      roleSupportsChecked(element.getAttribute('role')) &&
+      ['true', 'false'].includes(element.getAttribute('aria-checked'))
+    )
+  };
+
+  if (!isValidInput() && !isValidAriaElement()) {
+    return {
+      pass: false,
+      message: () =>
+        `only inputs with type="checkbox" or type="radio" or elements with ${supportedRolesSentence()} and a valid aria-checked attribute can be used with .toBeChecked(). Use .toHaveValue() instead`,
+    }
+  }
+
+  const isChecked = () => {
+    if (isValidInput()) return element.checked
+    return element.getAttribute('aria-checked') === 'true'
+  };
+
+  return {
+    pass: isChecked(),
+    message: () => {
+      const is = isChecked() ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBeChecked`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} checked:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+function supportedRolesSentence() {
+  return toSentence(
+    supportedRoles().map(role => `role="${role}"`),
+    {lastWordConnector: ' or '},
+  )
+}
+
+function supportedRoles() {
+  return roles_1.keys().filter(roleSupportsChecked)
+}
+
+function roleSupportsChecked(role) {
+  return roles_1.get(role)?.props['aria-checked'] !== undefined
+}
+
+function toBePartiallyChecked(element) {
+  checkHtmlElement(element, toBePartiallyChecked, this);
+
+  const isValidInput = () => {
+    return (
+      element.tagName.toLowerCase() === 'input' && element.type === 'checkbox'
+    )
+  };
+
+  const isValidAriaElement = () => {
+    return element.getAttribute('role') === 'checkbox'
+  };
+
+  if (!isValidInput() && !isValidAriaElement()) {
+    return {
+      pass: false,
+      message: () =>
+        'only inputs with type="checkbox" or elements with role="checkbox" and a valid aria-checked attribute can be used with .toBePartiallyChecked(). Use .toHaveValue() instead',
+    }
+  }
+
+  const isPartiallyChecked = () => {
+    const isAriaMixed = element.getAttribute('aria-checked') === 'mixed';
+
+    if (isValidInput()) {
+      return element.indeterminate || isAriaMixed
+    }
+
+    return isAriaMixed
+  };
+
+  return {
+    pass: isPartiallyChecked(),
+    message: () => {
+      const is = isPartiallyChecked() ? 'is' : 'is not';
+      return [
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toBePartiallyChecked`,
+          'element',
+          '',
+        ),
+        '',
+        `Received element ${is} partially checked:`,
+        `  ${this.utils.printReceived(element.cloneNode(false))}`,
+      ].join('\n')
+    },
+  }
+}
+
+// See algoritm: https://www.w3.org/TR/accname-1.1/#mapping_additional_nd_description
+function toHaveDescription(htmlElement, checkWith) {
+  deprecate(
+    'toHaveDescription',
+    'Please use toHaveAccessibleDescription.',
+  );
+
+  checkHtmlElement(htmlElement, toHaveDescription, this);
+
+  const expectsDescription = checkWith !== undefined;
+
+  const descriptionIDRaw = htmlElement.getAttribute('aria-describedby') || '';
+  const descriptionIDs = descriptionIDRaw.split(/\s+/).filter(Boolean);
+  let description = '';
+  if (descriptionIDs.length > 0) {
+    const document = htmlElement.ownerDocument;
+    const descriptionEls = descriptionIDs
+      .map(descriptionID => document.getElementById(descriptionID))
+      .filter(Boolean);
+    description = normalize$1(descriptionEls.map(el => el.textContent).join(' '));
+  }
+
+  return {
+    pass: expectsDescription
+      ? checkWith instanceof RegExp
+        ? checkWith.test(description)
+        : this.equals(description, checkWith)
+      : Boolean(description),
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      return getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toHaveDescription`,
+          'element',
+          '',
+        ),
+        `Expected the element ${to} have description`,
+        this.utils.printExpected(checkWith),
+        'Received',
+        this.utils.printReceived(description),
+      )
+    },
+  }
+}
+
+// See aria-errormessage spec https://www.w3.org/TR/wai-aria-1.2/#aria-errormessage
+function toHaveErrorMessage(htmlElement, checkWith) {
+  deprecate('toHaveErrorMessage', 'Please use toHaveAccessibleErrorMessage.');
+  checkHtmlElement(htmlElement, toHaveErrorMessage, this);
+
+  if (
+    !htmlElement.hasAttribute('aria-invalid') ||
+    htmlElement.getAttribute('aria-invalid') === 'false'
+  ) {
+    const not = this.isNot ? '.not' : '';
+
+    return {
+      pass: false,
+      message: () => {
+        return getMessage(
+          this,
+          this.utils.matcherHint(`${not}.toHaveErrorMessage`, 'element', ''),
+          `Expected the element to have invalid state indicated by`,
+          'aria-invalid="true"',
+          'Received',
+          htmlElement.hasAttribute('aria-invalid')
+            ? `aria-invalid="${htmlElement.getAttribute('aria-invalid')}"`
+            : this.utils.printReceived(''),
+        )
+      },
+    }
+  }
+
+  const expectsErrorMessage = checkWith !== undefined;
+
+  const errormessageIDRaw = htmlElement.getAttribute('aria-errormessage') || '';
+  const errormessageIDs = errormessageIDRaw.split(/\s+/).filter(Boolean);
+
+  let errormessage = '';
+  if (errormessageIDs.length > 0) {
+    const document = htmlElement.ownerDocument;
+
+    const errormessageEls = errormessageIDs
+      .map(errormessageID => document.getElementById(errormessageID))
+      .filter(Boolean);
+
+    errormessage = normalize$1(
+      errormessageEls.map(el => el.textContent).join(' '),
+    );
+  }
+
+  return {
+    pass: expectsErrorMessage
+      ? checkWith instanceof RegExp
+        ? checkWith.test(errormessage)
+        : this.equals(errormessage, checkWith)
+      : Boolean(errormessage),
+    message: () => {
+      const to = this.isNot ? 'not to' : 'to';
+      return getMessage(
+        this,
+        this.utils.matcherHint(
+          `${this.isNot ? '.not' : ''}.toHaveErrorMessage`,
+          'element',
+          '',
+        ),
+        `Expected the element ${to} have error message`,
+        this.utils.printExpected(checkWith),
+        'Received',
+        this.utils.printReceived(errormessage),
+      )
+    },
+  }
+}
+
+var extensions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  toBeChecked: toBeChecked,
+  toBeDisabled: toBeDisabled,
+  toBeEmpty: toBeEmpty,
+  toBeEmptyDOMElement: toBeEmptyDOMElement,
+  toBeEnabled: toBeEnabled,
+  toBeInTheDOM: toBeInTheDOM,
+  toBeInTheDocument: toBeInTheDocument,
+  toBeInvalid: toBeInvalid,
+  toBePartiallyChecked: toBePartiallyChecked,
+  toBeRequired: toBeRequired,
+  toBeValid: toBeValid,
+  toBeVisible: toBeVisible,
+  toContainElement: toContainElement,
+  toContainHTML: toContainHTML,
+  toHaveAccessibleDescription: toHaveAccessibleDescription,
+  toHaveAccessibleErrorMessage: toHaveAccessibleErrorMessage,
+  toHaveAccessibleName: toHaveAccessibleName,
+  toHaveAttribute: toHaveAttribute,
+  toHaveClass: toHaveClass,
+  toHaveDescription: toHaveDescription,
+  toHaveDisplayValue: toHaveDisplayValue,
+  toHaveErrorMessage: toHaveErrorMessage,
+  toHaveFocus: toHaveFocus,
+  toHaveFormValues: toHaveFormValues,
+  toHaveRole: toHaveRole,
+  toHaveStyle: toHaveStyle,
+  toHaveTextContent: toHaveTextContent,
+  toHaveValue: toHaveValue
+});
+
+expect.extend(extensions);
 
 var testUtils = {exports: {}};
 
@@ -35583,7 +52934,7 @@ if (process.env.NODE_ENV === 'production') {
   m.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 }
 
-var build = {};
+var build$1 = {};
 
 var ansiStyles = {exports: {}};
 
@@ -36053,15 +53404,15 @@ const serialize$6 = (val, config, indentation, depth, refs, printer) => {
 
 AsymmetricMatcher.serialize = serialize$6;
 
-const test$7 = val => val && val.$$typeof === asymmetricMatcher;
+const test$6 = val => val && val.$$typeof === asymmetricMatcher;
 
-AsymmetricMatcher.test = test$7;
+AsymmetricMatcher.test = test$6;
 const plugin$6 = {
   serialize: serialize$6,
-  test: test$7
+  test: test$6
 };
-var _default$2p = plugin$6;
-AsymmetricMatcher.default = _default$2p;
+var _default$7 = plugin$6;
+AsymmetricMatcher.default = _default$7;
 
 var ConvertAnsi = {};
 
@@ -36079,11 +53430,11 @@ Object.defineProperty(ConvertAnsi, '__esModule', {
 });
 ConvertAnsi.test = ConvertAnsi.serialize = ConvertAnsi.default = void 0;
 
-var _ansiRegex = _interopRequireDefault$d(ansiRegex);
+var _ansiRegex = _interopRequireDefault$2(ansiRegex);
 
-var _ansiStyles$1 = _interopRequireDefault$d(ansiStylesExports);
+var _ansiStyles$1 = _interopRequireDefault$2(ansiStylesExports);
 
-function _interopRequireDefault$d(obj) {
+function _interopRequireDefault$2(obj) {
   return obj && obj.__esModule ? obj : {default: obj};
 }
 
@@ -36153,10 +53504,10 @@ const toHumanReadableAnsi = text =>
     }
   });
 
-const test$6 = val =>
+const test$5 = val =>
   typeof val === 'string' && !!val.match((0, _ansiRegex.default)());
 
-ConvertAnsi.test = test$6;
+ConvertAnsi.test = test$5;
 
 const serialize$5 = (val, config, indentation, depth, refs, printer) =>
   printer(toHumanReadableAnsi(val), config, indentation, depth, refs);
@@ -36164,10 +53515,10 @@ const serialize$5 = (val, config, indentation, depth, refs, printer) =>
 ConvertAnsi.serialize = serialize$5;
 const plugin$5 = {
   serialize: serialize$5,
-  test: test$6
+  test: test$5
 };
-var _default$2o = plugin$5;
-ConvertAnsi.default = _default$2o;
+var _default$6 = plugin$5;
+ConvertAnsi.default = _default$6;
 
 var DOMCollection$1 = {};
 
@@ -36193,13 +53544,13 @@ const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 const testName = name =>
   OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
 
-const test$5 = val =>
+const test$4 = val =>
   val &&
   val.constructor &&
   !!val.constructor.name &&
   testName(val.constructor.name);
 
-DOMCollection$1.test = test$5;
+DOMCollection$1.test = test$4;
 
 const isNamedNodeMap = collection =>
   collection.constructor.name === 'NamedNodeMap';
@@ -36245,10 +53596,10 @@ const serialize$4 = (collection, config, indentation, depth, refs, printer) => {
 DOMCollection$1.serialize = serialize$4;
 const plugin$4 = {
   serialize: serialize$4,
-  test: test$5
+  test: test$4
 };
-var _default$2n = plugin$4;
-DOMCollection$1.default = _default$2n;
+var _default$5 = plugin$4;
+DOMCollection$1.default = _default$5;
 
 var DOMElement = {};
 
@@ -36282,9 +53633,9 @@ markup.printText =
   markup.printChildren =
     void 0;
 
-var _escapeHTML = _interopRequireDefault$c(escapeHTML$2);
+var _escapeHTML = _interopRequireDefault$1(escapeHTML$2);
 
-function _interopRequireDefault$c(obj) {
+function _interopRequireDefault$1(obj) {
   return obj && obj.__esModule ? obj : {default: obj};
 }
 
@@ -36465,7 +53816,7 @@ const testNode$1 = val => {
   );
 };
 
-const test$4 = val => {
+const test$3 = val => {
   var _val$constructor;
 
   return (
@@ -36478,7 +53829,7 @@ const test$4 = val => {
   );
 };
 
-DOMElement.test = test$4;
+DOMElement.test = test$3;
 
 function nodeIsText$1(node) {
   return node.nodeType === TEXT_NODE$2;
@@ -36545,10 +53896,10 @@ const serialize$3 = (node, config, indentation, depth, refs, printer) => {
 DOMElement.serialize = serialize$3;
 const plugin$3 = {
   serialize: serialize$3,
-  test: test$4
+  test: test$3
 };
-var _default$2m = plugin$3;
-DOMElement.default = _default$2m;
+var _default$4 = plugin$3;
+DOMElement.default = _default$4;
 
 var Immutable = {};
 
@@ -36786,17 +54137,17 @@ const serialize$2 = (val, config, indentation, depth, refs, printer) => {
 
 Immutable.serialize = serialize$2;
 
-const test$3 = val =>
+const test$2 = val =>
   val &&
   (val[IS_ITERABLE_SENTINEL] === true || val[IS_RECORD_SENTINEL] === true);
 
-Immutable.test = test$3;
+Immutable.test = test$2;
 const plugin$2 = {
   serialize: serialize$2,
-  test: test$3
+  test: test$2
 };
-var _default$2l = plugin$2;
-Immutable.default = _default$2l;
+var _default$3 = plugin$2;
+Immutable.default = _default$3;
 
 var ReactElement = {};
 
@@ -37221,15 +54572,15 @@ const serialize$1 = (element, config, indentation, depth, refs, printer) =>
 
 ReactElement.serialize = serialize$1;
 
-const test$2 = val => val != null && ReactIs.isElement(val);
+const test$1 = val => val != null && ReactIs.isElement(val);
 
-ReactElement.test = test$2;
+ReactElement.test = test$1;
 const plugin$1 = {
   serialize: serialize$1,
-  test: test$2
+  test: test$1
 };
-var _default$2k = plugin$1;
-ReactElement.default = _default$2k;
+var _default$2 = plugin$1;
+ReactElement.default = _default$2;
 
 var ReactTestComponent = {};
 
@@ -37301,46 +54652,46 @@ const serialize = (object, config, indentation, depth, refs, printer) =>
 
 ReactTestComponent.serialize = serialize;
 
-const test$1 = val => val && val.$$typeof === testSymbol;
+const test = val => val && val.$$typeof === testSymbol;
 
-ReactTestComponent.test = test$1;
+ReactTestComponent.test = test;
 const plugin = {
   serialize,
-  test: test$1
+  test
 };
-var _default$2j = plugin;
-ReactTestComponent.default = _default$2j;
+var _default$1 = plugin;
+ReactTestComponent.default = _default$1;
 
-Object.defineProperty(build, '__esModule', {
+Object.defineProperty(build$1, '__esModule', {
   value: true
 });
-build.default = build.DEFAULT_OPTIONS = void 0;
-var format_1 = build.format = format;
-var plugins_1 = build.plugins = void 0;
+build$1.default = build$1.DEFAULT_OPTIONS = void 0;
+var format_1 = build$1.format = format;
+var plugins_1 = build$1.plugins = void 0;
 
-var _ansiStyles = _interopRequireDefault$b(ansiStylesExports);
+var _ansiStyles = _interopRequireDefault(ansiStylesExports);
 
 var _collections = collections;
 
-var _AsymmetricMatcher = _interopRequireDefault$b(
+var _AsymmetricMatcher = _interopRequireDefault(
   AsymmetricMatcher
 );
 
-var _ConvertAnsi = _interopRequireDefault$b(ConvertAnsi);
+var _ConvertAnsi = _interopRequireDefault(ConvertAnsi);
 
-var _DOMCollection = _interopRequireDefault$b(DOMCollection$1);
+var _DOMCollection = _interopRequireDefault(DOMCollection$1);
 
-var _DOMElement = _interopRequireDefault$b(DOMElement);
+var _DOMElement = _interopRequireDefault(DOMElement);
 
-var _Immutable = _interopRequireDefault$b(Immutable);
+var _Immutable = _interopRequireDefault(Immutable);
 
-var _ReactElement = _interopRequireDefault$b(ReactElement);
+var _ReactElement = _interopRequireDefault(ReactElement);
 
-var _ReactTestComponent = _interopRequireDefault$b(
+var _ReactTestComponent = _interopRequireDefault(
   ReactTestComponent
 );
 
-function _interopRequireDefault$b(obj) {
+function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {default: obj};
 }
 
@@ -37352,7 +54703,7 @@ function _interopRequireDefault$b(obj) {
  */
 
 /* eslint-disable local/ban-types-eventually */
-const toString$1 = Object.prototype.toString;
+const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
@@ -37464,7 +54815,7 @@ function printBasicValue(val, printFunctionName, escapeRegex, escapeString) {
     return printSymbol(val);
   }
 
-  const toStringed = toString$1.call(val);
+  const toStringed = toString.call(val);
 
   if (toStringed === '[object WeakMap]') {
     return 'WeakMap {}';
@@ -37540,7 +54891,7 @@ function printComplexValue(
     return printer(val.toJSON(), config, indentation, depth, refs, true);
   }
 
-  const toStringed = toString$1.call(val);
+  const toStringed = toString.call(val);
 
   if (toStringed === '[object Arguments]') {
     return hitMaxDepth
@@ -37733,7 +55084,7 @@ const DEFAULT_OPTIONS = {
   printFunctionName: true,
   theme: DEFAULT_THEME
 };
-build.DEFAULT_OPTIONS = DEFAULT_OPTIONS;
+build$1.DEFAULT_OPTIONS = DEFAULT_OPTIONS;
 
 function validateOptions(options) {
   Object.keys(options).forEach(key => {
@@ -37903,17 +55254,17 @@ const plugins = {
   ReactElement: _ReactElement.default,
   ReactTestComponent: _ReactTestComponent.default
 };
-plugins_1 = build.plugins = plugins;
-var _default$2i = format;
-build.default = _default$2i;
+plugins_1 = build$1.plugins = plugins;
+var _default = format;
+build$1.default = _default;
 
 /**
  * @source {https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#Polyfill}
  * but without thisArg (too hard to type, no need to `this`)
  */
-var toStr$a = Object.prototype.toString;
-function isCallable$2(fn) {
-  return typeof fn === "function" || toStr$a.call(fn) === "[object Function]";
+var toStr = Object.prototype.toString;
+function isCallable(fn) {
+  return typeof fn === "function" || toStr.call(fn) === "[object Function]";
 }
 function toInteger(value) {
   var number = Number(value);
@@ -37960,7 +55311,7 @@ function arrayFrom(arrayLike, mapFn) {
   if (typeof mapFn !== "undefined") {
     // 5. else
     // 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
-    if (!isCallable$2(mapFn)) {
+    if (!isCallable(mapFn)) {
       throw new TypeError("Array.from: when provided, the second argument must be a function");
     }
   }
@@ -37973,7 +55324,7 @@ function arrayFrom(arrayLike, mapFn) {
   // 13. a. Let A be the result of calling the [[Construct]] internal method
   // of C with an argument list containing the single item len.
   // 14. a. Else, Let A be ArrayCreate(len).
-  var A = isCallable$2(C) ? Object(new C(len)) : new Array(len);
+  var A = isCallable(C) ? Object(new C(len)) : new Array(len);
 
   // 16. Let k be 0.
   var k = 0;
@@ -37994,19 +55345,19 @@ function arrayFrom(arrayLike, mapFn) {
   return A;
 }
 
-function _typeof$2(obj) { "@babel/helpers - typeof"; return _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof$2(obj); }
+function _typeof$1(obj) { "@babel/helpers - typeof"; return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof$1(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey$1(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _defineProperty$2(obj, key, value) { key = _toPropertyKey$1(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey$1(arg) { var key = _toPrimitive$1(arg, "string"); return _typeof$2(key) === "symbol" ? key : String(key); }
-function _toPrimitive$1(input, hint) { if (_typeof$2(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof$2(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _defineProperty$1(obj, key, value) { key = _toPropertyKey$1(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey$1(arg) { var key = _toPrimitive$1(arg, "string"); return _typeof$1(key) === "symbol" ? key : String(key); }
+function _toPrimitive$1(input, hint) { if (_typeof$1(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof$1(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 // for environments without Set we fallback to arrays with unique members
 var SetLike = /*#__PURE__*/function () {
   function SetLike() {
     var items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
     _classCallCheck(this, SetLike);
-    _defineProperty$2(this, "items", void 0);
+    _defineProperty$1(this, "items", void 0);
     this.items = items;
   }
   _createClass(SetLike, [{
@@ -38239,26 +55590,26 @@ function getExplicitRole(element) {
   return null;
 }
 
-function isElement$1(node) {
+function isElement$2(node) {
   return node !== null && node.nodeType === node.ELEMENT_NODE;
 }
 function isHTMLTableCaptionElement(node) {
-  return isElement$1(node) && getLocalName(node) === "caption";
+  return isElement$2(node) && getLocalName(node) === "caption";
 }
 function isHTMLInputElement(node) {
-  return isElement$1(node) && getLocalName(node) === "input";
+  return isElement$2(node) && getLocalName(node) === "input";
 }
 function isHTMLOptGroupElement(node) {
-  return isElement$1(node) && getLocalName(node) === "optgroup";
+  return isElement$2(node) && getLocalName(node) === "optgroup";
 }
 function isHTMLSelectElement(node) {
-  return isElement$1(node) && getLocalName(node) === "select";
+  return isElement$2(node) && getLocalName(node) === "select";
 }
 function isHTMLTableElement(node) {
-  return isElement$1(node) && getLocalName(node) === "table";
+  return isElement$2(node) && getLocalName(node) === "table";
 }
 function isHTMLTextAreaElement(node) {
-  return isElement$1(node) && getLocalName(node) === "textarea";
+  return isElement$2(node) && getLocalName(node) === "textarea";
 }
 function safeWindow(node) {
   var _ref = node.ownerDocument === null ? node : node.ownerDocument,
@@ -38269,19 +55620,19 @@ function safeWindow(node) {
   return defaultView;
 }
 function isHTMLFieldSetElement(node) {
-  return isElement$1(node) && getLocalName(node) === "fieldset";
+  return isElement$2(node) && getLocalName(node) === "fieldset";
 }
 function isHTMLLegendElement(node) {
-  return isElement$1(node) && getLocalName(node) === "legend";
+  return isElement$2(node) && getLocalName(node) === "legend";
 }
 function isHTMLSlotElement(node) {
-  return isElement$1(node) && getLocalName(node) === "slot";
+  return isElement$2(node) && getLocalName(node) === "slot";
 }
 function isSVGElement(node) {
-  return isElement$1(node) && node.ownerSVGElement !== undefined;
+  return isElement$2(node) && node.ownerSVGElement !== undefined;
 }
 function isSVGSVGElement(node) {
-  return isElement$1(node) && getLocalName(node) === "svg";
+  return isElement$2(node) && getLocalName(node) === "svg";
 }
 function isSVGTitleElement(node) {
   return isSVGElement(node) && getLocalName(node) === "title";
@@ -38294,7 +55645,7 @@ function isSVGTitleElement(node) {
  * @returns {Element[]} -
  */
 function queryIdRefs(node, attributeName) {
-  if (isElement$1(node) && node.hasAttribute(attributeName)) {
+  if (isElement$2(node) && node.hasAttribute(attributeName)) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute check
     var ids = node.getAttribute(attributeName).split(" ");
 
@@ -38312,7 +55663,7 @@ function queryIdRefs(node, attributeName) {
   return [];
 }
 function hasAnyConcreteRoles(node, roles) {
-  if (isElement$1(node)) {
+  if (isElement$2(node)) {
     return roles.indexOf(getRole(node)) !== -1;
   }
   return false;
@@ -38342,7 +55693,7 @@ function asFlatString(s) {
  * @returns {boolean} -
  */
 function isHidden(node, getComputedStyleImplementation) {
-  if (!isElement$1(node)) {
+  if (!isElement$2(node)) {
     return false;
   }
   if (node.hasAttribute("hidden") || node.getAttribute("aria-hidden") === "true") {
@@ -38360,7 +55711,7 @@ function isControl(node) {
   return hasAnyConcreteRoles(node, ["button", "combobox", "listbox", "textbox"]) || hasAbstractRole(node, "range");
 }
 function hasAbstractRole(node, role) {
-  if (!isElement$1(node)) {
+  if (!isElement$2(node)) {
     return false;
   }
   switch (role) {
@@ -38460,7 +55811,7 @@ function findLabelableElement(element) {
   }
   var labelableElement = null;
   element.childNodes.forEach(function (childNode) {
-    if (labelableElement === null && isElement$1(childNode)) {
+    if (labelableElement === null && isElement$2(childNode)) {
       var descendantLabelableElement = findLabelableElement(childNode);
       if (descendantLabelableElement !== null) {
         labelableElement = descendantLabelableElement;
@@ -38548,7 +55899,7 @@ function computeTextAlternative(root) {
   // 2F.i
   function computeMiscTextAlternative(node, context) {
     var accumulatedText = "";
-    if (isElement$1(node) && computedStyleSupportsPseudoElements) {
+    if (isElement$2(node) && computedStyleSupportsPseudoElements) {
       var pseudoBefore = getComputedStyle(node, "::before");
       var beforeContent = getTextualContent(pseudoBefore);
       accumulatedText = "".concat(beforeContent, " ").concat(accumulatedText);
@@ -38565,12 +55916,12 @@ function computeTextAlternative(root) {
       });
       // TODO: Unclear why display affects delimiter
       // see https://github.com/w3c/accname/issues/3
-      var display = isElement$1(child) ? getComputedStyle(child).getPropertyValue("display") : "inline";
+      var display = isElement$2(child) ? getComputedStyle(child).getPropertyValue("display") : "inline";
       var separator = display !== "inline" ? " " : "";
       // trailing separator for wpt tests
       accumulatedText += "".concat(separator).concat(result).concat(separator);
     });
-    if (isElement$1(node) && computedStyleSupportsPseudoElements) {
+    if (isElement$2(node) && computedStyleSupportsPseudoElements) {
       var pseudoAfter = getComputedStyle(node, "::after");
       var afterContent = getTextualContent(pseudoAfter);
       accumulatedText = "".concat(accumulatedText, " ").concat(afterContent);
@@ -38593,13 +55944,13 @@ function computeTextAlternative(root) {
     return null;
   }
   function computeTooltipAttributeValue(node) {
-    if (!isElement$1(node)) {
+    if (!isElement$2(node)) {
       return null;
     }
     return useAttribute(node, "title");
   }
   function computeElementTextAlternative(node) {
-    if (!isElement$1(node)) {
+    if (!isElement$2(node)) {
       return null;
     }
 
@@ -38725,7 +56076,7 @@ function computeTextAlternative(root) {
     }
 
     // 2B
-    var labelAttributeNode = isElement$1(current) ? current.getAttributeNode("aria-labelledby") : null;
+    var labelAttributeNode = isElement$2(current) ? current.getAttributeNode("aria-labelledby") : null;
     // TODO: Do we generally need to block query IdRefs of attributes we have already consulted?
     var labelElements = labelAttributeNode !== null && !consultedNodes.has(labelAttributeNode) ? queryIdRefs(current, "aria-labelledby") : [];
     if (compute === "name" && !context.isReferenced && labelElements.length > 0) {
@@ -38749,7 +56100,7 @@ function computeTextAlternative(root) {
     // spec says we should only consider skipping if we have a non-empty label
     var skipToStep2E = context.recursion && isControl(current) && compute === "name";
     if (!skipToStep2E) {
-      var ariaLabel = (isElement$1(current) && current.getAttribute("aria-label") || "").trim();
+      var ariaLabel = (isElement$2(current) && current.getAttribute("aria-label") || "").trim();
       if (ariaLabel !== "" && compute === "name") {
         consultedNodes.add(current);
         return ariaLabel;
@@ -38809,7 +56160,7 @@ function computeTextAlternative(root) {
     }
 
     // 2F: https://w3c.github.io/accname/#step2F
-    if (allowsNameFromContent(current) || isElement$1(current) && context.isReferenced || isNativeHostLanguageTextAlternativeElement(current) || isDescendantOfNativeHostLanguageTextAlternativeElement()) {
+    if (allowsNameFromContent(current) || isElement$2(current) && context.isReferenced || isNativeHostLanguageTextAlternativeElement(current) || isDescendantOfNativeHostLanguageTextAlternativeElement()) {
       var accumulatedText2F = computeMiscTextAlternative(current, {
         isEmbeddedInLabel: context.isEmbeddedInLabel,
         isReferenced: false
@@ -38848,12 +56199,12 @@ function computeTextAlternative(root) {
   }));
 }
 
-function _typeof$1(obj) { "@babel/helpers - typeof"; return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof$1(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty$1(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _defineProperty$1(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof$1(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof$1(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof$1(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 /**
  * @param root
@@ -38900,9155 +56251,6 @@ function computeAccessibleName(root) {
   }
   return computeTextAlternative(root, options);
 }
-
-var lib = {};
-
-var ariaPropsMap$1 = {};
-
-var iterationDecorator$1 = {};
-
-var iteratorProxy$1 = {};
-
-Object.defineProperty(iteratorProxy$1, "__esModule", {
-  value: true
-});
-iteratorProxy$1.default = void 0;
-
-// eslint-disable-next-line no-unused-vars
-function iteratorProxy() {
-  var values = this;
-  var index = 0;
-  var iter = {
-    '@@iterator': function iterator() {
-      return iter;
-    },
-    next: function next() {
-      if (index < values.length) {
-        var value = values[index];
-        index = index + 1;
-        return {
-          done: false,
-          value: value
-        };
-      } else {
-        return {
-          done: true
-        };
-      }
-    }
-  };
-  return iter;
-}
-var _default$2h = iteratorProxy;
-iteratorProxy$1.default = _default$2h;
-
-Object.defineProperty(iterationDecorator$1, "__esModule", {
-  value: true
-});
-iterationDecorator$1.default = iterationDecorator;
-var _iteratorProxy = _interopRequireDefault$a(iteratorProxy$1);
-function _interopRequireDefault$a(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function iterationDecorator(collection, entries) {
-  if (typeof Symbol === 'function' && _typeof(Symbol.iterator) === 'symbol') {
-    Object.defineProperty(collection, Symbol.iterator, {
-      value: _iteratorProxy.default.bind(entries)
-    });
-  }
-  return collection;
-}
-
-Object.defineProperty(ariaPropsMap$1, "__esModule", {
-  value: true
-});
-ariaPropsMap$1.default = void 0;
-var _iterationDecorator$4 = _interopRequireDefault$9(iterationDecorator$1);
-function _interopRequireDefault$9(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _slicedToArray$4(arr, i) { return _arrayWithHoles$4(arr) || _iterableToArrayLimit$4(arr, i) || _unsupportedIterableToArray$4(arr, i) || _nonIterableRest$4(); }
-function _nonIterableRest$4() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit$4(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-function _arrayWithHoles$4(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper$4(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$4(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray$4(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$4(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$4(o, minLen); }
-function _arrayLikeToArray$4(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-var properties = [['aria-activedescendant', {
-  'type': 'id'
-}], ['aria-atomic', {
-  'type': 'boolean'
-}], ['aria-autocomplete', {
-  'type': 'token',
-  'values': ['inline', 'list', 'both', 'none']
-}], ['aria-busy', {
-  'type': 'boolean'
-}], ['aria-checked', {
-  'type': 'tristate'
-}], ['aria-colcount', {
-  type: 'integer'
-}], ['aria-colindex', {
-  type: 'integer'
-}], ['aria-colspan', {
-  type: 'integer'
-}], ['aria-controls', {
-  'type': 'idlist'
-}], ['aria-current', {
-  type: 'token',
-  values: ['page', 'step', 'location', 'date', 'time', true, false]
-}], ['aria-describedby', {
-  'type': 'idlist'
-}], ['aria-details', {
-  'type': 'id'
-}], ['aria-disabled', {
-  'type': 'boolean'
-}], ['aria-dropeffect', {
-  'type': 'tokenlist',
-  'values': ['copy', 'execute', 'link', 'move', 'none', 'popup']
-}], ['aria-errormessage', {
-  'type': 'id'
-}], ['aria-expanded', {
-  'type': 'boolean',
-  'allowundefined': true
-}], ['aria-flowto', {
-  'type': 'idlist'
-}], ['aria-grabbed', {
-  'type': 'boolean',
-  'allowundefined': true
-}], ['aria-haspopup', {
-  'type': 'token',
-  'values': [false, true, 'menu', 'listbox', 'tree', 'grid', 'dialog']
-}], ['aria-hidden', {
-  'type': 'boolean',
-  'allowundefined': true
-}], ['aria-invalid', {
-  'type': 'token',
-  'values': ['grammar', false, 'spelling', true]
-}], ['aria-keyshortcuts', {
-  type: 'string'
-}], ['aria-label', {
-  'type': 'string'
-}], ['aria-labelledby', {
-  'type': 'idlist'
-}], ['aria-level', {
-  'type': 'integer'
-}], ['aria-live', {
-  'type': 'token',
-  'values': ['assertive', 'off', 'polite']
-}], ['aria-modal', {
-  type: 'boolean'
-}], ['aria-multiline', {
-  'type': 'boolean'
-}], ['aria-multiselectable', {
-  'type': 'boolean'
-}], ['aria-orientation', {
-  'type': 'token',
-  'values': ['vertical', 'undefined', 'horizontal']
-}], ['aria-owns', {
-  'type': 'idlist'
-}], ['aria-placeholder', {
-  type: 'string'
-}], ['aria-posinset', {
-  'type': 'integer'
-}], ['aria-pressed', {
-  'type': 'tristate'
-}], ['aria-readonly', {
-  'type': 'boolean'
-}], ['aria-relevant', {
-  'type': 'tokenlist',
-  'values': ['additions', 'all', 'removals', 'text']
-}], ['aria-required', {
-  'type': 'boolean'
-}], ['aria-roledescription', {
-  type: 'string'
-}], ['aria-rowcount', {
-  type: 'integer'
-}], ['aria-rowindex', {
-  type: 'integer'
-}], ['aria-rowspan', {
-  type: 'integer'
-}], ['aria-selected', {
-  'type': 'boolean',
-  'allowundefined': true
-}], ['aria-setsize', {
-  'type': 'integer'
-}], ['aria-sort', {
-  'type': 'token',
-  'values': ['ascending', 'descending', 'none', 'other']
-}], ['aria-valuemax', {
-  'type': 'number'
-}], ['aria-valuemin', {
-  'type': 'number'
-}], ['aria-valuenow', {
-  'type': 'number'
-}], ['aria-valuetext', {
-  'type': 'string'
-}]];
-var ariaPropsMap = {
-  entries: function entries() {
-    return properties;
-  },
-  forEach: function forEach(fn) {
-    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var _iterator = _createForOfIteratorHelper$4(properties),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _step$value = _slicedToArray$4(_step.value, 2),
-          key = _step$value[0],
-          values = _step$value[1];
-        fn.call(thisArg, values, key, properties);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  },
-  get: function get(key) {
-    var item = properties.find(function (tuple) {
-      return tuple[0] === key ? true : false;
-    });
-    return item && item[1];
-  },
-  has: function has(key) {
-    return !!ariaPropsMap.get(key);
-  },
-  keys: function keys() {
-    return properties.map(function (_ref) {
-      var _ref2 = _slicedToArray$4(_ref, 1),
-        key = _ref2[0];
-      return key;
-    });
-  },
-  values: function values() {
-    return properties.map(function (_ref3) {
-      var _ref4 = _slicedToArray$4(_ref3, 2),
-        values = _ref4[1];
-      return values;
-    });
-  }
-};
-var _default$2g = (0, _iterationDecorator$4.default)(ariaPropsMap, ariaPropsMap.entries());
-ariaPropsMap$1.default = _default$2g;
-
-var domMap$1 = {};
-
-Object.defineProperty(domMap$1, "__esModule", {
-  value: true
-});
-domMap$1.default = void 0;
-var _iterationDecorator$3 = _interopRequireDefault$8(iterationDecorator$1);
-function _interopRequireDefault$8(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _slicedToArray$3(arr, i) { return _arrayWithHoles$3(arr) || _iterableToArrayLimit$3(arr, i) || _unsupportedIterableToArray$3(arr, i) || _nonIterableRest$3(); }
-function _nonIterableRest$3() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit$3(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-function _arrayWithHoles$3(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper$3(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
-function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-var dom$1 = [['a', {
-  reserved: false
-}], ['abbr', {
-  reserved: false
-}], ['acronym', {
-  reserved: false
-}], ['address', {
-  reserved: false
-}], ['applet', {
-  reserved: false
-}], ['area', {
-  reserved: false
-}], ['article', {
-  reserved: false
-}], ['aside', {
-  reserved: false
-}], ['audio', {
-  reserved: false
-}], ['b', {
-  reserved: false
-}], ['base', {
-  reserved: true
-}], ['bdi', {
-  reserved: false
-}], ['bdo', {
-  reserved: false
-}], ['big', {
-  reserved: false
-}], ['blink', {
-  reserved: false
-}], ['blockquote', {
-  reserved: false
-}], ['body', {
-  reserved: false
-}], ['br', {
-  reserved: false
-}], ['button', {
-  reserved: false
-}], ['canvas', {
-  reserved: false
-}], ['caption', {
-  reserved: false
-}], ['center', {
-  reserved: false
-}], ['cite', {
-  reserved: false
-}], ['code', {
-  reserved: false
-}], ['col', {
-  reserved: true
-}], ['colgroup', {
-  reserved: true
-}], ['content', {
-  reserved: false
-}], ['data', {
-  reserved: false
-}], ['datalist', {
-  reserved: false
-}], ['dd', {
-  reserved: false
-}], ['del', {
-  reserved: false
-}], ['details', {
-  reserved: false
-}], ['dfn', {
-  reserved: false
-}], ['dialog', {
-  reserved: false
-}], ['dir', {
-  reserved: false
-}], ['div', {
-  reserved: false
-}], ['dl', {
-  reserved: false
-}], ['dt', {
-  reserved: false
-}], ['em', {
-  reserved: false
-}], ['embed', {
-  reserved: false
-}], ['fieldset', {
-  reserved: false
-}], ['figcaption', {
-  reserved: false
-}], ['figure', {
-  reserved: false
-}], ['font', {
-  reserved: false
-}], ['footer', {
-  reserved: false
-}], ['form', {
-  reserved: false
-}], ['frame', {
-  reserved: false
-}], ['frameset', {
-  reserved: false
-}], ['h1', {
-  reserved: false
-}], ['h2', {
-  reserved: false
-}], ['h3', {
-  reserved: false
-}], ['h4', {
-  reserved: false
-}], ['h5', {
-  reserved: false
-}], ['h6', {
-  reserved: false
-}], ['head', {
-  reserved: true
-}], ['header', {
-  reserved: false
-}], ['hgroup', {
-  reserved: false
-}], ['hr', {
-  reserved: false
-}], ['html', {
-  reserved: true
-}], ['i', {
-  reserved: false
-}], ['iframe', {
-  reserved: false
-}], ['img', {
-  reserved: false
-}], ['input', {
-  reserved: false
-}], ['ins', {
-  reserved: false
-}], ['kbd', {
-  reserved: false
-}], ['keygen', {
-  reserved: false
-}], ['label', {
-  reserved: false
-}], ['legend', {
-  reserved: false
-}], ['li', {
-  reserved: false
-}], ['link', {
-  reserved: true
-}], ['main', {
-  reserved: false
-}], ['map', {
-  reserved: false
-}], ['mark', {
-  reserved: false
-}], ['marquee', {
-  reserved: false
-}], ['menu', {
-  reserved: false
-}], ['menuitem', {
-  reserved: false
-}], ['meta', {
-  reserved: true
-}], ['meter', {
-  reserved: false
-}], ['nav', {
-  reserved: false
-}], ['noembed', {
-  reserved: true
-}], ['noscript', {
-  reserved: true
-}], ['object', {
-  reserved: false
-}], ['ol', {
-  reserved: false
-}], ['optgroup', {
-  reserved: false
-}], ['option', {
-  reserved: false
-}], ['output', {
-  reserved: false
-}], ['p', {
-  reserved: false
-}], ['param', {
-  reserved: true
-}], ['picture', {
-  reserved: true
-}], ['pre', {
-  reserved: false
-}], ['progress', {
-  reserved: false
-}], ['q', {
-  reserved: false
-}], ['rp', {
-  reserved: false
-}], ['rt', {
-  reserved: false
-}], ['rtc', {
-  reserved: false
-}], ['ruby', {
-  reserved: false
-}], ['s', {
-  reserved: false
-}], ['samp', {
-  reserved: false
-}], ['script', {
-  reserved: true
-}], ['section', {
-  reserved: false
-}], ['select', {
-  reserved: false
-}], ['small', {
-  reserved: false
-}], ['source', {
-  reserved: true
-}], ['spacer', {
-  reserved: false
-}], ['span', {
-  reserved: false
-}], ['strike', {
-  reserved: false
-}], ['strong', {
-  reserved: false
-}], ['style', {
-  reserved: true
-}], ['sub', {
-  reserved: false
-}], ['summary', {
-  reserved: false
-}], ['sup', {
-  reserved: false
-}], ['table', {
-  reserved: false
-}], ['tbody', {
-  reserved: false
-}], ['td', {
-  reserved: false
-}], ['textarea', {
-  reserved: false
-}], ['tfoot', {
-  reserved: false
-}], ['th', {
-  reserved: false
-}], ['thead', {
-  reserved: false
-}], ['time', {
-  reserved: false
-}], ['title', {
-  reserved: true
-}], ['tr', {
-  reserved: false
-}], ['track', {
-  reserved: true
-}], ['tt', {
-  reserved: false
-}], ['u', {
-  reserved: false
-}], ['ul', {
-  reserved: false
-}], ['var', {
-  reserved: false
-}], ['video', {
-  reserved: false
-}], ['wbr', {
-  reserved: false
-}], ['xmp', {
-  reserved: false
-}]];
-var domMap = {
-  entries: function entries() {
-    return dom$1;
-  },
-  forEach: function forEach(fn) {
-    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var _iterator = _createForOfIteratorHelper$3(dom$1),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _step$value = _slicedToArray$3(_step.value, 2),
-          key = _step$value[0],
-          values = _step$value[1];
-        fn.call(thisArg, values, key, dom$1);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  },
-  get: function get(key) {
-    var item = dom$1.find(function (tuple) {
-      return tuple[0] === key ? true : false;
-    });
-    return item && item[1];
-  },
-  has: function has(key) {
-    return !!domMap.get(key);
-  },
-  keys: function keys() {
-    return dom$1.map(function (_ref) {
-      var _ref2 = _slicedToArray$3(_ref, 1),
-        key = _ref2[0];
-      return key;
-    });
-  },
-  values: function values() {
-    return dom$1.map(function (_ref3) {
-      var _ref4 = _slicedToArray$3(_ref3, 2),
-        values = _ref4[1];
-      return values;
-    });
-  }
-};
-var _default$2f = (0, _iterationDecorator$3.default)(domMap, domMap.entries());
-domMap$1.default = _default$2f;
-
-var rolesMap$1 = {};
-
-var ariaAbstractRoles$1 = {};
-
-var commandRole$1 = {};
-
-Object.defineProperty(commandRole$1, "__esModule", {
-  value: true
-});
-commandRole$1.default = void 0;
-var commandRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'menuitem'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget']]
-};
-var _default$2e = commandRole;
-commandRole$1.default = _default$2e;
-
-var compositeRole$1 = {};
-
-Object.defineProperty(compositeRole$1, "__esModule", {
-  value: true
-});
-compositeRole$1.default = void 0;
-var compositeRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-activedescendant': null,
-    'aria-disabled': null
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget']]
-};
-var _default$2d = compositeRole;
-compositeRole$1.default = _default$2d;
-
-var inputRole$1 = {};
-
-Object.defineProperty(inputRole$1, "__esModule", {
-  value: true
-});
-inputRole$1.default = void 0;
-var inputRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'input'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget']]
-};
-var _default$2c = inputRole;
-inputRole$1.default = _default$2c;
-
-var landmarkRole$1 = {};
-
-Object.defineProperty(landmarkRole$1, "__esModule", {
-  value: true
-});
-landmarkRole$1.default = void 0;
-var landmarkRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$2b = landmarkRole;
-landmarkRole$1.default = _default$2b;
-
-var rangeRole$1 = {};
-
-Object.defineProperty(rangeRole$1, "__esModule", {
-  value: true
-});
-rangeRole$1.default = void 0;
-var rangeRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-valuemax': null,
-    'aria-valuemin': null,
-    'aria-valuenow': null
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$2a = rangeRole;
-rangeRole$1.default = _default$2a;
-
-var roletypeRole$1 = {};
-
-Object.defineProperty(roletypeRole$1, "__esModule", {
-  value: true
-});
-roletypeRole$1.default = void 0;
-var roletypeRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: [],
-  prohibitedProps: [],
-  props: {
-    'aria-atomic': null,
-    'aria-busy': null,
-    'aria-controls': null,
-    'aria-current': null,
-    'aria-describedby': null,
-    'aria-details': null,
-    'aria-dropeffect': null,
-    'aria-flowto': null,
-    'aria-grabbed': null,
-    'aria-hidden': null,
-    'aria-keyshortcuts': null,
-    'aria-label': null,
-    'aria-labelledby': null,
-    'aria-live': null,
-    'aria-owns': null,
-    'aria-relevant': null,
-    'aria-roledescription': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'rel'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'role'
-    },
-    module: 'XHTML'
-  }, {
-    concept: {
-      name: 'type'
-    },
-    module: 'Dublin Core'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: []
-};
-var _default$29 = roletypeRole;
-roletypeRole$1.default = _default$29;
-
-var sectionRole$1 = {};
-
-Object.defineProperty(sectionRole$1, "__esModule", {
-  value: true
-});
-sectionRole$1.default = void 0;
-var sectionRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: [],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'frontmatter'
-    },
-    module: 'DTB'
-  }, {
-    concept: {
-      name: 'level'
-    },
-    module: 'DTB'
-  }, {
-    concept: {
-      name: 'level'
-    },
-    module: 'SMIL'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$28 = sectionRole;
-sectionRole$1.default = _default$28;
-
-var sectionheadRole$1 = {};
-
-Object.defineProperty(sectionheadRole$1, "__esModule", {
-  value: true
-});
-sectionheadRole$1.default = void 0;
-var sectionheadRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$27 = sectionheadRole;
-sectionheadRole$1.default = _default$27;
-
-var selectRole$1 = {};
-
-Object.defineProperty(selectRole$1, "__esModule", {
-  value: true
-});
-selectRole$1.default = void 0;
-var selectRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-orientation': null
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'structure', 'section', 'group']]
-};
-var _default$26 = selectRole;
-selectRole$1.default = _default$26;
-
-var structureRole$1 = {};
-
-Object.defineProperty(structureRole$1, "__esModule", {
-  value: true
-});
-structureRole$1.default = void 0;
-var structureRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: [],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype']]
-};
-var _default$25 = structureRole;
-structureRole$1.default = _default$25;
-
-var widgetRole$1 = {};
-
-Object.defineProperty(widgetRole$1, "__esModule", {
-  value: true
-});
-widgetRole$1.default = void 0;
-var widgetRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: [],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype']]
-};
-var _default$24 = widgetRole;
-widgetRole$1.default = _default$24;
-
-var windowRole$1 = {};
-
-Object.defineProperty(windowRole$1, "__esModule", {
-  value: true
-});
-windowRole$1.default = void 0;
-var windowRole = {
-  abstract: true,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-modal': null
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype']]
-};
-var _default$23 = windowRole;
-windowRole$1.default = _default$23;
-
-Object.defineProperty(ariaAbstractRoles$1, "__esModule", {
-  value: true
-});
-ariaAbstractRoles$1.default = void 0;
-var _commandRole = _interopRequireDefault$7(commandRole$1);
-var _compositeRole = _interopRequireDefault$7(compositeRole$1);
-var _inputRole = _interopRequireDefault$7(inputRole$1);
-var _landmarkRole = _interopRequireDefault$7(landmarkRole$1);
-var _rangeRole = _interopRequireDefault$7(rangeRole$1);
-var _roletypeRole = _interopRequireDefault$7(roletypeRole$1);
-var _sectionRole = _interopRequireDefault$7(sectionRole$1);
-var _sectionheadRole = _interopRequireDefault$7(sectionheadRole$1);
-var _selectRole = _interopRequireDefault$7(selectRole$1);
-var _structureRole = _interopRequireDefault$7(structureRole$1);
-var _widgetRole = _interopRequireDefault$7(widgetRole$1);
-var _windowRole = _interopRequireDefault$7(windowRole$1);
-function _interopRequireDefault$7(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ariaAbstractRoles = [['command', _commandRole.default], ['composite', _compositeRole.default], ['input', _inputRole.default], ['landmark', _landmarkRole.default], ['range', _rangeRole.default], ['roletype', _roletypeRole.default], ['section', _sectionRole.default], ['sectionhead', _sectionheadRole.default], ['select', _selectRole.default], ['structure', _structureRole.default], ['widget', _widgetRole.default], ['window', _windowRole.default]];
-var _default$22 = ariaAbstractRoles;
-ariaAbstractRoles$1.default = _default$22;
-
-var ariaLiteralRoles$1 = {};
-
-var alertRole$1 = {};
-
-Object.defineProperty(alertRole$1, "__esModule", {
-  value: true
-});
-alertRole$1.default = void 0;
-var alertRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-atomic': 'true',
-    'aria-live': 'assertive'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'alert'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$21 = alertRole;
-alertRole$1.default = _default$21;
-
-var alertdialogRole$1 = {};
-
-Object.defineProperty(alertdialogRole$1, "__esModule", {
-  value: true
-});
-alertdialogRole$1.default = void 0;
-var alertdialogRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'alert'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'alert'], ['roletype', 'window', 'dialog']]
-};
-var _default$20 = alertdialogRole;
-alertdialogRole$1.default = _default$20;
-
-var applicationRole$1 = {};
-
-Object.defineProperty(applicationRole$1, "__esModule", {
-  value: true
-});
-applicationRole$1.default = void 0;
-var applicationRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-activedescendant': null,
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'Device Independence Delivery Unit'
-    }
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$1$ = applicationRole;
-applicationRole$1.default = _default$1$;
-
-var articleRole$1 = {};
-
-Object.defineProperty(articleRole$1, "__esModule", {
-  value: true
-});
-articleRole$1.default = void 0;
-var articleRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-posinset': null,
-    'aria-setsize': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'article'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'document']]
-};
-var _default$1_ = articleRole;
-articleRole$1.default = _default$1_;
-
-var bannerRole$1 = {};
-
-Object.defineProperty(bannerRole$1, "__esModule", {
-  value: true
-});
-bannerRole$1.default = void 0;
-var bannerRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      constraints: ['direct descendant of document'],
-      name: 'header'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1Z = bannerRole;
-bannerRole$1.default = _default$1Z;
-
-var blockquoteRole$1 = {};
-
-Object.defineProperty(blockquoteRole$1, "__esModule", {
-  value: true
-});
-blockquoteRole$1.default = void 0;
-var blockquoteRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1Y = blockquoteRole;
-blockquoteRole$1.default = _default$1Y;
-
-var buttonRole$1 = {};
-
-Object.defineProperty(buttonRole$1, "__esModule", {
-  value: true
-});
-buttonRole$1.default = void 0;
-var buttonRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-pressed': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'aria-pressed'
-      }, {
-        name: 'type',
-        value: 'checkbox'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'aria-expanded',
-        value: 'false'
-      }],
-      name: 'summary'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'aria-expanded',
-        value: 'true'
-      }],
-      constraints: ['direct descendant of details element with the open attribute defined'],
-      name: 'summary'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'button'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'image'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'reset'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'submit'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'button'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'trigger'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command']]
-};
-var _default$1X = buttonRole;
-buttonRole$1.default = _default$1X;
-
-var captionRole$1 = {};
-
-Object.defineProperty(captionRole$1, "__esModule", {
-  value: true
-});
-captionRole$1.default = void 0;
-var captionRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: ['figure', 'grid', 'table'],
-  requiredContextRole: ['figure', 'grid', 'table'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1W = captionRole;
-captionRole$1.default = _default$1W;
-
-var cellRole$1 = {};
-
-Object.defineProperty(cellRole$1, "__esModule", {
-  value: true
-});
-cellRole$1.default = void 0;
-var cellRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-colindex': null,
-    'aria-colspan': null,
-    'aria-rowindex': null,
-    'aria-rowspan': null
-  },
-  relatedConcepts: [{
-    concept: {
-      constraints: ['descendant of table'],
-      name: 'td'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: ['row'],
-  requiredContextRole: ['row'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1V = cellRole;
-cellRole$1.default = _default$1V;
-
-var checkboxRole$1 = {};
-
-Object.defineProperty(checkboxRole$1, "__esModule", {
-  value: true
-});
-checkboxRole$1.default = void 0;
-var checkboxRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-checked': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-invalid': null,
-    'aria-readonly': null,
-    'aria-required': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'checkbox'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'option'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-checked': null
-  },
-  superClass: [['roletype', 'widget', 'input']]
-};
-var _default$1U = checkboxRole;
-checkboxRole$1.default = _default$1U;
-
-var codeRole$1 = {};
-
-Object.defineProperty(codeRole$1, "__esModule", {
-  value: true
-});
-codeRole$1.default = void 0;
-var codeRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1T = codeRole;
-codeRole$1.default = _default$1T;
-
-var columnheaderRole$1 = {};
-
-Object.defineProperty(columnheaderRole$1, "__esModule", {
-  value: true
-});
-columnheaderRole$1.default = void 0;
-var columnheaderRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-sort': null
-  },
-  relatedConcepts: [{
-    attributes: [{
-      name: 'scope',
-      value: 'col'
-    }],
-    concept: {
-      name: 'th'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: ['row'],
-  requiredContextRole: ['row'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
-};
-var _default$1S = columnheaderRole;
-columnheaderRole$1.default = _default$1S;
-
-var comboboxRole$1 = {};
-
-Object.defineProperty(comboboxRole$1, "__esModule", {
-  value: true
-});
-comboboxRole$1.default = void 0;
-var comboboxRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-activedescendant': null,
-    'aria-autocomplete': null,
-    'aria-errormessage': null,
-    'aria-invalid': null,
-    'aria-readonly': null,
-    'aria-required': null,
-    'aria-expanded': 'false',
-    'aria-haspopup': 'listbox'
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'email'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'search'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'tel'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'text'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'url'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'url'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'multiple'
-      }, {
-        constraints: ['undefined'],
-        name: 'size'
-      }],
-      name: 'select'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'multiple'
-      }, {
-        name: 'size',
-        value: 1
-      }],
-      name: 'select'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'select'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-controls': null,
-    'aria-expanded': 'false'
-  },
-  superClass: [['roletype', 'widget', 'input']]
-};
-var _default$1R = comboboxRole;
-comboboxRole$1.default = _default$1R;
-
-var complementaryRole$1 = {};
-
-Object.defineProperty(complementaryRole$1, "__esModule", {
-  value: true
-});
-complementaryRole$1.default = void 0;
-var complementaryRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'aside'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1Q = complementaryRole;
-complementaryRole$1.default = _default$1Q;
-
-var contentinfoRole$1 = {};
-
-Object.defineProperty(contentinfoRole$1, "__esModule", {
-  value: true
-});
-contentinfoRole$1.default = void 0;
-var contentinfoRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      constraints: ['direct descendant of document'],
-      name: 'footer'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1P = contentinfoRole;
-contentinfoRole$1.default = _default$1P;
-
-var definitionRole$1 = {};
-
-Object.defineProperty(definitionRole$1, "__esModule", {
-  value: true
-});
-definitionRole$1.default = void 0;
-var definitionRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'dd'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1O = definitionRole;
-definitionRole$1.default = _default$1O;
-
-var deletionRole$1 = {};
-
-Object.defineProperty(deletionRole$1, "__esModule", {
-  value: true
-});
-deletionRole$1.default = void 0;
-var deletionRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1N = deletionRole;
-deletionRole$1.default = _default$1N;
-
-var dialogRole$1 = {};
-
-Object.defineProperty(dialogRole$1, "__esModule", {
-  value: true
-});
-dialogRole$1.default = void 0;
-var dialogRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'dialog'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'window']]
-};
-var _default$1M = dialogRole;
-dialogRole$1.default = _default$1M;
-
-var directoryRole$1 = {};
-
-Object.defineProperty(directoryRole$1, "__esModule", {
-  value: true
-});
-directoryRole$1.default = void 0;
-var directoryRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    module: 'DAISY Guide'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'list']]
-};
-var _default$1L = directoryRole;
-directoryRole$1.default = _default$1L;
-
-var documentRole$1 = {};
-
-Object.defineProperty(documentRole$1, "__esModule", {
-  value: true
-});
-documentRole$1.default = void 0;
-var documentRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'Device Independence Delivery Unit'
-    }
-  }, {
-    concept: {
-      name: 'body'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$1K = documentRole;
-documentRole$1.default = _default$1K;
-
-var emphasisRole$1 = {};
-
-Object.defineProperty(emphasisRole$1, "__esModule", {
-  value: true
-});
-emphasisRole$1.default = void 0;
-var emphasisRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1J = emphasisRole;
-emphasisRole$1.default = _default$1J;
-
-var feedRole$1 = {};
-
-Object.defineProperty(feedRole$1, "__esModule", {
-  value: true
-});
-feedRole$1.default = void 0;
-var feedRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['article']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'list']]
-};
-var _default$1I = feedRole;
-feedRole$1.default = _default$1I;
-
-var figureRole$1 = {};
-
-Object.defineProperty(figureRole$1, "__esModule", {
-  value: true
-});
-figureRole$1.default = void 0;
-var figureRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'figure'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1H = figureRole;
-figureRole$1.default = _default$1H;
-
-var formRole$1 = {};
-
-Object.defineProperty(formRole$1, "__esModule", {
-  value: true
-});
-formRole$1.default = void 0;
-var formRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'aria-label'
-      }],
-      name: 'form'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'aria-labelledby'
-      }],
-      name: 'form'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'name'
-      }],
-      name: 'form'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1G = formRole;
-formRole$1.default = _default$1G;
-
-var genericRole$1 = {};
-
-Object.defineProperty(genericRole$1, "__esModule", {
-  value: true
-});
-genericRole$1.default = void 0;
-var genericRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'span'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'div'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$1F = genericRole;
-genericRole$1.default = _default$1F;
-
-var gridRole$1 = {};
-
-Object.defineProperty(gridRole$1, "__esModule", {
-  value: true
-});
-gridRole$1.default = void 0;
-var gridRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-multiselectable': null,
-    'aria-readonly': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'role',
-        value: 'grid'
-      }],
-      name: 'table'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'structure', 'section', 'table']]
-};
-var _default$1E = gridRole;
-gridRole$1.default = _default$1E;
-
-var gridcellRole$1 = {};
-
-Object.defineProperty(gridcellRole$1, "__esModule", {
-  value: true
-});
-gridcellRole$1.default = void 0;
-var gridcellRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null,
-    'aria-readonly': null,
-    'aria-required': null,
-    'aria-selected': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'role',
-        value: 'gridcell'
-      }],
-      name: 'td'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: ['row'],
-  requiredContextRole: ['row'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'widget']]
-};
-var _default$1D = gridcellRole;
-gridcellRole$1.default = _default$1D;
-
-var groupRole$1 = {};
-
-Object.defineProperty(groupRole$1, "__esModule", {
-  value: true
-});
-groupRole$1.default = void 0;
-var groupRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-activedescendant': null,
-    'aria-disabled': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'details'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'fieldset'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'optgroup'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1C = groupRole;
-groupRole$1.default = _default$1C;
-
-var headingRole$1 = {};
-
-Object.defineProperty(headingRole$1, "__esModule", {
-  value: true
-});
-headingRole$1.default = void 0;
-var headingRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-level': '2'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'h1'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'h2'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'h3'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'h4'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'h5'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'h6'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-level': '2'
-  },
-  superClass: [['roletype', 'structure', 'sectionhead']]
-};
-var _default$1B = headingRole;
-headingRole$1.default = _default$1B;
-
-var imgRole$1 = {};
-
-Object.defineProperty(imgRole$1, "__esModule", {
-  value: true
-});
-imgRole$1.default = void 0;
-var imgRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'alt'
-      }],
-      name: 'img'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'alt'
-      }],
-      name: 'img'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'imggroup'
-    },
-    module: 'DTB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1A = imgRole;
-imgRole$1.default = _default$1A;
-
-var insertionRole$1 = {};
-
-Object.defineProperty(insertionRole$1, "__esModule", {
-  value: true
-});
-insertionRole$1.default = void 0;
-var insertionRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1z = insertionRole;
-insertionRole$1.default = _default$1z;
-
-var linkRole$1 = {};
-
-Object.defineProperty(linkRole$1, "__esModule", {
-  value: true
-});
-linkRole$1.default = void 0;
-var linkRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-expanded': null,
-    'aria-haspopup': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'href'
-      }],
-      name: 'a'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'href'
-      }],
-      name: 'area'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'href'
-      }],
-      name: 'link'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command']]
-};
-var _default$1y = linkRole;
-linkRole$1.default = _default$1y;
-
-var listRole$1 = {};
-
-Object.defineProperty(listRole$1, "__esModule", {
-  value: true
-});
-listRole$1.default = void 0;
-var listRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'menu'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'ol'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'ul'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['listitem']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1x = listRole;
-listRole$1.default = _default$1x;
-
-var listboxRole$1 = {};
-
-Object.defineProperty(listboxRole$1, "__esModule", {
-  value: true
-});
-listboxRole$1.default = void 0;
-var listboxRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-invalid': null,
-    'aria-multiselectable': null,
-    'aria-readonly': null,
-    'aria-required': null,
-    'aria-orientation': 'vertical'
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['>1'],
-        name: 'size'
-      }, {
-        name: 'multiple'
-      }],
-      name: 'select'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['>1'],
-        name: 'size'
-      }],
-      name: 'select'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'multiple'
-      }],
-      name: 'select'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'datalist'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'list'
-    },
-    module: 'ARIA'
-  }, {
-    concept: {
-      name: 'select'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['option', 'group'], ['option']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-};
-var _default$1w = listboxRole;
-listboxRole$1.default = _default$1w;
-
-var listitemRole$1 = {};
-
-Object.defineProperty(listitemRole$1, "__esModule", {
-  value: true
-});
-listitemRole$1.default = void 0;
-var listitemRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-level': null,
-    'aria-posinset': null,
-    'aria-setsize': null
-  },
-  relatedConcepts: [{
-    concept: {
-      constraints: ['direct descendant of ol, ul or menu'],
-      name: 'li'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'item'
-    },
-    module: 'XForms'
-  }],
-  requireContextRole: ['directory', 'list'],
-  requiredContextRole: ['directory', 'list'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1v = listitemRole;
-listitemRole$1.default = _default$1v;
-
-var logRole$1 = {};
-
-Object.defineProperty(logRole$1, "__esModule", {
-  value: true
-});
-logRole$1.default = void 0;
-var logRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-live': 'polite'
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1u = logRole;
-logRole$1.default = _default$1u;
-
-var mainRole$1 = {};
-
-Object.defineProperty(mainRole$1, "__esModule", {
-  value: true
-});
-mainRole$1.default = void 0;
-var mainRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'main'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1t = mainRole;
-mainRole$1.default = _default$1t;
-
-var marqueeRole$1 = {};
-
-Object.defineProperty(marqueeRole$1, "__esModule", {
-  value: true
-});
-marqueeRole$1.default = void 0;
-var marqueeRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1s = marqueeRole;
-marqueeRole$1.default = _default$1s;
-
-var mathRole$1 = {};
-
-Object.defineProperty(mathRole$1, "__esModule", {
-  value: true
-});
-mathRole$1.default = void 0;
-var mathRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'math'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1r = mathRole;
-mathRole$1.default = _default$1r;
-
-var menuRole$1 = {};
-
-Object.defineProperty(menuRole$1, "__esModule", {
-  value: true
-});
-menuRole$1.default = void 0;
-var menuRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-orientation': 'vertical'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'MENU'
-    },
-    module: 'JAPI'
-  }, {
-    concept: {
-      name: 'list'
-    },
-    module: 'ARIA'
-  }, {
-    concept: {
-      name: 'select'
-    },
-    module: 'XForms'
-  }, {
-    concept: {
-      name: 'sidebar'
-    },
-    module: 'DTB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-};
-var _default$1q = menuRole;
-menuRole$1.default = _default$1q;
-
-var menubarRole$1 = {};
-
-Object.defineProperty(menubarRole$1, "__esModule", {
-  value: true
-});
-menubarRole$1.default = void 0;
-var menubarRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-orientation': 'horizontal'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'toolbar'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite', 'select', 'menu'], ['roletype', 'structure', 'section', 'group', 'select', 'menu']]
-};
-var _default$1p = menubarRole;
-menubarRole$1.default = _default$1p;
-
-var menuitemRole$1 = {};
-
-Object.defineProperty(menuitemRole$1, "__esModule", {
-  value: true
-});
-menuitemRole$1.default = void 0;
-var menuitemRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-posinset': null,
-    'aria-setsize': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'MENU_ITEM'
-    },
-    module: 'JAPI'
-  }, {
-    concept: {
-      name: 'listitem'
-    },
-    module: 'ARIA'
-  }, {
-    concept: {
-      name: 'menuitem'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'option'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: ['group', 'menu', 'menubar'],
-  requiredContextRole: ['group', 'menu', 'menubar'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command']]
-};
-var _default$1o = menuitemRole;
-menuitemRole$1.default = _default$1o;
-
-var menuitemcheckboxRole$1 = {};
-
-Object.defineProperty(menuitemcheckboxRole$1, "__esModule", {
-  value: true
-});
-menuitemcheckboxRole$1.default = void 0;
-var menuitemcheckboxRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'menuitem'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: ['group', 'menu', 'menubar'],
-  requiredContextRole: ['group', 'menu', 'menubar'],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-checked': null
-  },
-  superClass: [['roletype', 'widget', 'input', 'checkbox'], ['roletype', 'widget', 'command', 'menuitem']]
-};
-var _default$1n = menuitemcheckboxRole;
-menuitemcheckboxRole$1.default = _default$1n;
-
-var menuitemradioRole$1 = {};
-
-Object.defineProperty(menuitemradioRole$1, "__esModule", {
-  value: true
-});
-menuitemradioRole$1.default = void 0;
-var menuitemradioRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'menuitem'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: ['group', 'menu', 'menubar'],
-  requiredContextRole: ['group', 'menu', 'menubar'],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-checked': null
-  },
-  superClass: [['roletype', 'widget', 'input', 'checkbox', 'menuitemcheckbox'], ['roletype', 'widget', 'command', 'menuitem', 'menuitemcheckbox'], ['roletype', 'widget', 'input', 'radio']]
-};
-var _default$1m = menuitemradioRole;
-menuitemradioRole$1.default = _default$1m;
-
-var meterRole$1 = {};
-
-Object.defineProperty(meterRole$1, "__esModule", {
-  value: true
-});
-meterRole$1.default = void 0;
-var meterRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-valuetext': null,
-    'aria-valuemax': '100',
-    'aria-valuemin': '0'
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-valuenow': null
-  },
-  superClass: [['roletype', 'structure', 'range']]
-};
-var _default$1l = meterRole;
-meterRole$1.default = _default$1l;
-
-var navigationRole$1 = {};
-
-Object.defineProperty(navigationRole$1, "__esModule", {
-  value: true
-});
-navigationRole$1.default = void 0;
-var navigationRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'nav'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1k = navigationRole;
-navigationRole$1.default = _default$1k;
-
-var noneRole$1 = {};
-
-Object.defineProperty(noneRole$1, "__esModule", {
-  value: true
-});
-noneRole$1.default = void 0;
-var noneRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: [],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: []
-};
-var _default$1j = noneRole;
-noneRole$1.default = _default$1j;
-
-var noteRole$1 = {};
-
-Object.defineProperty(noteRole$1, "__esModule", {
-  value: true
-});
-noteRole$1.default = void 0;
-var noteRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1i = noteRole;
-noteRole$1.default = _default$1i;
-
-var optionRole$1 = {};
-
-Object.defineProperty(optionRole$1, "__esModule", {
-  value: true
-});
-optionRole$1.default = void 0;
-var optionRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-checked': null,
-    'aria-posinset': null,
-    'aria-setsize': null,
-    'aria-selected': 'false'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'item'
-    },
-    module: 'XForms'
-  }, {
-    concept: {
-      name: 'listitem'
-    },
-    module: 'ARIA'
-  }, {
-    concept: {
-      name: 'option'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-selected': 'false'
-  },
-  superClass: [['roletype', 'widget', 'input']]
-};
-var _default$1h = optionRole;
-optionRole$1.default = _default$1h;
-
-var paragraphRole$1 = {};
-
-Object.defineProperty(paragraphRole$1, "__esModule", {
-  value: true
-});
-paragraphRole$1.default = void 0;
-var paragraphRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$1g = paragraphRole;
-paragraphRole$1.default = _default$1g;
-
-var presentationRole$1 = {};
-
-Object.defineProperty(presentationRole$1, "__esModule", {
-  value: true
-});
-presentationRole$1.default = void 0;
-var presentationRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$1f = presentationRole;
-presentationRole$1.default = _default$1f;
-
-var progressbarRole$1 = {};
-
-Object.defineProperty(progressbarRole$1, "__esModule", {
-  value: true
-});
-progressbarRole$1.default = void 0;
-var progressbarRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-valuetext': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'progress'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'status'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
-};
-var _default$1e = progressbarRole;
-progressbarRole$1.default = _default$1e;
-
-var radioRole$1 = {};
-
-Object.defineProperty(radioRole$1, "__esModule", {
-  value: true
-});
-radioRole$1.default = void 0;
-var radioRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-checked': null,
-    'aria-posinset': null,
-    'aria-setsize': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'radio'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-checked': null
-  },
-  superClass: [['roletype', 'widget', 'input']]
-};
-var _default$1d = radioRole;
-radioRole$1.default = _default$1d;
-
-var radiogroupRole$1 = {};
-
-Object.defineProperty(radiogroupRole$1, "__esModule", {
-  value: true
-});
-radiogroupRole$1.default = void 0;
-var radiogroupRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null,
-    'aria-readonly': null,
-    'aria-required': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'list'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['radio']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-};
-var _default$1c = radiogroupRole;
-radiogroupRole$1.default = _default$1c;
-
-var regionRole$1 = {};
-
-Object.defineProperty(regionRole$1, "__esModule", {
-  value: true
-});
-regionRole$1.default = void 0;
-var regionRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'aria-label'
-      }],
-      name: 'section'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['set'],
-        name: 'aria-labelledby'
-      }],
-      name: 'section'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'Device Independence Glossart perceivable unit'
-    }
-  }, {
-    concept: {
-      name: 'frame'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$1b = regionRole;
-regionRole$1.default = _default$1b;
-
-var rowRole$1 = {};
-
-Object.defineProperty(rowRole$1, "__esModule", {
-  value: true
-});
-rowRole$1.default = void 0;
-var rowRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-colindex': null,
-    'aria-expanded': null,
-    'aria-level': null,
-    'aria-posinset': null,
-    'aria-rowindex': null,
-    'aria-selected': null,
-    'aria-setsize': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'tr'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: ['grid', 'rowgroup', 'table', 'treegrid'],
-  requiredContextRole: ['grid', 'rowgroup', 'table', 'treegrid'],
-  requiredOwnedElements: [['cell'], ['columnheader'], ['gridcell'], ['rowheader']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'group'], ['roletype', 'widget']]
-};
-var _default$1a = rowRole;
-rowRole$1.default = _default$1a;
-
-var rowgroupRole$1 = {};
-
-Object.defineProperty(rowgroupRole$1, "__esModule", {
-  value: true
-});
-rowgroupRole$1.default = void 0;
-var rowgroupRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'tbody'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'tfoot'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'thead'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: ['grid', 'table', 'treegrid'],
-  requiredContextRole: ['grid', 'table', 'treegrid'],
-  requiredOwnedElements: [['row']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$19 = rowgroupRole;
-rowgroupRole$1.default = _default$19;
-
-var rowheaderRole$1 = {};
-
-Object.defineProperty(rowheaderRole$1, "__esModule", {
-  value: true
-});
-rowheaderRole$1.default = void 0;
-var rowheaderRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-sort': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'scope',
-        value: 'row'
-      }],
-      name: 'th'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        name: 'scope',
-        value: 'rowgroup'
-      }],
-      name: 'th'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: ['row', 'rowgroup'],
-  requiredContextRole: ['row', 'rowgroup'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
-};
-var _default$18 = rowheaderRole;
-rowheaderRole$1.default = _default$18;
-
-var scrollbarRole$1 = {};
-
-Object.defineProperty(scrollbarRole$1, "__esModule", {
-  value: true
-});
-scrollbarRole$1.default = void 0;
-var scrollbarRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-valuetext': null,
-    'aria-orientation': 'vertical',
-    'aria-valuemax': '100',
-    'aria-valuemin': '0'
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-controls': null,
-    'aria-valuenow': null
-  },
-  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
-};
-var _default$17 = scrollbarRole;
-scrollbarRole$1.default = _default$17;
-
-var searchRole$1 = {};
-
-Object.defineProperty(searchRole$1, "__esModule", {
-  value: true
-});
-searchRole$1.default = void 0;
-var searchRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$16 = searchRole;
-searchRole$1.default = _default$16;
-
-var searchboxRole$1 = {};
-
-Object.defineProperty(searchboxRole$1, "__esModule", {
-  value: true
-});
-searchboxRole$1.default = void 0;
-var searchboxRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'search'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'input', 'textbox']]
-};
-var _default$15 = searchboxRole;
-searchboxRole$1.default = _default$15;
-
-var separatorRole$1 = {};
-
-Object.defineProperty(separatorRole$1, "__esModule", {
-  value: true
-});
-separatorRole$1.default = void 0;
-var separatorRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-orientation': 'horizontal',
-    'aria-valuemax': '100',
-    'aria-valuemin': '0',
-    'aria-valuenow': null,
-    'aria-valuetext': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'hr'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure']]
-};
-var _default$14 = separatorRole;
-separatorRole$1.default = _default$14;
-
-var sliderRole$1 = {};
-
-Object.defineProperty(sliderRole$1, "__esModule", {
-  value: true
-});
-sliderRole$1.default = void 0;
-var sliderRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-haspopup': null,
-    'aria-invalid': null,
-    'aria-readonly': null,
-    'aria-valuetext': null,
-    'aria-orientation': 'horizontal',
-    'aria-valuemax': '100',
-    'aria-valuemin': '0'
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'range'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-valuenow': null
-  },
-  superClass: [['roletype', 'widget', 'input'], ['roletype', 'structure', 'range']]
-};
-var _default$13 = sliderRole;
-sliderRole$1.default = _default$13;
-
-var spinbuttonRole$1 = {};
-
-Object.defineProperty(spinbuttonRole$1, "__esModule", {
-  value: true
-});
-spinbuttonRole$1.default = void 0;
-var spinbuttonRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null,
-    'aria-readonly': null,
-    'aria-required': null,
-    'aria-valuetext': null,
-    'aria-valuenow': '0'
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        name: 'type',
-        value: 'number'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'widget', 'input'], ['roletype', 'structure', 'range']]
-};
-var _default$12 = spinbuttonRole;
-spinbuttonRole$1.default = _default$12;
-
-var statusRole$1 = {};
-
-Object.defineProperty(statusRole$1, "__esModule", {
-  value: true
-});
-statusRole$1.default = void 0;
-var statusRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-atomic': 'true',
-    'aria-live': 'polite'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'output'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$11 = statusRole;
-statusRole$1.default = _default$11;
-
-var strongRole$1 = {};
-
-Object.defineProperty(strongRole$1, "__esModule", {
-  value: true
-});
-strongRole$1.default = void 0;
-var strongRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$10 = strongRole;
-strongRole$1.default = _default$10;
-
-var subscriptRole$1 = {};
-
-Object.defineProperty(subscriptRole$1, "__esModule", {
-  value: true
-});
-subscriptRole$1.default = void 0;
-var subscriptRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$$ = subscriptRole;
-subscriptRole$1.default = _default$$;
-
-var superscriptRole$1 = {};
-
-Object.defineProperty(superscriptRole$1, "__esModule", {
-  value: true
-});
-superscriptRole$1.default = void 0;
-var superscriptRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['prohibited'],
-  prohibitedProps: ['aria-label', 'aria-labelledby'],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$_ = superscriptRole;
-superscriptRole$1.default = _default$_;
-
-var switchRole$1 = {};
-
-Object.defineProperty(switchRole$1, "__esModule", {
-  value: true
-});
-switchRole$1.default = void 0;
-var switchRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'button'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-checked': null
-  },
-  superClass: [['roletype', 'widget', 'input', 'checkbox']]
-};
-var _default$Z = switchRole;
-switchRole$1.default = _default$Z;
-
-var tabRole$1 = {};
-
-Object.defineProperty(tabRole$1, "__esModule", {
-  value: true
-});
-tabRole$1.default = void 0;
-var tabRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-posinset': null,
-    'aria-setsize': null,
-    'aria-selected': 'false'
-  },
-  relatedConcepts: [],
-  requireContextRole: ['tablist'],
-  requiredContextRole: ['tablist'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'sectionhead'], ['roletype', 'widget']]
-};
-var _default$Y = tabRole;
-tabRole$1.default = _default$Y;
-
-var tableRole$1 = {};
-
-Object.defineProperty(tableRole$1, "__esModule", {
-  value: true
-});
-tableRole$1.default = void 0;
-var tableRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-colcount': null,
-    'aria-rowcount': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'table'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$X = tableRole;
-tableRole$1.default = _default$X;
-
-var tablistRole$1 = {};
-
-Object.defineProperty(tablistRole$1, "__esModule", {
-  value: true
-});
-tablistRole$1.default = void 0;
-var tablistRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-level': null,
-    'aria-multiselectable': null,
-    'aria-orientation': 'horizontal'
-  },
-  relatedConcepts: [{
-    module: 'DAISY',
-    concept: {
-      name: 'guide'
-    }
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['tab']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite']]
-};
-var _default$W = tablistRole;
-tablistRole$1.default = _default$W;
-
-var tabpanelRole$1 = {};
-
-Object.defineProperty(tabpanelRole$1, "__esModule", {
-  value: true
-});
-tabpanelRole$1.default = void 0;
-var tabpanelRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$V = tabpanelRole;
-tabpanelRole$1.default = _default$V;
-
-var termRole$1 = {};
-
-Object.defineProperty(termRole$1, "__esModule", {
-  value: true
-});
-termRole$1.default = void 0;
-var termRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'dfn'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'dt'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$U = termRole;
-termRole$1.default = _default$U;
-
-var textboxRole$1 = {};
-
-Object.defineProperty(textboxRole$1, "__esModule", {
-  value: true
-});
-textboxRole$1.default = void 0;
-var textboxRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-activedescendant': null,
-    'aria-autocomplete': null,
-    'aria-errormessage': null,
-    'aria-haspopup': null,
-    'aria-invalid': null,
-    'aria-multiline': null,
-    'aria-placeholder': null,
-    'aria-readonly': null,
-    'aria-required': null
-  },
-  relatedConcepts: [{
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'type'
-      }, {
-        constraints: ['undefined'],
-        name: 'list'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'email'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'tel'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'text'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      attributes: [{
-        constraints: ['undefined'],
-        name: 'list'
-      }, {
-        name: 'type',
-        value: 'url'
-      }],
-      name: 'input'
-    },
-    module: 'HTML'
-  }, {
-    concept: {
-      name: 'input'
-    },
-    module: 'XForms'
-  }, {
-    concept: {
-      name: 'textarea'
-    },
-    module: 'HTML'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'input']]
-};
-var _default$T = textboxRole;
-textboxRole$1.default = _default$T;
-
-var timeRole$1 = {};
-
-Object.defineProperty(timeRole$1, "__esModule", {
-  value: true
-});
-timeRole$1.default = void 0;
-var timeRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$S = timeRole;
-timeRole$1.default = _default$S;
-
-var timerRole$1 = {};
-
-Object.defineProperty(timerRole$1, "__esModule", {
-  value: true
-});
-timerRole$1.default = void 0;
-var timerRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'status']]
-};
-var _default$R = timerRole;
-timerRole$1.default = _default$R;
-
-var toolbarRole$1 = {};
-
-Object.defineProperty(toolbarRole$1, "__esModule", {
-  value: true
-});
-toolbarRole$1.default = void 0;
-var toolbarRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-orientation': 'horizontal'
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'menubar'
-    },
-    module: 'ARIA'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'group']]
-};
-var _default$Q = toolbarRole;
-toolbarRole$1.default = _default$Q;
-
-var tooltipRole$1 = {};
-
-Object.defineProperty(tooltipRole$1, "__esModule", {
-  value: true
-});
-tooltipRole$1.default = void 0;
-var tooltipRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$P = tooltipRole;
-tooltipRole$1.default = _default$P;
-
-var treeRole$1 = {};
-
-Object.defineProperty(treeRole$1, "__esModule", {
-  value: true
-});
-treeRole$1.default = void 0;
-var treeRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null,
-    'aria-multiselectable': null,
-    'aria-required': null,
-    'aria-orientation': 'vertical'
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['treeitem', 'group'], ['treeitem']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-};
-var _default$O = treeRole;
-treeRole$1.default = _default$O;
-
-var treegridRole$1 = {};
-
-Object.defineProperty(treegridRole$1, "__esModule", {
-  value: true
-});
-treegridRole$1.default = void 0;
-var treegridRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'composite', 'grid'], ['roletype', 'structure', 'section', 'table', 'grid'], ['roletype', 'widget', 'composite', 'select', 'tree'], ['roletype', 'structure', 'section', 'group', 'select', 'tree']]
-};
-var _default$N = treegridRole;
-treegridRole$1.default = _default$N;
-
-var treeitemRole$1 = {};
-
-Object.defineProperty(treeitemRole$1, "__esModule", {
-  value: true
-});
-treeitemRole$1.default = void 0;
-var treeitemRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-expanded': null,
-    'aria-haspopup': null
-  },
-  relatedConcepts: [],
-  requireContextRole: ['group', 'tree'],
-  requiredContextRole: ['group', 'tree'],
-  requiredOwnedElements: [],
-  requiredProps: {
-    'aria-selected': null
-  },
-  superClass: [['roletype', 'structure', 'section', 'listitem'], ['roletype', 'widget', 'input', 'option']]
-};
-var _default$M = treeitemRole;
-treeitemRole$1.default = _default$M;
-
-Object.defineProperty(ariaLiteralRoles$1, "__esModule", {
-  value: true
-});
-ariaLiteralRoles$1.default = void 0;
-var _alertRole = _interopRequireDefault$6(alertRole$1);
-var _alertdialogRole = _interopRequireDefault$6(alertdialogRole$1);
-var _applicationRole = _interopRequireDefault$6(applicationRole$1);
-var _articleRole = _interopRequireDefault$6(articleRole$1);
-var _bannerRole = _interopRequireDefault$6(bannerRole$1);
-var _blockquoteRole = _interopRequireDefault$6(blockquoteRole$1);
-var _buttonRole = _interopRequireDefault$6(buttonRole$1);
-var _captionRole = _interopRequireDefault$6(captionRole$1);
-var _cellRole = _interopRequireDefault$6(cellRole$1);
-var _checkboxRole = _interopRequireDefault$6(checkboxRole$1);
-var _codeRole = _interopRequireDefault$6(codeRole$1);
-var _columnheaderRole = _interopRequireDefault$6(columnheaderRole$1);
-var _comboboxRole = _interopRequireDefault$6(comboboxRole$1);
-var _complementaryRole = _interopRequireDefault$6(complementaryRole$1);
-var _contentinfoRole = _interopRequireDefault$6(contentinfoRole$1);
-var _definitionRole = _interopRequireDefault$6(definitionRole$1);
-var _deletionRole = _interopRequireDefault$6(deletionRole$1);
-var _dialogRole = _interopRequireDefault$6(dialogRole$1);
-var _directoryRole = _interopRequireDefault$6(directoryRole$1);
-var _documentRole = _interopRequireDefault$6(documentRole$1);
-var _emphasisRole = _interopRequireDefault$6(emphasisRole$1);
-var _feedRole = _interopRequireDefault$6(feedRole$1);
-var _figureRole = _interopRequireDefault$6(figureRole$1);
-var _formRole = _interopRequireDefault$6(formRole$1);
-var _genericRole = _interopRequireDefault$6(genericRole$1);
-var _gridRole = _interopRequireDefault$6(gridRole$1);
-var _gridcellRole = _interopRequireDefault$6(gridcellRole$1);
-var _groupRole = _interopRequireDefault$6(groupRole$1);
-var _headingRole = _interopRequireDefault$6(headingRole$1);
-var _imgRole = _interopRequireDefault$6(imgRole$1);
-var _insertionRole = _interopRequireDefault$6(insertionRole$1);
-var _linkRole = _interopRequireDefault$6(linkRole$1);
-var _listRole = _interopRequireDefault$6(listRole$1);
-var _listboxRole = _interopRequireDefault$6(listboxRole$1);
-var _listitemRole = _interopRequireDefault$6(listitemRole$1);
-var _logRole = _interopRequireDefault$6(logRole$1);
-var _mainRole = _interopRequireDefault$6(mainRole$1);
-var _marqueeRole = _interopRequireDefault$6(marqueeRole$1);
-var _mathRole = _interopRequireDefault$6(mathRole$1);
-var _menuRole = _interopRequireDefault$6(menuRole$1);
-var _menubarRole = _interopRequireDefault$6(menubarRole$1);
-var _menuitemRole = _interopRequireDefault$6(menuitemRole$1);
-var _menuitemcheckboxRole = _interopRequireDefault$6(menuitemcheckboxRole$1);
-var _menuitemradioRole = _interopRequireDefault$6(menuitemradioRole$1);
-var _meterRole = _interopRequireDefault$6(meterRole$1);
-var _navigationRole = _interopRequireDefault$6(navigationRole$1);
-var _noneRole = _interopRequireDefault$6(noneRole$1);
-var _noteRole = _interopRequireDefault$6(noteRole$1);
-var _optionRole = _interopRequireDefault$6(optionRole$1);
-var _paragraphRole = _interopRequireDefault$6(paragraphRole$1);
-var _presentationRole = _interopRequireDefault$6(presentationRole$1);
-var _progressbarRole = _interopRequireDefault$6(progressbarRole$1);
-var _radioRole = _interopRequireDefault$6(radioRole$1);
-var _radiogroupRole = _interopRequireDefault$6(radiogroupRole$1);
-var _regionRole = _interopRequireDefault$6(regionRole$1);
-var _rowRole = _interopRequireDefault$6(rowRole$1);
-var _rowgroupRole = _interopRequireDefault$6(rowgroupRole$1);
-var _rowheaderRole = _interopRequireDefault$6(rowheaderRole$1);
-var _scrollbarRole = _interopRequireDefault$6(scrollbarRole$1);
-var _searchRole = _interopRequireDefault$6(searchRole$1);
-var _searchboxRole = _interopRequireDefault$6(searchboxRole$1);
-var _separatorRole = _interopRequireDefault$6(separatorRole$1);
-var _sliderRole = _interopRequireDefault$6(sliderRole$1);
-var _spinbuttonRole = _interopRequireDefault$6(spinbuttonRole$1);
-var _statusRole = _interopRequireDefault$6(statusRole$1);
-var _strongRole = _interopRequireDefault$6(strongRole$1);
-var _subscriptRole = _interopRequireDefault$6(subscriptRole$1);
-var _superscriptRole = _interopRequireDefault$6(superscriptRole$1);
-var _switchRole = _interopRequireDefault$6(switchRole$1);
-var _tabRole = _interopRequireDefault$6(tabRole$1);
-var _tableRole = _interopRequireDefault$6(tableRole$1);
-var _tablistRole = _interopRequireDefault$6(tablistRole$1);
-var _tabpanelRole = _interopRequireDefault$6(tabpanelRole$1);
-var _termRole = _interopRequireDefault$6(termRole$1);
-var _textboxRole = _interopRequireDefault$6(textboxRole$1);
-var _timeRole = _interopRequireDefault$6(timeRole$1);
-var _timerRole = _interopRequireDefault$6(timerRole$1);
-var _toolbarRole = _interopRequireDefault$6(toolbarRole$1);
-var _tooltipRole = _interopRequireDefault$6(tooltipRole$1);
-var _treeRole = _interopRequireDefault$6(treeRole$1);
-var _treegridRole = _interopRequireDefault$6(treegridRole$1);
-var _treeitemRole = _interopRequireDefault$6(treeitemRole$1);
-function _interopRequireDefault$6(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ariaLiteralRoles = [['alert', _alertRole.default], ['alertdialog', _alertdialogRole.default], ['application', _applicationRole.default], ['article', _articleRole.default], ['banner', _bannerRole.default], ['blockquote', _blockquoteRole.default], ['button', _buttonRole.default], ['caption', _captionRole.default], ['cell', _cellRole.default], ['checkbox', _checkboxRole.default], ['code', _codeRole.default], ['columnheader', _columnheaderRole.default], ['combobox', _comboboxRole.default], ['complementary', _complementaryRole.default], ['contentinfo', _contentinfoRole.default], ['definition', _definitionRole.default], ['deletion', _deletionRole.default], ['dialog', _dialogRole.default], ['directory', _directoryRole.default], ['document', _documentRole.default], ['emphasis', _emphasisRole.default], ['feed', _feedRole.default], ['figure', _figureRole.default], ['form', _formRole.default], ['generic', _genericRole.default], ['grid', _gridRole.default], ['gridcell', _gridcellRole.default], ['group', _groupRole.default], ['heading', _headingRole.default], ['img', _imgRole.default], ['insertion', _insertionRole.default], ['link', _linkRole.default], ['list', _listRole.default], ['listbox', _listboxRole.default], ['listitem', _listitemRole.default], ['log', _logRole.default], ['main', _mainRole.default], ['marquee', _marqueeRole.default], ['math', _mathRole.default], ['menu', _menuRole.default], ['menubar', _menubarRole.default], ['menuitem', _menuitemRole.default], ['menuitemcheckbox', _menuitemcheckboxRole.default], ['menuitemradio', _menuitemradioRole.default], ['meter', _meterRole.default], ['navigation', _navigationRole.default], ['none', _noneRole.default], ['note', _noteRole.default], ['option', _optionRole.default], ['paragraph', _paragraphRole.default], ['presentation', _presentationRole.default], ['progressbar', _progressbarRole.default], ['radio', _radioRole.default], ['radiogroup', _radiogroupRole.default], ['region', _regionRole.default], ['row', _rowRole.default], ['rowgroup', _rowgroupRole.default], ['rowheader', _rowheaderRole.default], ['scrollbar', _scrollbarRole.default], ['search', _searchRole.default], ['searchbox', _searchboxRole.default], ['separator', _separatorRole.default], ['slider', _sliderRole.default], ['spinbutton', _spinbuttonRole.default], ['status', _statusRole.default], ['strong', _strongRole.default], ['subscript', _subscriptRole.default], ['superscript', _superscriptRole.default], ['switch', _switchRole.default], ['tab', _tabRole.default], ['table', _tableRole.default], ['tablist', _tablistRole.default], ['tabpanel', _tabpanelRole.default], ['term', _termRole.default], ['textbox', _textboxRole.default], ['time', _timeRole.default], ['timer', _timerRole.default], ['toolbar', _toolbarRole.default], ['tooltip', _tooltipRole.default], ['tree', _treeRole.default], ['treegrid', _treegridRole.default], ['treeitem', _treeitemRole.default]];
-var _default$L = ariaLiteralRoles;
-ariaLiteralRoles$1.default = _default$L;
-
-var ariaDpubRoles$1 = {};
-
-var docAbstractRole$1 = {};
-
-Object.defineProperty(docAbstractRole$1, "__esModule", {
-  value: true
-});
-docAbstractRole$1.default = void 0;
-var docAbstractRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'abstract [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$K = docAbstractRole;
-docAbstractRole$1.default = _default$K;
-
-var docAcknowledgmentsRole$1 = {};
-
-Object.defineProperty(docAcknowledgmentsRole$1, "__esModule", {
-  value: true
-});
-docAcknowledgmentsRole$1.default = void 0;
-var docAcknowledgmentsRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'acknowledgments [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$J = docAcknowledgmentsRole;
-docAcknowledgmentsRole$1.default = _default$J;
-
-var docAfterwordRole$1 = {};
-
-Object.defineProperty(docAfterwordRole$1, "__esModule", {
-  value: true
-});
-docAfterwordRole$1.default = void 0;
-var docAfterwordRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'afterword [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$I = docAfterwordRole;
-docAfterwordRole$1.default = _default$I;
-
-var docAppendixRole$1 = {};
-
-Object.defineProperty(docAppendixRole$1, "__esModule", {
-  value: true
-});
-docAppendixRole$1.default = void 0;
-var docAppendixRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'appendix [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$H = docAppendixRole;
-docAppendixRole$1.default = _default$H;
-
-var docBacklinkRole$1 = {};
-
-Object.defineProperty(docBacklinkRole$1, "__esModule", {
-  value: true
-});
-docBacklinkRole$1.default = void 0;
-var docBacklinkRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'content'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'referrer [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command', 'link']]
-};
-var _default$G = docBacklinkRole;
-docBacklinkRole$1.default = _default$G;
-
-var docBiblioentryRole$1 = {};
-
-Object.defineProperty(docBiblioentryRole$1, "__esModule", {
-  value: true
-});
-docBiblioentryRole$1.default = void 0;
-var docBiblioentryRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'EPUB biblioentry [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: ['doc-bibliography'],
-  requiredContextRole: ['doc-bibliography'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'listitem']]
-};
-var _default$F = docBiblioentryRole;
-docBiblioentryRole$1.default = _default$F;
-
-var docBibliographyRole$1 = {};
-
-Object.defineProperty(docBibliographyRole$1, "__esModule", {
-  value: true
-});
-docBibliographyRole$1.default = void 0;
-var docBibliographyRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'bibliography [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['doc-biblioentry']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$E = docBibliographyRole;
-docBibliographyRole$1.default = _default$E;
-
-var docBibliorefRole$1 = {};
-
-Object.defineProperty(docBibliorefRole$1, "__esModule", {
-  value: true
-});
-docBibliorefRole$1.default = void 0;
-var docBibliorefRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'biblioref [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command', 'link']]
-};
-var _default$D = docBibliorefRole;
-docBibliorefRole$1.default = _default$D;
-
-var docChapterRole$1 = {};
-
-Object.defineProperty(docChapterRole$1, "__esModule", {
-  value: true
-});
-docChapterRole$1.default = void 0;
-var docChapterRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'chapter [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$C = docChapterRole;
-docChapterRole$1.default = _default$C;
-
-var docColophonRole$1 = {};
-
-Object.defineProperty(docColophonRole$1, "__esModule", {
-  value: true
-});
-docColophonRole$1.default = void 0;
-var docColophonRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'colophon [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$B = docColophonRole;
-docColophonRole$1.default = _default$B;
-
-var docConclusionRole$1 = {};
-
-Object.defineProperty(docConclusionRole$1, "__esModule", {
-  value: true
-});
-docConclusionRole$1.default = void 0;
-var docConclusionRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'conclusion [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$A = docConclusionRole;
-docConclusionRole$1.default = _default$A;
-
-var docCoverRole$1 = {};
-
-Object.defineProperty(docCoverRole$1, "__esModule", {
-  value: true
-});
-docCoverRole$1.default = void 0;
-var docCoverRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'cover [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'img']]
-};
-var _default$z = docCoverRole;
-docCoverRole$1.default = _default$z;
-
-var docCreditRole$1 = {};
-
-Object.defineProperty(docCreditRole$1, "__esModule", {
-  value: true
-});
-docCreditRole$1.default = void 0;
-var docCreditRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'credit [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$y = docCreditRole;
-docCreditRole$1.default = _default$y;
-
-var docCreditsRole$1 = {};
-
-Object.defineProperty(docCreditsRole$1, "__esModule", {
-  value: true
-});
-docCreditsRole$1.default = void 0;
-var docCreditsRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'credits [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$x = docCreditsRole;
-docCreditsRole$1.default = _default$x;
-
-var docDedicationRole$1 = {};
-
-Object.defineProperty(docDedicationRole$1, "__esModule", {
-  value: true
-});
-docDedicationRole$1.default = void 0;
-var docDedicationRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'dedication [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$w = docDedicationRole;
-docDedicationRole$1.default = _default$w;
-
-var docEndnoteRole$1 = {};
-
-Object.defineProperty(docEndnoteRole$1, "__esModule", {
-  value: true
-});
-docEndnoteRole$1.default = void 0;
-var docEndnoteRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'rearnote [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: ['doc-endnotes'],
-  requiredContextRole: ['doc-endnotes'],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'listitem']]
-};
-var _default$v = docEndnoteRole;
-docEndnoteRole$1.default = _default$v;
-
-var docEndnotesRole$1 = {};
-
-Object.defineProperty(docEndnotesRole$1, "__esModule", {
-  value: true
-});
-docEndnotesRole$1.default = void 0;
-var docEndnotesRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'rearnotes [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['doc-endnote']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$u = docEndnotesRole;
-docEndnotesRole$1.default = _default$u;
-
-var docEpigraphRole$1 = {};
-
-Object.defineProperty(docEpigraphRole$1, "__esModule", {
-  value: true
-});
-docEpigraphRole$1.default = void 0;
-var docEpigraphRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'epigraph [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$t = docEpigraphRole;
-docEpigraphRole$1.default = _default$t;
-
-var docEpilogueRole$1 = {};
-
-Object.defineProperty(docEpilogueRole$1, "__esModule", {
-  value: true
-});
-docEpilogueRole$1.default = void 0;
-var docEpilogueRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'epilogue [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$s = docEpilogueRole;
-docEpilogueRole$1.default = _default$s;
-
-var docErrataRole$1 = {};
-
-Object.defineProperty(docErrataRole$1, "__esModule", {
-  value: true
-});
-docErrataRole$1.default = void 0;
-var docErrataRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'errata [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$r = docErrataRole;
-docErrataRole$1.default = _default$r;
-
-var docExampleRole$1 = {};
-
-Object.defineProperty(docExampleRole$1, "__esModule", {
-  value: true
-});
-docExampleRole$1.default = void 0;
-var docExampleRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$q = docExampleRole;
-docExampleRole$1.default = _default$q;
-
-var docFootnoteRole$1 = {};
-
-Object.defineProperty(docFootnoteRole$1, "__esModule", {
-  value: true
-});
-docFootnoteRole$1.default = void 0;
-var docFootnoteRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'footnote [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$p = docFootnoteRole;
-docFootnoteRole$1.default = _default$p;
-
-var docForewordRole$1 = {};
-
-Object.defineProperty(docForewordRole$1, "__esModule", {
-  value: true
-});
-docForewordRole$1.default = void 0;
-var docForewordRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'foreword [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$o = docForewordRole;
-docForewordRole$1.default = _default$o;
-
-var docGlossaryRole$1 = {};
-
-Object.defineProperty(docGlossaryRole$1, "__esModule", {
-  value: true
-});
-docGlossaryRole$1.default = void 0;
-var docGlossaryRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'glossary [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [['definition'], ['term']],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$n = docGlossaryRole;
-docGlossaryRole$1.default = _default$n;
-
-var docGlossrefRole$1 = {};
-
-Object.defineProperty(docGlossrefRole$1, "__esModule", {
-  value: true
-});
-docGlossrefRole$1.default = void 0;
-var docGlossrefRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'glossref [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command', 'link']]
-};
-var _default$m = docGlossrefRole;
-docGlossrefRole$1.default = _default$m;
-
-var docIndexRole$1 = {};
-
-Object.defineProperty(docIndexRole$1, "__esModule", {
-  value: true
-});
-docIndexRole$1.default = void 0;
-var docIndexRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'index [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-};
-var _default$l = docIndexRole;
-docIndexRole$1.default = _default$l;
-
-var docIntroductionRole$1 = {};
-
-Object.defineProperty(docIntroductionRole$1, "__esModule", {
-  value: true
-});
-docIntroductionRole$1.default = void 0;
-var docIntroductionRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'introduction [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$k = docIntroductionRole;
-docIntroductionRole$1.default = _default$k;
-
-var docNoterefRole$1 = {};
-
-Object.defineProperty(docNoterefRole$1, "__esModule", {
-  value: true
-});
-docNoterefRole$1.default = void 0;
-var docNoterefRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'noteref [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'widget', 'command', 'link']]
-};
-var _default$j = docNoterefRole;
-docNoterefRole$1.default = _default$j;
-
-var docNoticeRole$1 = {};
-
-Object.defineProperty(docNoticeRole$1, "__esModule", {
-  value: true
-});
-docNoticeRole$1.default = void 0;
-var docNoticeRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'notice [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'note']]
-};
-var _default$i = docNoticeRole;
-docNoticeRole$1.default = _default$i;
-
-var docPagebreakRole$1 = {};
-
-Object.defineProperty(docPagebreakRole$1, "__esModule", {
-  value: true
-});
-docPagebreakRole$1.default = void 0;
-var docPagebreakRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'pagebreak [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'separator']]
-};
-var _default$h = docPagebreakRole;
-docPagebreakRole$1.default = _default$h;
-
-var docPagelistRole$1 = {};
-
-Object.defineProperty(docPagelistRole$1, "__esModule", {
-  value: true
-});
-docPagelistRole$1.default = void 0;
-var docPagelistRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'page-list [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-};
-var _default$g = docPagelistRole;
-docPagelistRole$1.default = _default$g;
-
-var docPartRole$1 = {};
-
-Object.defineProperty(docPartRole$1, "__esModule", {
-  value: true
-});
-docPartRole$1.default = void 0;
-var docPartRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'part [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$f = docPartRole;
-docPartRole$1.default = _default$f;
-
-var docPrefaceRole$1 = {};
-
-Object.defineProperty(docPrefaceRole$1, "__esModule", {
-  value: true
-});
-docPrefaceRole$1.default = void 0;
-var docPrefaceRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'preface [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$e = docPrefaceRole;
-docPrefaceRole$1.default = _default$e;
-
-var docPrologueRole$1 = {};
-
-Object.defineProperty(docPrologueRole$1, "__esModule", {
-  value: true
-});
-docPrologueRole$1.default = void 0;
-var docPrologueRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'prologue [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark']]
-};
-var _default$d = docPrologueRole;
-docPrologueRole$1.default = _default$d;
-
-var docPullquoteRole$1 = {};
-
-Object.defineProperty(docPullquoteRole$1, "__esModule", {
-  value: true
-});
-docPullquoteRole$1.default = void 0;
-var docPullquoteRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {},
-  relatedConcepts: [{
-    concept: {
-      name: 'pullquote [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['none']]
-};
-var _default$c = docPullquoteRole;
-docPullquoteRole$1.default = _default$c;
-
-var docQnaRole$1 = {};
-
-Object.defineProperty(docQnaRole$1, "__esModule", {
-  value: true
-});
-docQnaRole$1.default = void 0;
-var docQnaRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'qna [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section']]
-};
-var _default$b = docQnaRole;
-docQnaRole$1.default = _default$b;
-
-var docSubtitleRole$1 = {};
-
-Object.defineProperty(docSubtitleRole$1, "__esModule", {
-  value: true
-});
-docSubtitleRole$1.default = void 0;
-var docSubtitleRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'subtitle [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'sectionhead']]
-};
-var _default$a = docSubtitleRole;
-docSubtitleRole$1.default = _default$a;
-
-var docTipRole$1 = {};
-
-Object.defineProperty(docTipRole$1, "__esModule", {
-  value: true
-});
-docTipRole$1.default = void 0;
-var docTipRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'help [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'note']]
-};
-var _default$9 = docTipRole;
-docTipRole$1.default = _default$9;
-
-var docTocRole$1 = {};
-
-Object.defineProperty(docTocRole$1, "__esModule", {
-  value: true
-});
-docTocRole$1.default = void 0;
-var docTocRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    concept: {
-      name: 'toc [EPUB-SSV]'
-    },
-    module: 'EPUB'
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-};
-var _default$8 = docTocRole;
-docTocRole$1.default = _default$8;
-
-Object.defineProperty(ariaDpubRoles$1, "__esModule", {
-  value: true
-});
-ariaDpubRoles$1.default = void 0;
-var _docAbstractRole = _interopRequireDefault$5(docAbstractRole$1);
-var _docAcknowledgmentsRole = _interopRequireDefault$5(docAcknowledgmentsRole$1);
-var _docAfterwordRole = _interopRequireDefault$5(docAfterwordRole$1);
-var _docAppendixRole = _interopRequireDefault$5(docAppendixRole$1);
-var _docBacklinkRole = _interopRequireDefault$5(docBacklinkRole$1);
-var _docBiblioentryRole = _interopRequireDefault$5(docBiblioentryRole$1);
-var _docBibliographyRole = _interopRequireDefault$5(docBibliographyRole$1);
-var _docBibliorefRole = _interopRequireDefault$5(docBibliorefRole$1);
-var _docChapterRole = _interopRequireDefault$5(docChapterRole$1);
-var _docColophonRole = _interopRequireDefault$5(docColophonRole$1);
-var _docConclusionRole = _interopRequireDefault$5(docConclusionRole$1);
-var _docCoverRole = _interopRequireDefault$5(docCoverRole$1);
-var _docCreditRole = _interopRequireDefault$5(docCreditRole$1);
-var _docCreditsRole = _interopRequireDefault$5(docCreditsRole$1);
-var _docDedicationRole = _interopRequireDefault$5(docDedicationRole$1);
-var _docEndnoteRole = _interopRequireDefault$5(docEndnoteRole$1);
-var _docEndnotesRole = _interopRequireDefault$5(docEndnotesRole$1);
-var _docEpigraphRole = _interopRequireDefault$5(docEpigraphRole$1);
-var _docEpilogueRole = _interopRequireDefault$5(docEpilogueRole$1);
-var _docErrataRole = _interopRequireDefault$5(docErrataRole$1);
-var _docExampleRole = _interopRequireDefault$5(docExampleRole$1);
-var _docFootnoteRole = _interopRequireDefault$5(docFootnoteRole$1);
-var _docForewordRole = _interopRequireDefault$5(docForewordRole$1);
-var _docGlossaryRole = _interopRequireDefault$5(docGlossaryRole$1);
-var _docGlossrefRole = _interopRequireDefault$5(docGlossrefRole$1);
-var _docIndexRole = _interopRequireDefault$5(docIndexRole$1);
-var _docIntroductionRole = _interopRequireDefault$5(docIntroductionRole$1);
-var _docNoterefRole = _interopRequireDefault$5(docNoterefRole$1);
-var _docNoticeRole = _interopRequireDefault$5(docNoticeRole$1);
-var _docPagebreakRole = _interopRequireDefault$5(docPagebreakRole$1);
-var _docPagelistRole = _interopRequireDefault$5(docPagelistRole$1);
-var _docPartRole = _interopRequireDefault$5(docPartRole$1);
-var _docPrefaceRole = _interopRequireDefault$5(docPrefaceRole$1);
-var _docPrologueRole = _interopRequireDefault$5(docPrologueRole$1);
-var _docPullquoteRole = _interopRequireDefault$5(docPullquoteRole$1);
-var _docQnaRole = _interopRequireDefault$5(docQnaRole$1);
-var _docSubtitleRole = _interopRequireDefault$5(docSubtitleRole$1);
-var _docTipRole = _interopRequireDefault$5(docTipRole$1);
-var _docTocRole = _interopRequireDefault$5(docTocRole$1);
-function _interopRequireDefault$5(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ariaDpubRoles = [['doc-abstract', _docAbstractRole.default], ['doc-acknowledgments', _docAcknowledgmentsRole.default], ['doc-afterword', _docAfterwordRole.default], ['doc-appendix', _docAppendixRole.default], ['doc-backlink', _docBacklinkRole.default], ['doc-biblioentry', _docBiblioentryRole.default], ['doc-bibliography', _docBibliographyRole.default], ['doc-biblioref', _docBibliorefRole.default], ['doc-chapter', _docChapterRole.default], ['doc-colophon', _docColophonRole.default], ['doc-conclusion', _docConclusionRole.default], ['doc-cover', _docCoverRole.default], ['doc-credit', _docCreditRole.default], ['doc-credits', _docCreditsRole.default], ['doc-dedication', _docDedicationRole.default], ['doc-endnote', _docEndnoteRole.default], ['doc-endnotes', _docEndnotesRole.default], ['doc-epigraph', _docEpigraphRole.default], ['doc-epilogue', _docEpilogueRole.default], ['doc-errata', _docErrataRole.default], ['doc-example', _docExampleRole.default], ['doc-footnote', _docFootnoteRole.default], ['doc-foreword', _docForewordRole.default], ['doc-glossary', _docGlossaryRole.default], ['doc-glossref', _docGlossrefRole.default], ['doc-index', _docIndexRole.default], ['doc-introduction', _docIntroductionRole.default], ['doc-noteref', _docNoterefRole.default], ['doc-notice', _docNoticeRole.default], ['doc-pagebreak', _docPagebreakRole.default], ['doc-pagelist', _docPagelistRole.default], ['doc-part', _docPartRole.default], ['doc-preface', _docPrefaceRole.default], ['doc-prologue', _docPrologueRole.default], ['doc-pullquote', _docPullquoteRole.default], ['doc-qna', _docQnaRole.default], ['doc-subtitle', _docSubtitleRole.default], ['doc-tip', _docTipRole.default], ['doc-toc', _docTocRole.default]];
-var _default$7 = ariaDpubRoles;
-ariaDpubRoles$1.default = _default$7;
-
-var ariaGraphicsRoles$1 = {};
-
-var graphicsDocumentRole$1 = {};
-
-Object.defineProperty(graphicsDocumentRole$1, "__esModule", {
-  value: true
-});
-graphicsDocumentRole$1.default = void 0;
-var graphicsDocumentRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    module: 'GRAPHICS',
-    concept: {
-      name: 'graphics-object'
-    }
-  }, {
-    module: 'ARIA',
-    concept: {
-      name: 'img'
-    }
-  }, {
-    module: 'ARIA',
-    concept: {
-      name: 'article'
-    }
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'document']]
-};
-var _default$6 = graphicsDocumentRole;
-graphicsDocumentRole$1.default = _default$6;
-
-var graphicsObjectRole$1 = {};
-
-Object.defineProperty(graphicsObjectRole$1, "__esModule", {
-  value: true
-});
-graphicsObjectRole$1.default = void 0;
-var graphicsObjectRole = {
-  abstract: false,
-  accessibleNameRequired: false,
-  baseConcepts: [],
-  childrenPresentational: false,
-  nameFrom: ['author', 'contents'],
-  prohibitedProps: [],
-  props: {
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [{
-    module: 'GRAPHICS',
-    concept: {
-      name: 'graphics-document'
-    }
-  }, {
-    module: 'ARIA',
-    concept: {
-      name: 'group'
-    }
-  }, {
-    module: 'ARIA',
-    concept: {
-      name: 'img'
-    }
-  }, {
-    module: 'GRAPHICS',
-    concept: {
-      name: 'graphics-symbol'
-    }
-  }],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'group']]
-};
-var _default$5 = graphicsObjectRole;
-graphicsObjectRole$1.default = _default$5;
-
-var graphicsSymbolRole$1 = {};
-
-Object.defineProperty(graphicsSymbolRole$1, "__esModule", {
-  value: true
-});
-graphicsSymbolRole$1.default = void 0;
-var graphicsSymbolRole = {
-  abstract: false,
-  accessibleNameRequired: true,
-  baseConcepts: [],
-  childrenPresentational: true,
-  nameFrom: ['author'],
-  prohibitedProps: [],
-  props: {
-    'aria-disabled': null,
-    'aria-errormessage': null,
-    'aria-expanded': null,
-    'aria-haspopup': null,
-    'aria-invalid': null
-  },
-  relatedConcepts: [],
-  requireContextRole: [],
-  requiredContextRole: [],
-  requiredOwnedElements: [],
-  requiredProps: {},
-  superClass: [['roletype', 'structure', 'section', 'img']]
-};
-var _default$4 = graphicsSymbolRole;
-graphicsSymbolRole$1.default = _default$4;
-
-Object.defineProperty(ariaGraphicsRoles$1, "__esModule", {
-  value: true
-});
-ariaGraphicsRoles$1.default = void 0;
-var _graphicsDocumentRole = _interopRequireDefault$4(graphicsDocumentRole$1);
-var _graphicsObjectRole = _interopRequireDefault$4(graphicsObjectRole$1);
-var _graphicsSymbolRole = _interopRequireDefault$4(graphicsSymbolRole$1);
-function _interopRequireDefault$4(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ariaGraphicsRoles = [['graphics-document', _graphicsDocumentRole.default], ['graphics-object', _graphicsObjectRole.default], ['graphics-symbol', _graphicsSymbolRole.default]];
-var _default$3 = ariaGraphicsRoles;
-ariaGraphicsRoles$1.default = _default$3;
-
-Object.defineProperty(rolesMap$1, "__esModule", {
-  value: true
-});
-rolesMap$1.default = void 0;
-var _ariaAbstractRoles = _interopRequireDefault$3(ariaAbstractRoles$1);
-var _ariaLiteralRoles = _interopRequireDefault$3(ariaLiteralRoles$1);
-var _ariaDpubRoles = _interopRequireDefault$3(ariaDpubRoles$1);
-var _ariaGraphicsRoles = _interopRequireDefault$3(ariaGraphicsRoles$1);
-var _iterationDecorator$2 = _interopRequireDefault$3(iterationDecorator$1);
-function _interopRequireDefault$3(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-function _slicedToArray$2(arr, i) { return _arrayWithHoles$2(arr) || _iterableToArrayLimit$2(arr, i) || _unsupportedIterableToArray$2(arr, i) || _nonIterableRest$2(); }
-function _nonIterableRest$2() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
-function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-function _iterableToArrayLimit$2(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-function _arrayWithHoles$2(arr) { if (Array.isArray(arr)) return arr; }
-var roles$1 = [].concat(_ariaAbstractRoles.default, _ariaLiteralRoles.default, _ariaDpubRoles.default, _ariaGraphicsRoles.default);
-roles$1.forEach(function (_ref) {
-  var _ref2 = _slicedToArray$2(_ref, 2),
-    roleDefinition = _ref2[1];
-  // Conglomerate the properties
-  var _iterator = _createForOfIteratorHelper$2(roleDefinition.superClass),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var superClassIter = _step.value;
-      var _iterator2 = _createForOfIteratorHelper$2(superClassIter),
-        _step2;
-      try {
-        var _loop = function _loop() {
-          var superClassName = _step2.value;
-          var superClassRoleTuple = roles$1.find(function (_ref3) {
-            var _ref4 = _slicedToArray$2(_ref3, 1),
-              name = _ref4[0];
-            return name === superClassName;
-          });
-          if (superClassRoleTuple) {
-            var superClassDefinition = superClassRoleTuple[1];
-            for (var _i2 = 0, _Object$keys = Object.keys(superClassDefinition.props); _i2 < _Object$keys.length; _i2++) {
-              var prop = _Object$keys[_i2];
-              if (
-              // $FlowIssue Accessing the hasOwnProperty on the Object prototype is fine.
-              !Object.prototype.hasOwnProperty.call(roleDefinition.props, prop)) {
-                Object.assign(roleDefinition.props, _defineProperty({}, prop, superClassDefinition.props[prop]));
-              }
-            }
-          }
-        };
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          _loop();
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-});
-var rolesMap = {
-  entries: function entries() {
-    return roles$1;
-  },
-  forEach: function forEach(fn) {
-    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var _iterator3 = _createForOfIteratorHelper$2(roles$1),
-      _step3;
-    try {
-      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-        var _step3$value = _slicedToArray$2(_step3.value, 2),
-          key = _step3$value[0],
-          values = _step3$value[1];
-        fn.call(thisArg, values, key, roles$1);
-      }
-    } catch (err) {
-      _iterator3.e(err);
-    } finally {
-      _iterator3.f();
-    }
-  },
-  get: function get(key) {
-    var item = roles$1.find(function (tuple) {
-      return tuple[0] === key ? true : false;
-    });
-    return item && item[1];
-  },
-  has: function has(key) {
-    return !!rolesMap.get(key);
-  },
-  keys: function keys() {
-    return roles$1.map(function (_ref5) {
-      var _ref6 = _slicedToArray$2(_ref5, 1),
-        key = _ref6[0];
-      return key;
-    });
-  },
-  values: function values() {
-    return roles$1.map(function (_ref7) {
-      var _ref8 = _slicedToArray$2(_ref7, 2),
-        values = _ref8[1];
-      return values;
-    });
-  }
-};
-var _default$2 = (0, _iterationDecorator$2.default)(rolesMap, rolesMap.entries());
-rolesMap$1.default = _default$2;
-
-var elementRoleMap$1 = {};
-
-var toStr$9 = Object.prototype.toString;
-
-var isArguments$2 = function isArguments(value) {
-	var str = toStr$9.call(value);
-	var isArgs = str === '[object Arguments]';
-	if (!isArgs) {
-		isArgs = str !== '[object Array]' &&
-			value !== null &&
-			typeof value === 'object' &&
-			typeof value.length === 'number' &&
-			value.length >= 0 &&
-			toStr$9.call(value.callee) === '[object Function]';
-	}
-	return isArgs;
-};
-
-var implementation$b;
-var hasRequiredImplementation;
-
-function requireImplementation () {
-	if (hasRequiredImplementation) return implementation$b;
-	hasRequiredImplementation = 1;
-
-	var keysShim;
-	if (!Object.keys) {
-		// modified from https://github.com/es-shims/es5-shim
-		var has = Object.prototype.hasOwnProperty;
-		var toStr = Object.prototype.toString;
-		var isArgs = isArguments$2; // eslint-disable-line global-require
-		var isEnumerable = Object.prototype.propertyIsEnumerable;
-		var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
-		var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
-		var dontEnums = [
-			'toString',
-			'toLocaleString',
-			'valueOf',
-			'hasOwnProperty',
-			'isPrototypeOf',
-			'propertyIsEnumerable',
-			'constructor'
-		];
-		var equalsConstructorPrototype = function (o) {
-			var ctor = o.constructor;
-			return ctor && ctor.prototype === o;
-		};
-		var excludedKeys = {
-			$applicationCache: true,
-			$console: true,
-			$external: true,
-			$frame: true,
-			$frameElement: true,
-			$frames: true,
-			$innerHeight: true,
-			$innerWidth: true,
-			$onmozfullscreenchange: true,
-			$onmozfullscreenerror: true,
-			$outerHeight: true,
-			$outerWidth: true,
-			$pageXOffset: true,
-			$pageYOffset: true,
-			$parent: true,
-			$scrollLeft: true,
-			$scrollTop: true,
-			$scrollX: true,
-			$scrollY: true,
-			$self: true,
-			$webkitIndexedDB: true,
-			$webkitStorageInfo: true,
-			$window: true
-		};
-		var hasAutomationEqualityBug = (function () {
-			/* global window */
-			if (typeof window === 'undefined') { return false; }
-			for (var k in window) {
-				try {
-					if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
-						try {
-							equalsConstructorPrototype(window[k]);
-						} catch (e) {
-							return true;
-						}
-					}
-				} catch (e) {
-					return true;
-				}
-			}
-			return false;
-		}());
-		var equalsConstructorPrototypeIfNotBuggy = function (o) {
-			/* global window */
-			if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
-				return equalsConstructorPrototype(o);
-			}
-			try {
-				return equalsConstructorPrototype(o);
-			} catch (e) {
-				return false;
-			}
-		};
-
-		keysShim = function keys(object) {
-			var isObject = object !== null && typeof object === 'object';
-			var isFunction = toStr.call(object) === '[object Function]';
-			var isArguments = isArgs(object);
-			var isString = isObject && toStr.call(object) === '[object String]';
-			var theKeys = [];
-
-			if (!isObject && !isFunction && !isArguments) {
-				throw new TypeError('Object.keys called on a non-object');
-			}
-
-			var skipProto = hasProtoEnumBug && isFunction;
-			if (isString && object.length > 0 && !has.call(object, 0)) {
-				for (var i = 0; i < object.length; ++i) {
-					theKeys.push(String(i));
-				}
-			}
-
-			if (isArguments && object.length > 0) {
-				for (var j = 0; j < object.length; ++j) {
-					theKeys.push(String(j));
-				}
-			} else {
-				for (var name in object) {
-					if (!(skipProto && name === 'prototype') && has.call(object, name)) {
-						theKeys.push(String(name));
-					}
-				}
-			}
-
-			if (hasDontEnumBug) {
-				var skipConstructor = equalsConstructorPrototypeIfNotBuggy(object);
-
-				for (var k = 0; k < dontEnums.length; ++k) {
-					if (!(skipConstructor && dontEnums[k] === 'constructor') && has.call(object, dontEnums[k])) {
-						theKeys.push(dontEnums[k]);
-					}
-				}
-			}
-			return theKeys;
-		};
-	}
-	implementation$b = keysShim;
-	return implementation$b;
-}
-
-var slice = Array.prototype.slice;
-var isArgs = isArguments$2;
-
-var origKeys = Object.keys;
-var keysShim = origKeys ? function keys(o) { return origKeys(o); } : requireImplementation();
-
-var originalKeys = Object.keys;
-
-keysShim.shim = function shimObjectKeys() {
-	if (Object.keys) {
-		var keysWorksWithArguments = (function () {
-			// Safari 5.0 bug
-			var args = Object.keys(arguments);
-			return args && args.length === arguments.length;
-		}(1, 2));
-		if (!keysWorksWithArguments) {
-			Object.keys = function keys(object) { // eslint-disable-line func-name-matching
-				if (isArgs(object)) {
-					return originalKeys(slice.call(object));
-				}
-				return originalKeys(object);
-			};
-		}
-	} else {
-		Object.keys = keysShim;
-	}
-	return Object.keys || keysShim;
-};
-
-var objectKeys$2 = keysShim;
-
-/** @type {import('.')} */
-var esErrors = Error;
-
-/** @type {import('./eval')} */
-var _eval = EvalError;
-
-/** @type {import('./range')} */
-var range = RangeError;
-
-/** @type {import('./ref')} */
-var ref = ReferenceError;
-
-/** @type {import('./syntax')} */
-var syntax = SyntaxError;
-
-/** @type {import('./type')} */
-var type = TypeError;
-
-/** @type {import('./uri')} */
-var uri = URIError;
-
-/* eslint complexity: [2, 18], max-statements: [2, 33] */
-var shams$1 = function hasSymbols() {
-	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
-	if (typeof Symbol.iterator === 'symbol') { return true; }
-
-	var obj = {};
-	var sym = Symbol('test');
-	var symObj = Object(sym);
-	if (typeof sym === 'string') { return false; }
-
-	if (Object.prototype.toString.call(sym) !== '[object Symbol]') { return false; }
-	if (Object.prototype.toString.call(symObj) !== '[object Symbol]') { return false; }
-
-	// temp disabled per https://github.com/ljharb/object.assign/issues/17
-	// if (sym instanceof Symbol) { return false; }
-	// temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
-	// if (!(symObj instanceof Symbol)) { return false; }
-
-	// if (typeof Symbol.prototype.toString !== 'function') { return false; }
-	// if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
-
-	var symVal = 42;
-	obj[sym] = symVal;
-	for (sym in obj) { return false; } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
-	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
-
-	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
-
-	var syms = Object.getOwnPropertySymbols(obj);
-	if (syms.length !== 1 || syms[0] !== sym) { return false; }
-
-	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
-
-	if (typeof Object.getOwnPropertyDescriptor === 'function') {
-		var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
-		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
-	}
-
-	return true;
-};
-
-var origSymbol = typeof Symbol !== 'undefined' && Symbol;
-var hasSymbolSham = shams$1;
-
-var hasSymbols$5 = function hasNativeSymbols() {
-	if (typeof origSymbol !== 'function') { return false; }
-	if (typeof Symbol !== 'function') { return false; }
-	if (typeof origSymbol('foo') !== 'symbol') { return false; }
-	if (typeof Symbol('bar') !== 'symbol') { return false; }
-
-	return hasSymbolSham();
-};
-
-var test = {
-	__proto__: null,
-	foo: {}
-};
-
-var $Object$1 = Object;
-
-/** @type {import('.')} */
-var hasProto$1 = function hasProto() {
-	// @ts-expect-error: TS errors on an inherited property for some reason
-	return { __proto__: test }.foo === test.foo
-		&& !(test instanceof $Object$1);
-};
-
-/* eslint no-invalid-this: 1 */
-
-var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
-var toStr$8 = Object.prototype.toString;
-var max = Math.max;
-var funcType = '[object Function]';
-
-var concatty = function concatty(a, b) {
-    var arr = [];
-
-    for (var i = 0; i < a.length; i += 1) {
-        arr[i] = a[i];
-    }
-    for (var j = 0; j < b.length; j += 1) {
-        arr[j + a.length] = b[j];
-    }
-
-    return arr;
-};
-
-var slicy = function slicy(arrLike, offset) {
-    var arr = [];
-    for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
-        arr[j] = arrLike[i];
-    }
-    return arr;
-};
-
-var joiny = function (arr, joiner) {
-    var str = '';
-    for (var i = 0; i < arr.length; i += 1) {
-        str += arr[i];
-        if (i + 1 < arr.length) {
-            str += joiner;
-        }
-    }
-    return str;
-};
-
-var implementation$a = function bind(that) {
-    var target = this;
-    if (typeof target !== 'function' || toStr$8.apply(target) !== funcType) {
-        throw new TypeError(ERROR_MESSAGE + target);
-    }
-    var args = slicy(arguments, 1);
-
-    var bound;
-    var binder = function () {
-        if (this instanceof bound) {
-            var result = target.apply(
-                this,
-                concatty(args, arguments)
-            );
-            if (Object(result) === result) {
-                return result;
-            }
-            return this;
-        }
-        return target.apply(
-            that,
-            concatty(args, arguments)
-        );
-
-    };
-
-    var boundLength = max(0, target.length - args.length);
-    var boundArgs = [];
-    for (var i = 0; i < boundLength; i++) {
-        boundArgs[i] = '$' + i;
-    }
-
-    bound = Function('binder', 'return function (' + joiny(boundArgs, ',') + '){ return binder.apply(this,arguments); }')(binder);
-
-    if (target.prototype) {
-        var Empty = function Empty() {};
-        Empty.prototype = target.prototype;
-        bound.prototype = new Empty();
-        Empty.prototype = null;
-    }
-
-    return bound;
-};
-
-var implementation$9 = implementation$a;
-
-var functionBind = Function.prototype.bind || implementation$9;
-
-var call = Function.prototype.call;
-var $hasOwn = Object.prototype.hasOwnProperty;
-var bind$1 = functionBind;
-
-/** @type {import('.')} */
-var hasown = bind$1.call(call, $hasOwn);
-
-var undefined$1;
-
-var $Error = esErrors;
-var $EvalError = _eval;
-var $RangeError = range;
-var $ReferenceError = ref;
-var $SyntaxError$1 = syntax;
-var $TypeError$5 = type;
-var $URIError = uri;
-
-var $Function = Function;
-
-// eslint-disable-next-line consistent-return
-var getEvalledConstructor = function (expressionSyntax) {
-	try {
-		return $Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
-	} catch (e) {}
-};
-
-var $gOPD$2 = Object.getOwnPropertyDescriptor;
-if ($gOPD$2) {
-	try {
-		$gOPD$2({}, '');
-	} catch (e) {
-		$gOPD$2 = null; // this is IE 8, which has a broken gOPD
-	}
-}
-
-var throwTypeError = function () {
-	throw new $TypeError$5();
-};
-var ThrowTypeError = $gOPD$2
-	? (function () {
-		try {
-			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
-			arguments.callee; // IE 8 does not throw here
-			return throwTypeError;
-		} catch (calleeThrows) {
-			try {
-				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
-				return $gOPD$2(arguments, 'callee').get;
-			} catch (gOPDthrows) {
-				return throwTypeError;
-			}
-		}
-	}())
-	: throwTypeError;
-
-var hasSymbols$4 = hasSymbols$5();
-var hasProto = hasProto$1();
-
-var getProto$1 = Object.getPrototypeOf || (
-	hasProto
-		? function (x) { return x.__proto__; } // eslint-disable-line no-proto
-		: null
-);
-
-var needsEval = {};
-
-var TypedArray = typeof Uint8Array === 'undefined' || !getProto$1 ? undefined$1 : getProto$1(Uint8Array);
-
-var INTRINSICS = {
-	__proto__: null,
-	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined$1 : AggregateError,
-	'%Array%': Array,
-	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined$1 : ArrayBuffer,
-	'%ArrayIteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1([][Symbol.iterator]()) : undefined$1,
-	'%AsyncFromSyncIteratorPrototype%': undefined$1,
-	'%AsyncFunction%': needsEval,
-	'%AsyncGenerator%': needsEval,
-	'%AsyncGeneratorFunction%': needsEval,
-	'%AsyncIteratorPrototype%': needsEval,
-	'%Atomics%': typeof Atomics === 'undefined' ? undefined$1 : Atomics,
-	'%BigInt%': typeof BigInt === 'undefined' ? undefined$1 : BigInt,
-	'%BigInt64Array%': typeof BigInt64Array === 'undefined' ? undefined$1 : BigInt64Array,
-	'%BigUint64Array%': typeof BigUint64Array === 'undefined' ? undefined$1 : BigUint64Array,
-	'%Boolean%': Boolean,
-	'%DataView%': typeof DataView === 'undefined' ? undefined$1 : DataView,
-	'%Date%': Date,
-	'%decodeURI%': decodeURI,
-	'%decodeURIComponent%': decodeURIComponent,
-	'%encodeURI%': encodeURI,
-	'%encodeURIComponent%': encodeURIComponent,
-	'%Error%': $Error,
-	'%eval%': eval, // eslint-disable-line no-eval
-	'%EvalError%': $EvalError,
-	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined$1 : Float32Array,
-	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined$1 : Float64Array,
-	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined$1 : FinalizationRegistry,
-	'%Function%': $Function,
-	'%GeneratorFunction%': needsEval,
-	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined$1 : Int8Array,
-	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined$1 : Int16Array,
-	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined$1 : Int32Array,
-	'%isFinite%': isFinite,
-	'%isNaN%': isNaN,
-	'%IteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1(getProto$1([][Symbol.iterator]())) : undefined$1,
-	'%JSON%': typeof JSON === 'object' ? JSON : undefined$1,
-	'%Map%': typeof Map === 'undefined' ? undefined$1 : Map,
-	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols$4 || !getProto$1 ? undefined$1 : getProto$1(new Map()[Symbol.iterator]()),
-	'%Math%': Math,
-	'%Number%': Number,
-	'%Object%': Object,
-	'%parseFloat%': parseFloat,
-	'%parseInt%': parseInt,
-	'%Promise%': typeof Promise === 'undefined' ? undefined$1 : Promise,
-	'%Proxy%': typeof Proxy === 'undefined' ? undefined$1 : Proxy,
-	'%RangeError%': $RangeError,
-	'%ReferenceError%': $ReferenceError,
-	'%Reflect%': typeof Reflect === 'undefined' ? undefined$1 : Reflect,
-	'%RegExp%': RegExp,
-	'%Set%': typeof Set === 'undefined' ? undefined$1 : Set,
-	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols$4 || !getProto$1 ? undefined$1 : getProto$1(new Set()[Symbol.iterator]()),
-	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined$1 : SharedArrayBuffer,
-	'%String%': String,
-	'%StringIteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1(''[Symbol.iterator]()) : undefined$1,
-	'%Symbol%': hasSymbols$4 ? Symbol : undefined$1,
-	'%SyntaxError%': $SyntaxError$1,
-	'%ThrowTypeError%': ThrowTypeError,
-	'%TypedArray%': TypedArray,
-	'%TypeError%': $TypeError$5,
-	'%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined$1 : Uint8Array,
-	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined$1 : Uint8ClampedArray,
-	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined$1 : Uint16Array,
-	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined$1 : Uint32Array,
-	'%URIError%': $URIError,
-	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined$1 : WeakMap,
-	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined$1 : WeakRef,
-	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined$1 : WeakSet
-};
-
-if (getProto$1) {
-	try {
-		null.error; // eslint-disable-line no-unused-expressions
-	} catch (e) {
-		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
-		var errorProto = getProto$1(getProto$1(e));
-		INTRINSICS['%Error.prototype%'] = errorProto;
-	}
-}
-
-var doEval = function doEval(name) {
-	var value;
-	if (name === '%AsyncFunction%') {
-		value = getEvalledConstructor('async function () {}');
-	} else if (name === '%GeneratorFunction%') {
-		value = getEvalledConstructor('function* () {}');
-	} else if (name === '%AsyncGeneratorFunction%') {
-		value = getEvalledConstructor('async function* () {}');
-	} else if (name === '%AsyncGenerator%') {
-		var fn = doEval('%AsyncGeneratorFunction%');
-		if (fn) {
-			value = fn.prototype;
-		}
-	} else if (name === '%AsyncIteratorPrototype%') {
-		var gen = doEval('%AsyncGenerator%');
-		if (gen && getProto$1) {
-			value = getProto$1(gen.prototype);
-		}
-	}
-
-	INTRINSICS[name] = value;
-
-	return value;
-};
-
-var LEGACY_ALIASES = {
-	__proto__: null,
-	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
-	'%ArrayPrototype%': ['Array', 'prototype'],
-	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
-	'%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
-	'%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
-	'%ArrayProto_values%': ['Array', 'prototype', 'values'],
-	'%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
-	'%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
-	'%AsyncGeneratorPrototype%': ['AsyncGeneratorFunction', 'prototype', 'prototype'],
-	'%BooleanPrototype%': ['Boolean', 'prototype'],
-	'%DataViewPrototype%': ['DataView', 'prototype'],
-	'%DatePrototype%': ['Date', 'prototype'],
-	'%ErrorPrototype%': ['Error', 'prototype'],
-	'%EvalErrorPrototype%': ['EvalError', 'prototype'],
-	'%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
-	'%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
-	'%FunctionPrototype%': ['Function', 'prototype'],
-	'%Generator%': ['GeneratorFunction', 'prototype'],
-	'%GeneratorPrototype%': ['GeneratorFunction', 'prototype', 'prototype'],
-	'%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
-	'%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
-	'%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
-	'%JSONParse%': ['JSON', 'parse'],
-	'%JSONStringify%': ['JSON', 'stringify'],
-	'%MapPrototype%': ['Map', 'prototype'],
-	'%NumberPrototype%': ['Number', 'prototype'],
-	'%ObjectPrototype%': ['Object', 'prototype'],
-	'%ObjProto_toString%': ['Object', 'prototype', 'toString'],
-	'%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
-	'%PromisePrototype%': ['Promise', 'prototype'],
-	'%PromiseProto_then%': ['Promise', 'prototype', 'then'],
-	'%Promise_all%': ['Promise', 'all'],
-	'%Promise_reject%': ['Promise', 'reject'],
-	'%Promise_resolve%': ['Promise', 'resolve'],
-	'%RangeErrorPrototype%': ['RangeError', 'prototype'],
-	'%ReferenceErrorPrototype%': ['ReferenceError', 'prototype'],
-	'%RegExpPrototype%': ['RegExp', 'prototype'],
-	'%SetPrototype%': ['Set', 'prototype'],
-	'%SharedArrayBufferPrototype%': ['SharedArrayBuffer', 'prototype'],
-	'%StringPrototype%': ['String', 'prototype'],
-	'%SymbolPrototype%': ['Symbol', 'prototype'],
-	'%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
-	'%TypedArrayPrototype%': ['TypedArray', 'prototype'],
-	'%TypeErrorPrototype%': ['TypeError', 'prototype'],
-	'%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
-	'%Uint8ClampedArrayPrototype%': ['Uint8ClampedArray', 'prototype'],
-	'%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
-	'%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
-	'%URIErrorPrototype%': ['URIError', 'prototype'],
-	'%WeakMapPrototype%': ['WeakMap', 'prototype'],
-	'%WeakSetPrototype%': ['WeakSet', 'prototype']
-};
-
-var bind = functionBind;
-var hasOwn$1 = hasown;
-var $concat$1 = bind.call(Function.call, Array.prototype.concat);
-var $spliceApply = bind.call(Function.apply, Array.prototype.splice);
-var $replace$1 = bind.call(Function.call, String.prototype.replace);
-var $strSlice = bind.call(Function.call, String.prototype.slice);
-var $exec$1 = bind.call(Function.call, RegExp.prototype.exec);
-
-/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
-var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
-var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
-var stringToPath = function stringToPath(string) {
-	var first = $strSlice(string, 0, 1);
-	var last = $strSlice(string, -1);
-	if (first === '%' && last !== '%') {
-		throw new $SyntaxError$1('invalid intrinsic syntax, expected closing `%`');
-	} else if (last === '%' && first !== '%') {
-		throw new $SyntaxError$1('invalid intrinsic syntax, expected opening `%`');
-	}
-	var result = [];
-	$replace$1(string, rePropName, function (match, number, quote, subString) {
-		result[result.length] = quote ? $replace$1(subString, reEscapeChar, '$1') : number || match;
-	});
-	return result;
-};
-/* end adaptation */
-
-var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
-	var intrinsicName = name;
-	var alias;
-	if (hasOwn$1(LEGACY_ALIASES, intrinsicName)) {
-		alias = LEGACY_ALIASES[intrinsicName];
-		intrinsicName = '%' + alias[0] + '%';
-	}
-
-	if (hasOwn$1(INTRINSICS, intrinsicName)) {
-		var value = INTRINSICS[intrinsicName];
-		if (value === needsEval) {
-			value = doEval(intrinsicName);
-		}
-		if (typeof value === 'undefined' && !allowMissing) {
-			throw new $TypeError$5('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
-		}
-
-		return {
-			alias: alias,
-			name: intrinsicName,
-			value: value
-		};
-	}
-
-	throw new $SyntaxError$1('intrinsic ' + name + ' does not exist!');
-};
-
-var getIntrinsic = function GetIntrinsic(name, allowMissing) {
-	if (typeof name !== 'string' || name.length === 0) {
-		throw new $TypeError$5('intrinsic name must be a non-empty string');
-	}
-	if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
-		throw new $TypeError$5('"allowMissing" argument must be a boolean');
-	}
-
-	if ($exec$1(/^%?[^%]*%?$/, name) === null) {
-		throw new $SyntaxError$1('`%` may not be present anywhere but at the beginning and end of the intrinsic name');
-	}
-	var parts = stringToPath(name);
-	var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
-
-	var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
-	var intrinsicRealName = intrinsic.name;
-	var value = intrinsic.value;
-	var skipFurtherCaching = false;
-
-	var alias = intrinsic.alias;
-	if (alias) {
-		intrinsicBaseName = alias[0];
-		$spliceApply(parts, $concat$1([0, 1], alias));
-	}
-
-	for (var i = 1, isOwn = true; i < parts.length; i += 1) {
-		var part = parts[i];
-		var first = $strSlice(part, 0, 1);
-		var last = $strSlice(part, -1);
-		if (
-			(
-				(first === '"' || first === "'" || first === '`')
-				|| (last === '"' || last === "'" || last === '`')
-			)
-			&& first !== last
-		) {
-			throw new $SyntaxError$1('property names with quotes must have matching quotes');
-		}
-		if (part === 'constructor' || !isOwn) {
-			skipFurtherCaching = true;
-		}
-
-		intrinsicBaseName += '.' + part;
-		intrinsicRealName = '%' + intrinsicBaseName + '%';
-
-		if (hasOwn$1(INTRINSICS, intrinsicRealName)) {
-			value = INTRINSICS[intrinsicRealName];
-		} else if (value != null) {
-			if (!(part in value)) {
-				if (!allowMissing) {
-					throw new $TypeError$5('base intrinsic for ' + name + ' exists, but the property is not available.');
-				}
-				return void undefined$1;
-			}
-			if ($gOPD$2 && (i + 1) >= parts.length) {
-				var desc = $gOPD$2(value, part);
-				isOwn = !!desc;
-
-				// By convention, when a data property is converted to an accessor
-				// property to emulate a data property that does not suffer from
-				// the override mistake, that accessor's getter is marked with
-				// an `originalValue` property. Here, when we detect this, we
-				// uphold the illusion by pretending to see that original data
-				// property, i.e., returning the value rather than the getter
-				// itself.
-				if (isOwn && 'get' in desc && !('originalValue' in desc.get)) {
-					value = desc.get;
-				} else {
-					value = value[part];
-				}
-			} else {
-				isOwn = hasOwn$1(value, part);
-				value = value[part];
-			}
-
-			if (isOwn && !skipFurtherCaching) {
-				INTRINSICS[intrinsicRealName] = value;
-			}
-		}
-	}
-	return value;
-};
-
-var esDefineProperty;
-var hasRequiredEsDefineProperty;
-
-function requireEsDefineProperty () {
-	if (hasRequiredEsDefineProperty) return esDefineProperty;
-	hasRequiredEsDefineProperty = 1;
-
-	var GetIntrinsic = getIntrinsic;
-
-	/** @type {import('.')} */
-	var $defineProperty = GetIntrinsic('%Object.defineProperty%', true) || false;
-	if ($defineProperty) {
-		try {
-			$defineProperty({}, 'a', { value: 1 });
-		} catch (e) {
-			// IE 8 has a broken defineProperty
-			$defineProperty = false;
-		}
-	}
-
-	esDefineProperty = $defineProperty;
-	return esDefineProperty;
-}
-
-var GetIntrinsic$6 = getIntrinsic;
-
-var $gOPD$1 = GetIntrinsic$6('%Object.getOwnPropertyDescriptor%', true);
-
-if ($gOPD$1) {
-	try {
-		$gOPD$1([], 'length');
-	} catch (e) {
-		// IE 8 has a broken gOPD
-		$gOPD$1 = null;
-	}
-}
-
-var gopd$1 = $gOPD$1;
-
-var $defineProperty$1 = requireEsDefineProperty();
-
-var $SyntaxError = syntax;
-var $TypeError$4 = type;
-
-var gopd = gopd$1;
-
-/** @type {import('.')} */
-var defineDataProperty$1 = function defineDataProperty(
-	obj,
-	property,
-	value
-) {
-	if (!obj || (typeof obj !== 'object' && typeof obj !== 'function')) {
-		throw new $TypeError$4('`obj` must be an object or a function`');
-	}
-	if (typeof property !== 'string' && typeof property !== 'symbol') {
-		throw new $TypeError$4('`property` must be a string or a symbol`');
-	}
-	if (arguments.length > 3 && typeof arguments[3] !== 'boolean' && arguments[3] !== null) {
-		throw new $TypeError$4('`nonEnumerable`, if provided, must be a boolean or null');
-	}
-	if (arguments.length > 4 && typeof arguments[4] !== 'boolean' && arguments[4] !== null) {
-		throw new $TypeError$4('`nonWritable`, if provided, must be a boolean or null');
-	}
-	if (arguments.length > 5 && typeof arguments[5] !== 'boolean' && arguments[5] !== null) {
-		throw new $TypeError$4('`nonConfigurable`, if provided, must be a boolean or null');
-	}
-	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
-		throw new $TypeError$4('`loose`, if provided, must be a boolean');
-	}
-
-	var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
-	var nonWritable = arguments.length > 4 ? arguments[4] : null;
-	var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
-	var loose = arguments.length > 6 ? arguments[6] : false;
-
-	/* @type {false | TypedPropertyDescriptor<unknown>} */
-	var desc = !!gopd && gopd(obj, property);
-
-	if ($defineProperty$1) {
-		$defineProperty$1(obj, property, {
-			configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
-			enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
-			value: value,
-			writable: nonWritable === null && desc ? desc.writable : !nonWritable
-		});
-	} else if (loose || (!nonEnumerable && !nonWritable && !nonConfigurable)) {
-		// must fall back to [[Set]], and was not explicitly asked to make non-enumerable, non-writable, or non-configurable
-		obj[property] = value; // eslint-disable-line no-param-reassign
-	} else {
-		throw new $SyntaxError('This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.');
-	}
-};
-
-var $defineProperty = requireEsDefineProperty();
-
-var hasPropertyDescriptors = function hasPropertyDescriptors() {
-	return !!$defineProperty;
-};
-
-hasPropertyDescriptors.hasArrayLengthDefineBug = function hasArrayLengthDefineBug() {
-	// node v0.6 has a bug where array lengths can be Set but not Defined
-	if (!$defineProperty) {
-		return null;
-	}
-	try {
-		return $defineProperty([], 'length', { value: 1 }).length !== 1;
-	} catch (e) {
-		// In Firefox 4-22, defining length on an array throws an exception.
-		return true;
-	}
-};
-
-var hasPropertyDescriptors_1 = hasPropertyDescriptors;
-
-var keys$2 = objectKeys$2;
-var hasSymbols$3 = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
-
-var toStr$7 = Object.prototype.toString;
-var concat = Array.prototype.concat;
-var defineDataProperty = defineDataProperty$1;
-
-var isFunction = function (fn) {
-	return typeof fn === 'function' && toStr$7.call(fn) === '[object Function]';
-};
-
-var supportsDescriptors$2 = hasPropertyDescriptors_1();
-
-var defineProperty$1 = function (object, name, value, predicate) {
-	if (name in object) {
-		if (predicate === true) {
-			if (object[name] === value) {
-				return;
-			}
-		} else if (!isFunction(predicate) || !predicate()) {
-			return;
-		}
-	}
-
-	if (supportsDescriptors$2) {
-		defineDataProperty(object, name, value, true);
-	} else {
-		defineDataProperty(object, name, value);
-	}
-};
-
-var defineProperties$1 = function (object, map) {
-	var predicates = arguments.length > 2 ? arguments[2] : {};
-	var props = keys$2(map);
-	if (hasSymbols$3) {
-		props = concat.call(props, Object.getOwnPropertySymbols(map));
-	}
-	for (var i = 0; i < props.length; i += 1) {
-		defineProperty$1(object, props[i], map[props[i]], predicates[props[i]]);
-	}
-};
-
-defineProperties$1.supportsDescriptors = !!supportsDescriptors$2;
-
-var defineProperties_1 = defineProperties$1;
-
-var callBind$6 = {exports: {}};
-
-var GetIntrinsic$5 = getIntrinsic;
-var define$5 = defineDataProperty$1;
-var hasDescriptors$1 = hasPropertyDescriptors_1();
-var gOPD$4 = gopd$1;
-
-var $TypeError$3 = type;
-var $floor$1 = GetIntrinsic$5('%Math.floor%');
-
-/** @type {import('.')} */
-var setFunctionLength = function setFunctionLength(fn, length) {
-	if (typeof fn !== 'function') {
-		throw new $TypeError$3('`fn` is not a function');
-	}
-	if (typeof length !== 'number' || length < 0 || length > 0xFFFFFFFF || $floor$1(length) !== length) {
-		throw new $TypeError$3('`length` must be a positive 32-bit integer');
-	}
-
-	var loose = arguments.length > 2 && !!arguments[2];
-
-	var functionLengthIsConfigurable = true;
-	var functionLengthIsWritable = true;
-	if ('length' in fn && gOPD$4) {
-		var desc = gOPD$4(fn, 'length');
-		if (desc && !desc.configurable) {
-			functionLengthIsConfigurable = false;
-		}
-		if (desc && !desc.writable) {
-			functionLengthIsWritable = false;
-		}
-	}
-
-	if (functionLengthIsConfigurable || functionLengthIsWritable || !loose) {
-		if (hasDescriptors$1) {
-			define$5(/** @type {Parameters<define>[0]} */ (fn), 'length', length, true, true);
-		} else {
-			define$5(/** @type {Parameters<define>[0]} */ (fn), 'length', length);
-		}
-	}
-	return fn;
-};
-
-(function (module) {
-
-	var bind = functionBind;
-	var GetIntrinsic = getIntrinsic;
-	var setFunctionLength$1 = setFunctionLength;
-
-	var $TypeError = type;
-	var $apply = GetIntrinsic('%Function.prototype.apply%');
-	var $call = GetIntrinsic('%Function.prototype.call%');
-	var $reflectApply = GetIntrinsic('%Reflect.apply%', true) || bind.call($call, $apply);
-
-	var $defineProperty = requireEsDefineProperty();
-	var $max = GetIntrinsic('%Math.max%');
-
-	module.exports = function callBind(originalFunction) {
-		if (typeof originalFunction !== 'function') {
-			throw new $TypeError('a function is required');
-		}
-		var func = $reflectApply(bind, $call, arguments);
-		return setFunctionLength$1(
-			func,
-			1 + $max(0, originalFunction.length - (arguments.length - 1)),
-			true
-		);
-	};
-
-	var applyBind = function applyBind() {
-		return $reflectApply(bind, $apply, arguments);
-	};
-
-	if ($defineProperty) {
-		$defineProperty(module.exports, 'apply', { value: applyBind });
-	} else {
-		module.exports.apply = applyBind;
-	} 
-} (callBind$6));
-
-var callBindExports = callBind$6.exports;
-
-var GetIntrinsic$4 = getIntrinsic;
-
-var callBind$5 = callBindExports;
-
-var $indexOf$1 = callBind$5(GetIntrinsic$4('String.prototype.indexOf'));
-
-var callBound$b = function callBoundIntrinsic(name, allowMissing) {
-	var intrinsic = GetIntrinsic$4(name, !!allowMissing);
-	if (typeof intrinsic === 'function' && $indexOf$1(name, '.prototype.') > -1) {
-		return callBind$5(intrinsic);
-	}
-	return intrinsic;
-};
-
-// modified from https://github.com/es-shims/es6-shim
-var objectKeys$1 = objectKeys$2;
-var hasSymbols$2 = shams$1();
-var callBound$a = callBound$b;
-var toObject = Object;
-var $push = callBound$a('Array.prototype.push');
-var $propIsEnumerable = callBound$a('Object.prototype.propertyIsEnumerable');
-var originalGetSymbols = hasSymbols$2 ? Object.getOwnPropertySymbols : null;
-
-// eslint-disable-next-line no-unused-vars
-var implementation$8 = function assign(target, source1) {
-	if (target == null) { throw new TypeError('target must be an object'); }
-	var to = toObject(target); // step 1
-	if (arguments.length === 1) {
-		return to; // step 2
-	}
-	for (var s = 1; s < arguments.length; ++s) {
-		var from = toObject(arguments[s]); // step 3.a.i
-
-		// step 3.a.ii:
-		var keys = objectKeys$1(from);
-		var getSymbols = hasSymbols$2 && (Object.getOwnPropertySymbols || originalGetSymbols);
-		if (getSymbols) {
-			var syms = getSymbols(from);
-			for (var j = 0; j < syms.length; ++j) {
-				var key = syms[j];
-				if ($propIsEnumerable(from, key)) {
-					$push(keys, key);
-				}
-			}
-		}
-
-		// step 3.a.iii:
-		for (var i = 0; i < keys.length; ++i) {
-			var nextKey = keys[i];
-			if ($propIsEnumerable(from, nextKey)) { // step 3.a.iii.2
-				var propValue = from[nextKey]; // step 3.a.iii.2.a
-				to[nextKey] = propValue; // step 3.a.iii.2.b
-			}
-		}
-	}
-
-	return to; // step 4
-};
-
-var implementation$7 = implementation$8;
-
-var lacksProperEnumerationOrder = function () {
-	if (!Object.assign) {
-		return false;
-	}
-	/*
-	 * v8, specifically in node 4.x, has a bug with incorrect property enumeration order
-	 * note: this does not detect the bug unless there's 20 characters
-	 */
-	var str = 'abcdefghijklmnopqrst';
-	var letters = str.split('');
-	var map = {};
-	for (var i = 0; i < letters.length; ++i) {
-		map[letters[i]] = letters[i];
-	}
-	var obj = Object.assign({}, map);
-	var actual = '';
-	for (var k in obj) {
-		actual += k;
-	}
-	return str !== actual;
-};
-
-var assignHasPendingExceptions = function () {
-	if (!Object.assign || !Object.preventExtensions) {
-		return false;
-	}
-	/*
-	 * Firefox 37 still has "pending exception" logic in its Object.assign implementation,
-	 * which is 72% slower than our shim, and Firefox 40's native implementation.
-	 */
-	var thrower = Object.preventExtensions({ 1: 2 });
-	try {
-		Object.assign(thrower, 'xy');
-	} catch (e) {
-		return thrower[1] === 'y';
-	}
-	return false;
-};
-
-var polyfill$4 = function getPolyfill() {
-	if (!Object.assign) {
-		return implementation$7;
-	}
-	if (lacksProperEnumerationOrder()) {
-		return implementation$7;
-	}
-	if (assignHasPendingExceptions()) {
-		return implementation$7;
-	}
-	return Object.assign;
-};
-
-var define$4 = defineProperties_1;
-var getPolyfill$5 = polyfill$4;
-
-var shim$5 = function shimAssign() {
-	var polyfill = getPolyfill$5();
-	define$4(
-		Object,
-		{ assign: polyfill },
-		{ assign: function () { return Object.assign !== polyfill; } }
-	);
-	return polyfill;
-};
-
-var defineProperties = defineProperties_1;
-var callBind$4 = callBindExports;
-
-var implementation$6 = implementation$8;
-var getPolyfill$4 = polyfill$4;
-var shim$4 = shim$5;
-
-var polyfill$3 = callBind$4.apply(getPolyfill$4());
-// eslint-disable-next-line no-unused-vars
-var bound = function assign(target, source1) {
-	return polyfill$3(Object, arguments);
-};
-
-defineProperties(bound, {
-	getPolyfill: getPolyfill$4,
-	implementation: implementation$6,
-	shim: shim$4
-});
-
-var object_assign = bound;
-
-var functionsHaveNames = function functionsHaveNames() {
-	return typeof function f() {}.name === 'string';
-};
-
-var gOPD$3 = Object.getOwnPropertyDescriptor;
-if (gOPD$3) {
-	try {
-		gOPD$3([], 'length');
-	} catch (e) {
-		// IE 8 has a broken gOPD
-		gOPD$3 = null;
-	}
-}
-
-functionsHaveNames.functionsHaveConfigurableNames = function functionsHaveConfigurableNames() {
-	if (!functionsHaveNames() || !gOPD$3) {
-		return false;
-	}
-	var desc = gOPD$3(function () {}, 'name');
-	return !!desc && !!desc.configurable;
-};
-
-var $bind = Function.prototype.bind;
-
-functionsHaveNames.boundFunctionsHaveNames = function boundFunctionsHaveNames() {
-	return functionsHaveNames() && typeof $bind === 'function' && function f() {}.bind().name !== '';
-};
-
-var functionsHaveNames_1 = functionsHaveNames;
-
-var define$3 = defineDataProperty$1;
-var hasDescriptors = hasPropertyDescriptors_1();
-var functionsHaveConfigurableNames = functionsHaveNames_1.functionsHaveConfigurableNames();
-
-var $TypeError$2 = type;
-
-/** @type {import('.')} */
-var setFunctionName$1 = function setFunctionName(fn, name) {
-	if (typeof fn !== 'function') {
-		throw new $TypeError$2('`fn` is not a function');
-	}
-	var loose = arguments.length > 2 && !!arguments[2];
-	if (!loose || functionsHaveConfigurableNames) {
-		if (hasDescriptors) {
-			define$3(/** @type {Parameters<define>[0]} */ (fn), 'name', name, true, true);
-		} else {
-			define$3(/** @type {Parameters<define>[0]} */ (fn), 'name', name);
-		}
-	}
-	return fn;
-};
-
-var setFunctionName = setFunctionName$1;
-var $TypeError$1 = type;
-
-var $Object = Object;
-
-var implementation$5 = setFunctionName(function flags() {
-	if (this == null || this !== $Object(this)) {
-		throw new $TypeError$1('RegExp.prototype.flags getter called on non-object');
-	}
-	var result = '';
-	if (this.hasIndices) {
-		result += 'd';
-	}
-	if (this.global) {
-		result += 'g';
-	}
-	if (this.ignoreCase) {
-		result += 'i';
-	}
-	if (this.multiline) {
-		result += 'm';
-	}
-	if (this.dotAll) {
-		result += 's';
-	}
-	if (this.unicode) {
-		result += 'u';
-	}
-	if (this.unicodeSets) {
-		result += 'v';
-	}
-	if (this.sticky) {
-		result += 'y';
-	}
-	return result;
-}, 'get flags', true);
-
-var implementation$4 = implementation$5;
-
-var supportsDescriptors$1 = defineProperties_1.supportsDescriptors;
-var $gOPD = Object.getOwnPropertyDescriptor;
-
-var polyfill$2 = function getPolyfill() {
-	if (supportsDescriptors$1 && (/a/mig).flags === 'gim') {
-		var descriptor = $gOPD(RegExp.prototype, 'flags');
-		if (
-			descriptor
-			&& typeof descriptor.get === 'function'
-			&& typeof RegExp.prototype.dotAll === 'boolean'
-			&& typeof RegExp.prototype.hasIndices === 'boolean'
-		) {
-			/* eslint getter-return: 0 */
-			var calls = '';
-			var o = {};
-			Object.defineProperty(o, 'hasIndices', {
-				get: function () {
-					calls += 'd';
-				}
-			});
-			Object.defineProperty(o, 'sticky', {
-				get: function () {
-					calls += 'y';
-				}
-			});
-			if (calls === 'dy') {
-				return descriptor.get;
-			}
-		}
-	}
-	return implementation$4;
-};
-
-var supportsDescriptors = defineProperties_1.supportsDescriptors;
-var getPolyfill$3 = polyfill$2;
-var gOPD$2 = Object.getOwnPropertyDescriptor;
-var defineProperty = Object.defineProperty;
-var TypeErr = TypeError;
-var getProto = Object.getPrototypeOf;
-var regex = /a/;
-
-var shim$3 = function shimFlags() {
-	if (!supportsDescriptors || !getProto) {
-		throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
-	}
-	var polyfill = getPolyfill$3();
-	var proto = getProto(regex);
-	var descriptor = gOPD$2(proto, 'flags');
-	if (!descriptor || descriptor.get !== polyfill) {
-		defineProperty(proto, 'flags', {
-			configurable: true,
-			enumerable: false,
-			get: polyfill
-		});
-	}
-	return polyfill;
-};
-
-var define$2 = defineProperties_1;
-var callBind$3 = callBindExports;
-
-var implementation$3 = implementation$5;
-var getPolyfill$2 = polyfill$2;
-var shim$2 = shim$3;
-
-var flagsBound = callBind$3(getPolyfill$2());
-
-define$2(flagsBound, {
-	getPolyfill: getPolyfill$2,
-	implementation: implementation$3,
-	shim: shim$2
-});
-
-var regexp_prototype_flags = flagsBound;
-
-// this should only run in node >= 13.2, so it
-// does not need any of the intense fallbacks that old node/browsers do
-
-var $iterator = Symbol.iterator;
-var node = function getIterator(iterable) {
-	// alternatively, `iterable[$iterator]?.()`
-	if (iterable != null && typeof iterable[$iterator] !== 'undefined') {
-		return iterable[$iterator]();
-	}
-};
-
-var util_inspect = require$$0.inspect;
-
-var hasMap = typeof Map === 'function' && Map.prototype;
-var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, 'size') : null;
-var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === 'function' ? mapSizeDescriptor.get : null;
-var mapForEach = hasMap && Map.prototype.forEach;
-var hasSet = typeof Set === 'function' && Set.prototype;
-var setSizeDescriptor = Object.getOwnPropertyDescriptor && hasSet ? Object.getOwnPropertyDescriptor(Set.prototype, 'size') : null;
-var setSize = hasSet && setSizeDescriptor && typeof setSizeDescriptor.get === 'function' ? setSizeDescriptor.get : null;
-var setForEach = hasSet && Set.prototype.forEach;
-var hasWeakMap = typeof WeakMap === 'function' && WeakMap.prototype;
-var weakMapHas = hasWeakMap ? WeakMap.prototype.has : null;
-var hasWeakSet = typeof WeakSet === 'function' && WeakSet.prototype;
-var weakSetHas = hasWeakSet ? WeakSet.prototype.has : null;
-var hasWeakRef = typeof WeakRef === 'function' && WeakRef.prototype;
-var weakRefDeref = hasWeakRef ? WeakRef.prototype.deref : null;
-var booleanValueOf = Boolean.prototype.valueOf;
-var objectToString = Object.prototype.toString;
-var functionToString = Function.prototype.toString;
-var $match = String.prototype.match;
-var $slice$1 = String.prototype.slice;
-var $replace = String.prototype.replace;
-var $toUpperCase = String.prototype.toUpperCase;
-var $toLowerCase = String.prototype.toLowerCase;
-var $test = RegExp.prototype.test;
-var $concat = Array.prototype.concat;
-var $join = Array.prototype.join;
-var $arrSlice = Array.prototype.slice;
-var $floor = Math.floor;
-var bigIntValueOf$1 = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
-var gOPS = Object.getOwnPropertySymbols;
-var symToString = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol' ? Symbol.prototype.toString : null;
-var hasShammedSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'object';
-// ie, `has-tostringtag/shams
-var toStringTag = typeof Symbol === 'function' && Symbol.toStringTag && (typeof Symbol.toStringTag === hasShammedSymbols ? 'object' : 'symbol')
-    ? Symbol.toStringTag
-    : null;
-var isEnumerable = Object.prototype.propertyIsEnumerable;
-
-var gPO$1 = (typeof Reflect === 'function' ? Reflect.getPrototypeOf : Object.getPrototypeOf) || (
-    [].__proto__ === Array.prototype // eslint-disable-line no-proto
-        ? function (O) {
-            return O.__proto__; // eslint-disable-line no-proto
-        }
-        : null
-);
-
-function addNumericSeparator(num, str) {
-    if (
-        num === Infinity
-        || num === -Infinity
-        || num !== num
-        || (num && num > -1000 && num < 1000)
-        || $test.call(/e/, str)
-    ) {
-        return str;
-    }
-    var sepRegex = /[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;
-    if (typeof num === 'number') {
-        var int = num < 0 ? -$floor(-num) : $floor(num); // trunc(num)
-        if (int !== num) {
-            var intStr = String(int);
-            var dec = $slice$1.call(str, intStr.length + 1);
-            return $replace.call(intStr, sepRegex, '$&_') + '.' + $replace.call($replace.call(dec, /([0-9]{3})/g, '$&_'), /_$/, '');
-        }
-    }
-    return $replace.call(str, sepRegex, '$&_');
-}
-
-var utilInspect = util_inspect;
-var inspectCustom = utilInspect.custom;
-var inspectSymbol = isSymbol$2(inspectCustom) ? inspectCustom : null;
-
-var objectInspect = function inspect_(obj, options, depth, seen) {
-    var opts = options || {};
-
-    if (has$1(opts, 'quoteStyle') && (opts.quoteStyle !== 'single' && opts.quoteStyle !== 'double')) {
-        throw new TypeError('option "quoteStyle" must be "single" or "double"');
-    }
-    if (
-        has$1(opts, 'maxStringLength') && (typeof opts.maxStringLength === 'number'
-            ? opts.maxStringLength < 0 && opts.maxStringLength !== Infinity
-            : opts.maxStringLength !== null
-        )
-    ) {
-        throw new TypeError('option "maxStringLength", if provided, must be a positive integer, Infinity, or `null`');
-    }
-    var customInspect = has$1(opts, 'customInspect') ? opts.customInspect : true;
-    if (typeof customInspect !== 'boolean' && customInspect !== 'symbol') {
-        throw new TypeError('option "customInspect", if provided, must be `true`, `false`, or `\'symbol\'`');
-    }
-
-    if (
-        has$1(opts, 'indent')
-        && opts.indent !== null
-        && opts.indent !== '\t'
-        && !(parseInt(opts.indent, 10) === opts.indent && opts.indent > 0)
-    ) {
-        throw new TypeError('option "indent" must be "\\t", an integer > 0, or `null`');
-    }
-    if (has$1(opts, 'numericSeparator') && typeof opts.numericSeparator !== 'boolean') {
-        throw new TypeError('option "numericSeparator", if provided, must be `true` or `false`');
-    }
-    var numericSeparator = opts.numericSeparator;
-
-    if (typeof obj === 'undefined') {
-        return 'undefined';
-    }
-    if (obj === null) {
-        return 'null';
-    }
-    if (typeof obj === 'boolean') {
-        return obj ? 'true' : 'false';
-    }
-
-    if (typeof obj === 'string') {
-        return inspectString(obj, opts);
-    }
-    if (typeof obj === 'number') {
-        if (obj === 0) {
-            return Infinity / obj > 0 ? '0' : '-0';
-        }
-        var str = String(obj);
-        return numericSeparator ? addNumericSeparator(obj, str) : str;
-    }
-    if (typeof obj === 'bigint') {
-        var bigIntStr = String(obj) + 'n';
-        return numericSeparator ? addNumericSeparator(obj, bigIntStr) : bigIntStr;
-    }
-
-    var maxDepth = typeof opts.depth === 'undefined' ? 5 : opts.depth;
-    if (typeof depth === 'undefined') { depth = 0; }
-    if (depth >= maxDepth && maxDepth > 0 && typeof obj === 'object') {
-        return isArray$1(obj) ? '[Array]' : '[Object]';
-    }
-
-    var indent = getIndent(opts, depth);
-
-    if (typeof seen === 'undefined') {
-        seen = [];
-    } else if (indexOf(seen, obj) >= 0) {
-        return '[Circular]';
-    }
-
-    function inspect(value, from, noIndent) {
-        if (from) {
-            seen = $arrSlice.call(seen);
-            seen.push(from);
-        }
-        if (noIndent) {
-            var newOpts = {
-                depth: opts.depth
-            };
-            if (has$1(opts, 'quoteStyle')) {
-                newOpts.quoteStyle = opts.quoteStyle;
-            }
-            return inspect_(value, newOpts, depth + 1, seen);
-        }
-        return inspect_(value, opts, depth + 1, seen);
-    }
-
-    if (typeof obj === 'function' && !isRegExp(obj)) { // in older engines, regexes are callable
-        var name = nameOf(obj);
-        var keys = arrObjKeys(obj, inspect);
-        return '[Function' + (name ? ': ' + name : ' (anonymous)') + ']' + (keys.length > 0 ? ' { ' + $join.call(keys, ', ') + ' }' : '');
-    }
-    if (isSymbol$2(obj)) {
-        var symString = hasShammedSymbols ? $replace.call(String(obj), /^(Symbol\(.*\))_[^)]*$/, '$1') : symToString.call(obj);
-        return typeof obj === 'object' && !hasShammedSymbols ? markBoxed(symString) : symString;
-    }
-    if (isElement(obj)) {
-        var s = '<' + $toLowerCase.call(String(obj.nodeName));
-        var attrs = obj.attributes || [];
-        for (var i = 0; i < attrs.length; i++) {
-            s += ' ' + attrs[i].name + '=' + wrapQuotes(quote(attrs[i].value), 'double', opts);
-        }
-        s += '>';
-        if (obj.childNodes && obj.childNodes.length) { s += '...'; }
-        s += '</' + $toLowerCase.call(String(obj.nodeName)) + '>';
-        return s;
-    }
-    if (isArray$1(obj)) {
-        if (obj.length === 0) { return '[]'; }
-        var xs = arrObjKeys(obj, inspect);
-        if (indent && !singleLineValues(xs)) {
-            return '[' + indentedJoin(xs, indent) + ']';
-        }
-        return '[ ' + $join.call(xs, ', ') + ' ]';
-    }
-    if (isError(obj)) {
-        var parts = arrObjKeys(obj, inspect);
-        if (!('cause' in Error.prototype) && 'cause' in obj && !isEnumerable.call(obj, 'cause')) {
-            return '{ [' + String(obj) + '] ' + $join.call($concat.call('[cause]: ' + inspect(obj.cause), parts), ', ') + ' }';
-        }
-        if (parts.length === 0) { return '[' + String(obj) + ']'; }
-        return '{ [' + String(obj) + '] ' + $join.call(parts, ', ') + ' }';
-    }
-    if (typeof obj === 'object' && customInspect) {
-        if (inspectSymbol && typeof obj[inspectSymbol] === 'function' && utilInspect) {
-            return utilInspect(obj, { depth: maxDepth - depth });
-        } else if (customInspect !== 'symbol' && typeof obj.inspect === 'function') {
-            return obj.inspect();
-        }
-    }
-    if (isMap$2(obj)) {
-        var mapParts = [];
-        if (mapForEach) {
-            mapForEach.call(obj, function (value, key) {
-                mapParts.push(inspect(key, obj, true) + ' => ' + inspect(value, obj));
-            });
-        }
-        return collectionOf('Map', mapSize.call(obj), mapParts, indent);
-    }
-    if (isSet$2(obj)) {
-        var setParts = [];
-        if (setForEach) {
-            setForEach.call(obj, function (value) {
-                setParts.push(inspect(value, obj));
-            });
-        }
-        return collectionOf('Set', setSize.call(obj), setParts, indent);
-    }
-    if (isWeakMap$1(obj)) {
-        return weakCollectionOf('WeakMap');
-    }
-    if (isWeakSet$1(obj)) {
-        return weakCollectionOf('WeakSet');
-    }
-    if (isWeakRef(obj)) {
-        return weakCollectionOf('WeakRef');
-    }
-    if (isNumber$1(obj)) {
-        return markBoxed(inspect(Number(obj)));
-    }
-    if (isBigInt$1(obj)) {
-        return markBoxed(inspect(bigIntValueOf$1.call(obj)));
-    }
-    if (isBoolean$1(obj)) {
-        return markBoxed(booleanValueOf.call(obj));
-    }
-    if (isString$2(obj)) {
-        return markBoxed(inspect(String(obj)));
-    }
-    // note: in IE 8, sometimes `global !== window` but both are the prototypes of each other
-    /* eslint-env browser */
-    if (typeof window !== 'undefined' && obj === window) {
-        return '{ [object Window] }';
-    }
-    if (obj === commonjsGlobal) {
-        return '{ [object globalThis] }';
-    }
-    if (!isDate$1(obj) && !isRegExp(obj)) {
-        var ys = arrObjKeys(obj, inspect);
-        var isPlainObject = gPO$1 ? gPO$1(obj) === Object.prototype : obj instanceof Object || obj.constructor === Object;
-        var protoTag = obj instanceof Object ? '' : 'null prototype';
-        var stringTag = !isPlainObject && toStringTag && Object(obj) === obj && toStringTag in obj ? $slice$1.call(toStr$6(obj), 8, -1) : protoTag ? 'Object' : '';
-        var constructorTag = isPlainObject || typeof obj.constructor !== 'function' ? '' : obj.constructor.name ? obj.constructor.name + ' ' : '';
-        var tag = constructorTag + (stringTag || protoTag ? '[' + $join.call($concat.call([], stringTag || [], protoTag || []), ': ') + '] ' : '');
-        if (ys.length === 0) { return tag + '{}'; }
-        if (indent) {
-            return tag + '{' + indentedJoin(ys, indent) + '}';
-        }
-        return tag + '{ ' + $join.call(ys, ', ') + ' }';
-    }
-    return String(obj);
-};
-
-function wrapQuotes(s, defaultStyle, opts) {
-    var quoteChar = (opts.quoteStyle || defaultStyle) === 'double' ? '"' : "'";
-    return quoteChar + s + quoteChar;
-}
-
-function quote(s) {
-    return $replace.call(String(s), /"/g, '&quot;');
-}
-
-function isArray$1(obj) { return toStr$6(obj) === '[object Array]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-function isDate$1(obj) { return toStr$6(obj) === '[object Date]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-function isRegExp(obj) { return toStr$6(obj) === '[object RegExp]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-function isError(obj) { return toStr$6(obj) === '[object Error]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-function isString$2(obj) { return toStr$6(obj) === '[object String]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-function isNumber$1(obj) { return toStr$6(obj) === '[object Number]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-function isBoolean$1(obj) { return toStr$6(obj) === '[object Boolean]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
-
-// Symbol and BigInt do have Symbol.toStringTag by spec, so that can't be used to eliminate false positives
-function isSymbol$2(obj) {
-    if (hasShammedSymbols) {
-        return obj && typeof obj === 'object' && obj instanceof Symbol;
-    }
-    if (typeof obj === 'symbol') {
-        return true;
-    }
-    if (!obj || typeof obj !== 'object' || !symToString) {
-        return false;
-    }
-    try {
-        symToString.call(obj);
-        return true;
-    } catch (e) {}
-    return false;
-}
-
-function isBigInt$1(obj) {
-    if (!obj || typeof obj !== 'object' || !bigIntValueOf$1) {
-        return false;
-    }
-    try {
-        bigIntValueOf$1.call(obj);
-        return true;
-    } catch (e) {}
-    return false;
-}
-
-var hasOwn = Object.prototype.hasOwnProperty || function (key) { return key in this; };
-function has$1(obj, key) {
-    return hasOwn.call(obj, key);
-}
-
-function toStr$6(obj) {
-    return objectToString.call(obj);
-}
-
-function nameOf(f) {
-    if (f.name) { return f.name; }
-    var m = $match.call(functionToString.call(f), /^function\s*([\w$]+)/);
-    if (m) { return m[1]; }
-    return null;
-}
-
-function indexOf(xs, x) {
-    if (xs.indexOf) { return xs.indexOf(x); }
-    for (var i = 0, l = xs.length; i < l; i++) {
-        if (xs[i] === x) { return i; }
-    }
-    return -1;
-}
-
-function isMap$2(x) {
-    if (!mapSize || !x || typeof x !== 'object') {
-        return false;
-    }
-    try {
-        mapSize.call(x);
-        try {
-            setSize.call(x);
-        } catch (s) {
-            return true;
-        }
-        return x instanceof Map; // core-js workaround, pre-v2.5.0
-    } catch (e) {}
-    return false;
-}
-
-function isWeakMap$1(x) {
-    if (!weakMapHas || !x || typeof x !== 'object') {
-        return false;
-    }
-    try {
-        weakMapHas.call(x, weakMapHas);
-        try {
-            weakSetHas.call(x, weakSetHas);
-        } catch (s) {
-            return true;
-        }
-        return x instanceof WeakMap; // core-js workaround, pre-v2.5.0
-    } catch (e) {}
-    return false;
-}
-
-function isWeakRef(x) {
-    if (!weakRefDeref || !x || typeof x !== 'object') {
-        return false;
-    }
-    try {
-        weakRefDeref.call(x);
-        return true;
-    } catch (e) {}
-    return false;
-}
-
-function isSet$2(x) {
-    if (!setSize || !x || typeof x !== 'object') {
-        return false;
-    }
-    try {
-        setSize.call(x);
-        try {
-            mapSize.call(x);
-        } catch (m) {
-            return true;
-        }
-        return x instanceof Set; // core-js workaround, pre-v2.5.0
-    } catch (e) {}
-    return false;
-}
-
-function isWeakSet$1(x) {
-    if (!weakSetHas || !x || typeof x !== 'object') {
-        return false;
-    }
-    try {
-        weakSetHas.call(x, weakSetHas);
-        try {
-            weakMapHas.call(x, weakMapHas);
-        } catch (s) {
-            return true;
-        }
-        return x instanceof WeakSet; // core-js workaround, pre-v2.5.0
-    } catch (e) {}
-    return false;
-}
-
-function isElement(x) {
-    if (!x || typeof x !== 'object') { return false; }
-    if (typeof HTMLElement !== 'undefined' && x instanceof HTMLElement) {
-        return true;
-    }
-    return typeof x.nodeName === 'string' && typeof x.getAttribute === 'function';
-}
-
-function inspectString(str, opts) {
-    if (str.length > opts.maxStringLength) {
-        var remaining = str.length - opts.maxStringLength;
-        var trailer = '... ' + remaining + ' more character' + (remaining > 1 ? 's' : '');
-        return inspectString($slice$1.call(str, 0, opts.maxStringLength), opts) + trailer;
-    }
-    // eslint-disable-next-line no-control-regex
-    var s = $replace.call($replace.call(str, /(['\\])/g, '\\$1'), /[\x00-\x1f]/g, lowbyte);
-    return wrapQuotes(s, 'single', opts);
-}
-
-function lowbyte(c) {
-    var n = c.charCodeAt(0);
-    var x = {
-        8: 'b',
-        9: 't',
-        10: 'n',
-        12: 'f',
-        13: 'r'
-    }[n];
-    if (x) { return '\\' + x; }
-    return '\\x' + (n < 0x10 ? '0' : '') + $toUpperCase.call(n.toString(16));
-}
-
-function markBoxed(str) {
-    return 'Object(' + str + ')';
-}
-
-function weakCollectionOf(type) {
-    return type + ' { ? }';
-}
-
-function collectionOf(type, size, entries, indent) {
-    var joinedEntries = indent ? indentedJoin(entries, indent) : $join.call(entries, ', ');
-    return type + ' (' + size + ') {' + joinedEntries + '}';
-}
-
-function singleLineValues(xs) {
-    for (var i = 0; i < xs.length; i++) {
-        if (indexOf(xs[i], '\n') >= 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function getIndent(opts, depth) {
-    var baseIndent;
-    if (opts.indent === '\t') {
-        baseIndent = '\t';
-    } else if (typeof opts.indent === 'number' && opts.indent > 0) {
-        baseIndent = $join.call(Array(opts.indent + 1), ' ');
-    } else {
-        return null;
-    }
-    return {
-        base: baseIndent,
-        prev: $join.call(Array(depth + 1), baseIndent)
-    };
-}
-
-function indentedJoin(xs, indent) {
-    if (xs.length === 0) { return ''; }
-    var lineJoiner = '\n' + indent.prev + indent.base;
-    return lineJoiner + $join.call(xs, ',' + lineJoiner) + '\n' + indent.prev;
-}
-
-function arrObjKeys(obj, inspect) {
-    var isArr = isArray$1(obj);
-    var xs = [];
-    if (isArr) {
-        xs.length = obj.length;
-        for (var i = 0; i < obj.length; i++) {
-            xs[i] = has$1(obj, i) ? inspect(obj[i], obj) : '';
-        }
-    }
-    var syms = typeof gOPS === 'function' ? gOPS(obj) : [];
-    var symMap;
-    if (hasShammedSymbols) {
-        symMap = {};
-        for (var k = 0; k < syms.length; k++) {
-            symMap['$' + syms[k]] = syms[k];
-        }
-    }
-
-    for (var key in obj) { // eslint-disable-line no-restricted-syntax
-        if (!has$1(obj, key)) { continue; } // eslint-disable-line no-restricted-syntax, no-continue
-        if (isArr && String(Number(key)) === key && key < obj.length) { continue; } // eslint-disable-line no-restricted-syntax, no-continue
-        if (hasShammedSymbols && symMap['$' + key] instanceof Symbol) {
-            // this is to prevent shammed Symbols, which are stored as strings, from being included in the string key section
-            continue; // eslint-disable-line no-restricted-syntax, no-continue
-        } else if ($test.call(/[^\w$]/, key)) {
-            xs.push(inspect(key, obj) + ': ' + inspect(obj[key], obj));
-        } else {
-            xs.push(key + ': ' + inspect(obj[key], obj));
-        }
-    }
-    if (typeof gOPS === 'function') {
-        for (var j = 0; j < syms.length; j++) {
-            if (isEnumerable.call(obj, syms[j])) {
-                xs.push('[' + inspect(syms[j]) + ']: ' + inspect(obj[syms[j]], obj));
-            }
-        }
-    }
-    return xs;
-}
-
-var GetIntrinsic$3 = getIntrinsic;
-var callBound$9 = callBound$b;
-var inspect = objectInspect;
-
-var $TypeError = type;
-var $WeakMap$1 = GetIntrinsic$3('%WeakMap%', true);
-var $Map$2 = GetIntrinsic$3('%Map%', true);
-
-var $weakMapGet = callBound$9('WeakMap.prototype.get', true);
-var $weakMapSet = callBound$9('WeakMap.prototype.set', true);
-var $weakMapHas = callBound$9('WeakMap.prototype.has', true);
-var $mapGet$1 = callBound$9('Map.prototype.get', true);
-var $mapSet = callBound$9('Map.prototype.set', true);
-var $mapHas$5 = callBound$9('Map.prototype.has', true);
-
-/*
-* This function traverses the list returning the node corresponding to the given key.
-*
-* That node is also moved to the head of the list, so that if it's accessed again we don't need to traverse the whole list. By doing so, all the recently used nodes can be accessed relatively quickly.
-*/
-/** @type {import('.').listGetNode} */
-var listGetNode = function (list, key) { // eslint-disable-line consistent-return
-	/** @type {typeof list | NonNullable<(typeof list)['next']>} */
-	var prev = list;
-	/** @type {(typeof list)['next']} */
-	var curr;
-	for (; (curr = prev.next) !== null; prev = curr) {
-		if (curr.key === key) {
-			prev.next = curr.next;
-			// eslint-disable-next-line no-extra-parens
-			curr.next = /** @type {NonNullable<typeof list.next>} */ (list.next);
-			list.next = curr; // eslint-disable-line no-param-reassign
-			return curr;
-		}
-	}
-};
-
-/** @type {import('.').listGet} */
-var listGet = function (objects, key) {
-	var node = listGetNode(objects, key);
-	return node && node.value;
-};
-/** @type {import('.').listSet} */
-var listSet = function (objects, key, value) {
-	var node = listGetNode(objects, key);
-	if (node) {
-		node.value = value;
-	} else {
-		// Prepend the new node to the beginning of the list
-		objects.next = /** @type {import('.').ListNode<typeof value>} */ ({ // eslint-disable-line no-param-reassign, no-extra-parens
-			key: key,
-			next: objects.next,
-			value: value
-		});
-	}
-};
-/** @type {import('.').listHas} */
-var listHas = function (objects, key) {
-	return !!listGetNode(objects, key);
-};
-
-/** @type {import('.')} */
-var sideChannel = function getSideChannel() {
-	/** @type {WeakMap<object, unknown>} */ var $wm;
-	/** @type {Map<object, unknown>} */ var $m;
-	/** @type {import('.').RootNode<unknown>} */ var $o;
-
-	/** @type {import('.').Channel} */
-	var channel = {
-		assert: function (key) {
-			if (!channel.has(key)) {
-				throw new $TypeError('Side channel does not contain ' + inspect(key));
-			}
-		},
-		get: function (key) { // eslint-disable-line consistent-return
-			if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
-				if ($wm) {
-					return $weakMapGet($wm, key);
-				}
-			} else if ($Map$2) {
-				if ($m) {
-					return $mapGet$1($m, key);
-				}
-			} else {
-				if ($o) { // eslint-disable-line no-lonely-if
-					return listGet($o, key);
-				}
-			}
-		},
-		has: function (key) {
-			if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
-				if ($wm) {
-					return $weakMapHas($wm, key);
-				}
-			} else if ($Map$2) {
-				if ($m) {
-					return $mapHas$5($m, key);
-				}
-			} else {
-				if ($o) { // eslint-disable-line no-lonely-if
-					return listHas($o, key);
-				}
-			}
-			return false;
-		},
-		set: function (key, value) {
-			if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
-				if (!$wm) {
-					$wm = new $WeakMap$1();
-				}
-				$weakMapSet($wm, key, value);
-			} else if ($Map$2) {
-				if (!$m) {
-					$m = new $Map$2();
-				}
-				$mapSet($m, key, value);
-			} else {
-				if (!$o) {
-					// Initialize the linked list as an empty node, so that we don't have to special-case handling of the first node: we can always refer to it as (previous node).next, instead of something like (list).head
-					$o = { key: {}, next: null };
-				}
-				listSet($o, key, value);
-			}
-		}
-	};
-	return channel;
-};
-
-var numberIsNaN = function (value) {
-	return value !== value;
-};
-
-var implementation$2 = function is(a, b) {
-	if (a === 0 && b === 0) {
-		return 1 / a === 1 / b;
-	}
-	if (a === b) {
-		return true;
-	}
-	if (numberIsNaN(a) && numberIsNaN(b)) {
-		return true;
-	}
-	return false;
-};
-
-var implementation$1 = implementation$2;
-
-var polyfill$1 = function getPolyfill() {
-	return typeof Object.is === 'function' ? Object.is : implementation$1;
-};
-
-var getPolyfill$1 = polyfill$1;
-var define$1 = defineProperties_1;
-
-var shim$1 = function shimObjectIs() {
-	var polyfill = getPolyfill$1();
-	define$1(Object, { is: polyfill }, {
-		is: function testObjectIs() {
-			return Object.is !== polyfill;
-		}
-	});
-	return polyfill;
-};
-
-var define = defineProperties_1;
-var callBind$2 = callBindExports;
-
-var implementation = implementation$2;
-var getPolyfill = polyfill$1;
-var shim = shim$1;
-
-var polyfill = callBind$2(getPolyfill(), Object);
-
-define(polyfill, {
-	getPolyfill: getPolyfill,
-	implementation: implementation,
-	shim: shim
-});
-
-var objectIs = polyfill;
-
-var hasSymbols$1 = shams$1;
-
-/** @type {import('.')} */
-var shams = function hasToStringTagShams() {
-	return hasSymbols$1() && !!Symbol.toStringTag;
-};
-
-var hasToStringTag$7 = shams();
-var callBound$8 = callBound$b;
-
-var $toString$4 = callBound$8('Object.prototype.toString');
-
-var isStandardArguments = function isArguments(value) {
-	if (hasToStringTag$7 && value && typeof value === 'object' && Symbol.toStringTag in value) {
-		return false;
-	}
-	return $toString$4(value) === '[object Arguments]';
-};
-
-var isLegacyArguments = function isArguments(value) {
-	if (isStandardArguments(value)) {
-		return true;
-	}
-	return value !== null &&
-		typeof value === 'object' &&
-		typeof value.length === 'number' &&
-		value.length >= 0 &&
-		$toString$4(value) !== '[object Array]' &&
-		$toString$4(value.callee) === '[object Function]';
-};
-
-var supportsStandardArguments = (function () {
-	return isStandardArguments(arguments);
-}());
-
-isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
-
-var isArguments$1 = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
-
-var toString = {}.toString;
-
-var isarray = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-var callBind$1 = callBindExports;
-var callBound$7 = callBound$b;
-var GetIntrinsic$2 = getIntrinsic;
-
-var $ArrayBuffer = GetIntrinsic$2('%ArrayBuffer%', true);
-/** @type {undefined | ((receiver: ArrayBuffer) => number) | ((receiver: unknown) => never)} */
-var $byteLength$2 = callBound$7('ArrayBuffer.prototype.byteLength', true);
-var $toString$3 = callBound$7('Object.prototype.toString');
-
-// in node 0.10, ArrayBuffers have no prototype methods, but have an own slot-checking `slice` method
-var abSlice = !!$ArrayBuffer && !$byteLength$2 && new $ArrayBuffer(0).slice;
-var $abSlice = !!abSlice && callBind$1(abSlice);
-
-/** @type {import('.')} */
-var isArrayBuffer$2 = $byteLength$2 || $abSlice
-	? function isArrayBuffer(obj) {
-		if (!obj || typeof obj !== 'object') {
-			return false;
-		}
-		try {
-			if ($byteLength$2) {
-				// @ts-expect-error no idea why TS can't handle the overload
-				$byteLength$2(obj);
-			} else {
-				// @ts-expect-error TS chooses not to type-narrow inside a closure
-				$abSlice(obj, 0);
-			}
-			return true;
-		} catch (e) {
-			return false;
-		}
-	}
-	: $ArrayBuffer
-		// in node 0.8, ArrayBuffers have no prototype or own methods, but also no Symbol.toStringTag
-		? function isArrayBuffer(obj) {
-			return $toString$3(obj) === '[object ArrayBuffer]';
-		}
-		: function isArrayBuffer(obj) { // eslint-disable-line no-unused-vars
-			return false;
-		};
-
-var getDay = Date.prototype.getDay;
-var tryDateObject = function tryDateGetDayCall(value) {
-	try {
-		getDay.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-
-var toStr$5 = Object.prototype.toString;
-var dateClass = '[object Date]';
-var hasToStringTag$6 = shams();
-
-var isDateObject = function isDateObject(value) {
-	if (typeof value !== 'object' || value === null) {
-		return false;
-	}
-	return hasToStringTag$6 ? tryDateObject(value) : toStr$5.call(value) === dateClass;
-};
-
-var callBound$6 = callBound$b;
-var hasToStringTag$5 = shams();
-var has;
-var $exec;
-var isRegexMarker;
-var badStringifier;
-
-if (hasToStringTag$5) {
-	has = callBound$6('Object.prototype.hasOwnProperty');
-	$exec = callBound$6('RegExp.prototype.exec');
-	isRegexMarker = {};
-
-	var throwRegexMarker = function () {
-		throw isRegexMarker;
-	};
-	badStringifier = {
-		toString: throwRegexMarker,
-		valueOf: throwRegexMarker
-	};
-
-	if (typeof Symbol.toPrimitive === 'symbol') {
-		badStringifier[Symbol.toPrimitive] = throwRegexMarker;
-	}
-}
-
-var $toString$2 = callBound$6('Object.prototype.toString');
-var gOPD$1 = Object.getOwnPropertyDescriptor;
-var regexClass = '[object RegExp]';
-
-var isRegex$1 = hasToStringTag$5
-	// eslint-disable-next-line consistent-return
-	? function isRegex(value) {
-		if (!value || typeof value !== 'object') {
-			return false;
-		}
-
-		var descriptor = gOPD$1(value, 'lastIndex');
-		var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
-		if (!hasLastIndexDataProperty) {
-			return false;
-		}
-
-		try {
-			$exec(value, badStringifier);
-		} catch (e) {
-			return e === isRegexMarker;
-		}
-	}
-	: function isRegex(value) {
-		// In older browsers, typeof regex incorrectly returns 'function'
-		if (!value || (typeof value !== 'object' && typeof value !== 'function')) {
-			return false;
-		}
-
-		return $toString$2(value) === regexClass;
-	};
-
-var callBound$5 = callBound$b;
-
-var $byteLength$1 = callBound$5('SharedArrayBuffer.prototype.byteLength', true);
-
-/** @type {import('.')} */
-var isSharedArrayBuffer$1 = $byteLength$1
-	? function isSharedArrayBuffer(obj) {
-		if (!obj || typeof obj !== 'object') {
-			return false;
-		}
-		try {
-			$byteLength$1(obj);
-			return true;
-		} catch (e) {
-			return false;
-		}
-	}
-	: function isSharedArrayBuffer(obj) { // eslint-disable-line no-unused-vars
-		return false;
-	};
-
-var strValue = String.prototype.valueOf;
-var tryStringObject = function tryStringObject(value) {
-	try {
-		strValue.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-var toStr$4 = Object.prototype.toString;
-var strClass = '[object String]';
-var hasToStringTag$4 = shams();
-
-var isString$1 = function isString(value) {
-	if (typeof value === 'string') {
-		return true;
-	}
-	if (typeof value !== 'object') {
-		return false;
-	}
-	return hasToStringTag$4 ? tryStringObject(value) : toStr$4.call(value) === strClass;
-};
-
-var numToStr = Number.prototype.toString;
-var tryNumberObject = function tryNumberObject(value) {
-	try {
-		numToStr.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-var toStr$3 = Object.prototype.toString;
-var numClass = '[object Number]';
-var hasToStringTag$3 = shams();
-
-var isNumberObject = function isNumberObject(value) {
-	if (typeof value === 'number') {
-		return true;
-	}
-	if (typeof value !== 'object') {
-		return false;
-	}
-	return hasToStringTag$3 ? tryNumberObject(value) : toStr$3.call(value) === numClass;
-};
-
-var callBound$4 = callBound$b;
-var $boolToStr = callBound$4('Boolean.prototype.toString');
-var $toString$1 = callBound$4('Object.prototype.toString');
-
-var tryBooleanObject = function booleanBrandCheck(value) {
-	try {
-		$boolToStr(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-var boolClass = '[object Boolean]';
-var hasToStringTag$2 = shams();
-
-var isBooleanObject = function isBoolean(value) {
-	if (typeof value === 'boolean') {
-		return true;
-	}
-	if (value === null || typeof value !== 'object') {
-		return false;
-	}
-	return hasToStringTag$2 && Symbol.toStringTag in value ? tryBooleanObject(value) : $toString$1(value) === boolClass;
-};
-
-var isSymbol$1 = {exports: {}};
-
-var toStr$2 = Object.prototype.toString;
-var hasSymbols = hasSymbols$5();
-
-if (hasSymbols) {
-	var symToStr = Symbol.prototype.toString;
-	var symStringRegex = /^Symbol\(.*\)$/;
-	var isSymbolObject = function isRealSymbolObject(value) {
-		if (typeof value.valueOf() !== 'symbol') {
-			return false;
-		}
-		return symStringRegex.test(symToStr.call(value));
-	};
-
-	isSymbol$1.exports = function isSymbol(value) {
-		if (typeof value === 'symbol') {
-			return true;
-		}
-		if (toStr$2.call(value) !== '[object Symbol]') {
-			return false;
-		}
-		try {
-			return isSymbolObject(value);
-		} catch (e) {
-			return false;
-		}
-	};
-} else {
-
-	isSymbol$1.exports = function isSymbol(value) {
-		// this environment does not support Symbols.
-		return false ;
-	};
-}
-
-var isSymbolExports = isSymbol$1.exports;
-
-var isBigint = {exports: {}};
-
-var $BigInt = typeof BigInt !== 'undefined' && BigInt;
-
-var hasBigints = function hasNativeBigInts() {
-	return typeof $BigInt === 'function'
-		&& typeof BigInt === 'function'
-		&& typeof $BigInt(42) === 'bigint' // eslint-disable-line no-magic-numbers
-		&& typeof BigInt(42) === 'bigint'; // eslint-disable-line no-magic-numbers
-};
-
-var hasBigInts = hasBigints();
-
-if (hasBigInts) {
-	var bigIntValueOf = BigInt.prototype.valueOf;
-	var tryBigInt = function tryBigIntObject(value) {
-		try {
-			bigIntValueOf.call(value);
-			return true;
-		} catch (e) {
-		}
-		return false;
-	};
-
-	isBigint.exports = function isBigInt(value) {
-		if (
-			value === null
-			|| typeof value === 'undefined'
-			|| typeof value === 'boolean'
-			|| typeof value === 'string'
-			|| typeof value === 'number'
-			|| typeof value === 'symbol'
-			|| typeof value === 'function'
-		) {
-			return false;
-		}
-		if (typeof value === 'bigint') {
-			return true;
-		}
-
-		return tryBigInt(value);
-	};
-} else {
-	isBigint.exports = function isBigInt(value) {
-		return false ;
-	};
-}
-
-var isBigintExports = isBigint.exports;
-
-var isString = isString$1;
-var isNumber = isNumberObject;
-var isBoolean = isBooleanObject;
-var isSymbol = isSymbolExports;
-var isBigInt = isBigintExports;
-
-// eslint-disable-next-line consistent-return
-var whichBoxedPrimitive$1 = function whichBoxedPrimitive(value) {
-	// eslint-disable-next-line eqeqeq
-	if (value == null || (typeof value !== 'object' && typeof value !== 'function')) {
-		return null;
-	}
-	if (isString(value)) {
-		return 'String';
-	}
-	if (isNumber(value)) {
-		return 'Number';
-	}
-	if (isBoolean(value)) {
-		return 'Boolean';
-	}
-	if (isSymbol(value)) {
-		return 'Symbol';
-	}
-	if (isBigInt(value)) {
-		return 'BigInt';
-	}
-};
-
-/** @const */
-var $Map$1 = typeof Map === 'function' && Map.prototype ? Map : null;
-var $Set$2 = typeof Set === 'function' && Set.prototype ? Set : null;
-
-var exported$2;
-
-if (!$Map$1) {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	exported$2 = function isMap(x) {
-		// `Map` is not present in this environment.
-		return false;
-	};
-}
-
-var $mapHas$4 = $Map$1 ? Map.prototype.has : null;
-var $setHas$4 = $Set$2 ? Set.prototype.has : null;
-if (!exported$2 && !$mapHas$4) {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	exported$2 = function isMap(x) {
-		// `Map` does not have a `has` method
-		return false;
-	};
-}
-
-/** @type {import('.')} */
-var isMap$1 = exported$2 || function isMap(x) {
-	if (!x || typeof x !== 'object') {
-		return false;
-	}
-	try {
-		$mapHas$4.call(x);
-		if ($setHas$4) {
-			try {
-				$setHas$4.call(x);
-			} catch (e) {
-				return true;
-			}
-		}
-		// @ts-expect-error TS can't figure out that $Map is always truthy here
-		return x instanceof $Map$1; // core-js workaround, pre-v2.5.0
-	} catch (e) {}
-	return false;
-};
-
-var $Map = typeof Map === 'function' && Map.prototype ? Map : null;
-var $Set$1 = typeof Set === 'function' && Set.prototype ? Set : null;
-
-var exported$1;
-
-if (!$Set$1) {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	exported$1 = function isSet(x) {
-		// `Set` is not present in this environment.
-		return false;
-	};
-}
-
-var $mapHas$3 = $Map ? Map.prototype.has : null;
-var $setHas$3 = $Set$1 ? Set.prototype.has : null;
-if (!exported$1 && !$setHas$3) {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	exported$1 = function isSet(x) {
-		// `Set` does not have a `has` method
-		return false;
-	};
-}
-
-/** @type {import('.')} */
-var isSet$1 = exported$1 || function isSet(x) {
-	if (!x || typeof x !== 'object') {
-		return false;
-	}
-	try {
-		$setHas$3.call(x);
-		if ($mapHas$3) {
-			try {
-				$mapHas$3.call(x);
-			} catch (e) {
-				return true;
-			}
-		}
-		// @ts-expect-error TS can't figure out that $Set is always truthy here
-		return x instanceof $Set$1; // core-js workaround, pre-v2.5.0
-	} catch (e) {}
-	return false;
-};
-
-var $WeakMap = typeof WeakMap === 'function' && WeakMap.prototype ? WeakMap : null;
-var $WeakSet$1 = typeof WeakSet === 'function' && WeakSet.prototype ? WeakSet : null;
-
-var exported;
-
-if (!$WeakMap) {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	exported = function isWeakMap(x) {
-		// `WeakMap` is not present in this environment.
-		return false;
-	};
-}
-
-var $mapHas$2 = $WeakMap ? $WeakMap.prototype.has : null;
-var $setHas$2 = $WeakSet$1 ? $WeakSet$1.prototype.has : null;
-if (!exported && !$mapHas$2) {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	exported = function isWeakMap(x) {
-		// `WeakMap` does not have a `has` method
-		return false;
-	};
-}
-
-/** @type {import('.')} */
-var isWeakmap = exported || function isWeakMap(x) {
-	if (!x || typeof x !== 'object') {
-		return false;
-	}
-	try {
-		$mapHas$2.call(x, $mapHas$2);
-		if ($setHas$2) {
-			try {
-				$setHas$2.call(x, $setHas$2);
-			} catch (e) {
-				return true;
-			}
-		}
-		// @ts-expect-error TS can't figure out that $WeakMap is always truthy here
-		return x instanceof $WeakMap; // core-js workaround, pre-v3
-	} catch (e) {}
-	return false;
-};
-
-var isWeakset = {exports: {}};
-
-var GetIntrinsic$1 = getIntrinsic;
-var callBound$3 = callBound$b;
-
-var $WeakSet = GetIntrinsic$1('%WeakSet%', true);
-
-var $setHas$1 = callBound$3('WeakSet.prototype.has', true);
-
-if ($setHas$1) {
-	var $mapHas$1 = callBound$3('WeakMap.prototype.has', true);
-
-	/** @type {import('.')} */
-	isWeakset.exports = function isWeakSet(x) {
-		if (!x || typeof x !== 'object') {
-			return false;
-		}
-		try {
-			$setHas$1(x, $setHas$1);
-			if ($mapHas$1) {
-				try {
-					$mapHas$1(x, $mapHas$1);
-				} catch (e) {
-					return true;
-				}
-			}
-			// @ts-expect-error TS can't figure out that $WeakSet is always truthy here
-			return x instanceof $WeakSet; // core-js workaround, pre-v3
-		} catch (e) {}
-		return false;
-	};
-} else {
-	/** @type {import('.')} */
-	// eslint-disable-next-line no-unused-vars
-	isWeakset.exports = function isWeakSet(x) {
-		// `WeakSet` does not exist, or does not have a `has` method
-		return false;
-	};
-}
-
-var isWeaksetExports = isWeakset.exports;
-
-var isMap = isMap$1;
-var isSet = isSet$1;
-var isWeakMap = isWeakmap;
-var isWeakSet = isWeaksetExports;
-
-/** @type {import('.')} */
-var whichCollection$1 = function whichCollection(/** @type {unknown} */ value) {
-	if (value && typeof value === 'object') {
-		if (isMap(value)) {
-			return 'Map';
-		}
-		if (isSet(value)) {
-			return 'Set';
-		}
-		if (isWeakMap(value)) {
-			return 'WeakMap';
-		}
-		if (isWeakSet(value)) {
-			return 'WeakSet';
-		}
-	}
-	return false;
-};
-
-var fnToStr = Function.prototype.toString;
-var reflectApply = typeof Reflect === 'object' && Reflect !== null && Reflect.apply;
-var badArrayLike;
-var isCallableMarker;
-if (typeof reflectApply === 'function' && typeof Object.defineProperty === 'function') {
-	try {
-		badArrayLike = Object.defineProperty({}, 'length', {
-			get: function () {
-				throw isCallableMarker;
-			}
-		});
-		isCallableMarker = {};
-		// eslint-disable-next-line no-throw-literal
-		reflectApply(function () { throw 42; }, null, badArrayLike);
-	} catch (_) {
-		if (_ !== isCallableMarker) {
-			reflectApply = null;
-		}
-	}
-} else {
-	reflectApply = null;
-}
-
-var constructorRegex = /^\s*class\b/;
-var isES6ClassFn = function isES6ClassFunction(value) {
-	try {
-		var fnStr = fnToStr.call(value);
-		return constructorRegex.test(fnStr);
-	} catch (e) {
-		return false; // not a function
-	}
-};
-
-var tryFunctionObject = function tryFunctionToStr(value) {
-	try {
-		if (isES6ClassFn(value)) { return false; }
-		fnToStr.call(value);
-		return true;
-	} catch (e) {
-		return false;
-	}
-};
-var toStr$1 = Object.prototype.toString;
-var objectClass = '[object Object]';
-var fnClass = '[object Function]';
-var genClass = '[object GeneratorFunction]';
-var ddaClass = '[object HTMLAllCollection]'; // IE 11
-var ddaClass2 = '[object HTML document.all class]';
-var ddaClass3 = '[object HTMLCollection]'; // IE 9-10
-var hasToStringTag$1 = typeof Symbol === 'function' && !!Symbol.toStringTag; // better: use `has-tostringtag`
-
-var isIE68 = !(0 in [,]); // eslint-disable-line no-sparse-arrays, comma-spacing
-
-var isDDA = function isDocumentDotAll() { return false; };
-if (typeof document === 'object') {
-	// Firefox 3 canonicalizes DDA to undefined when it's not accessed directly
-	var all = document.all;
-	if (toStr$1.call(all) === toStr$1.call(document.all)) {
-		isDDA = function isDocumentDotAll(value) {
-			/* globals document: false */
-			// in IE 6-8, typeof document.all is "object" and it's truthy
-			if ((isIE68 || !value) && (typeof value === 'undefined' || typeof value === 'object')) {
-				try {
-					var str = toStr$1.call(value);
-					return (
-						str === ddaClass
-						|| str === ddaClass2
-						|| str === ddaClass3 // opera 12.16
-						|| str === objectClass // IE 6-8
-					) && value('') == null; // eslint-disable-line eqeqeq
-				} catch (e) { /**/ }
-			}
-			return false;
-		};
-	}
-}
-
-var isCallable$1 = reflectApply
-	? function isCallable(value) {
-		if (isDDA(value)) { return true; }
-		if (!value) { return false; }
-		if (typeof value !== 'function' && typeof value !== 'object') { return false; }
-		try {
-			reflectApply(value, null, badArrayLike);
-		} catch (e) {
-			if (e !== isCallableMarker) { return false; }
-		}
-		return !isES6ClassFn(value) && tryFunctionObject(value);
-	}
-	: function isCallable(value) {
-		if (isDDA(value)) { return true; }
-		if (!value) { return false; }
-		if (typeof value !== 'function' && typeof value !== 'object') { return false; }
-		if (hasToStringTag$1) { return tryFunctionObject(value); }
-		if (isES6ClassFn(value)) { return false; }
-		var strClass = toStr$1.call(value);
-		if (strClass !== fnClass && strClass !== genClass && !(/^\[object HTML/).test(strClass)) { return false; }
-		return tryFunctionObject(value);
-	};
-
-var isCallable = isCallable$1;
-
-var toStr = Object.prototype.toString;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-var forEachArray = function forEachArray(array, iterator, receiver) {
-    for (var i = 0, len = array.length; i < len; i++) {
-        if (hasOwnProperty.call(array, i)) {
-            if (receiver == null) {
-                iterator(array[i], i, array);
-            } else {
-                iterator.call(receiver, array[i], i, array);
-            }
-        }
-    }
-};
-
-var forEachString = function forEachString(string, iterator, receiver) {
-    for (var i = 0, len = string.length; i < len; i++) {
-        // no such thing as a sparse string.
-        if (receiver == null) {
-            iterator(string.charAt(i), i, string);
-        } else {
-            iterator.call(receiver, string.charAt(i), i, string);
-        }
-    }
-};
-
-var forEachObject = function forEachObject(object, iterator, receiver) {
-    for (var k in object) {
-        if (hasOwnProperty.call(object, k)) {
-            if (receiver == null) {
-                iterator(object[k], k, object);
-            } else {
-                iterator.call(receiver, object[k], k, object);
-            }
-        }
-    }
-};
-
-var forEach$1 = function forEach(list, iterator, thisArg) {
-    if (!isCallable(iterator)) {
-        throw new TypeError('iterator must be a function');
-    }
-
-    var receiver;
-    if (arguments.length >= 3) {
-        receiver = thisArg;
-    }
-
-    if (toStr.call(list) === '[object Array]') {
-        forEachArray(list, iterator, receiver);
-    } else if (typeof list === 'string') {
-        forEachString(list, iterator, receiver);
-    } else {
-        forEachObject(list, iterator, receiver);
-    }
-};
-
-var forEach_1 = forEach$1;
-
-/** @type {import('.')} */
-var possibleTypedArrayNames = [
-	'Float32Array',
-	'Float64Array',
-	'Int8Array',
-	'Int16Array',
-	'Int32Array',
-	'Uint8Array',
-	'Uint8ClampedArray',
-	'Uint16Array',
-	'Uint32Array',
-	'BigInt64Array',
-	'BigUint64Array'
-];
-
-var possibleNames = possibleTypedArrayNames;
-
-var g$2 = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
-
-/** @type {import('.')} */
-var availableTypedArrays$1 = function availableTypedArrays() {
-	var /** @type {ReturnType<typeof availableTypedArrays>} */ out = [];
-	for (var i = 0; i < possibleNames.length; i++) {
-		if (typeof g$2[possibleNames[i]] === 'function') {
-			// @ts-expect-error
-			out[out.length] = possibleNames[i];
-		}
-	}
-	return out;
-};
-
-var forEach = forEach_1;
-var availableTypedArrays = availableTypedArrays$1;
-var callBind = callBindExports;
-var callBound$2 = callBound$b;
-var gOPD = gopd$1;
-
-/** @type {(O: object) => string} */
-var $toString = callBound$2('Object.prototype.toString');
-var hasToStringTag = shams();
-
-var g$1 = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
-var typedArrays = availableTypedArrays();
-
-var $slice = callBound$2('String.prototype.slice');
-var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
-
-/** @type {<T = unknown>(array: readonly T[], value: unknown) => number} */
-var $indexOf = callBound$2('Array.prototype.indexOf', true) || function indexOf(array, value) {
-	for (var i = 0; i < array.length; i += 1) {
-		if (array[i] === value) {
-			return i;
-		}
-	}
-	return -1;
-};
-
-/** @typedef {(receiver: import('.').TypedArray) => string | typeof Uint8Array.prototype.slice.call | typeof Uint8Array.prototype.set.call} Getter */
-/** @type {{ [k in `\$${import('.').TypedArrayName}`]?: Getter } & { __proto__: null }} */
-var cache = { __proto__: null };
-if (hasToStringTag && gOPD && getPrototypeOf) {
-	forEach(typedArrays, function (typedArray) {
-		var arr = new g$1[typedArray]();
-		if (Symbol.toStringTag in arr) {
-			var proto = getPrototypeOf(arr);
-			// @ts-expect-error TS won't narrow inside a closure
-			var descriptor = gOPD(proto, Symbol.toStringTag);
-			if (!descriptor) {
-				var superProto = getPrototypeOf(proto);
-				// @ts-expect-error TS won't narrow inside a closure
-				descriptor = gOPD(superProto, Symbol.toStringTag);
-			}
-			// @ts-expect-error TODO: fix
-			cache['$' + typedArray] = callBind(descriptor.get);
-		}
-	});
-} else {
-	forEach(typedArrays, function (typedArray) {
-		var arr = new g$1[typedArray]();
-		var fn = arr.slice || arr.set;
-		if (fn) {
-			// @ts-expect-error TODO: fix
-			cache['$' + typedArray] = callBind(fn);
-		}
-	});
-}
-
-/** @type {(value: object) => false | import('.').TypedArrayName} */
-var tryTypedArrays = function tryAllTypedArrays(value) {
-	/** @type {ReturnType<typeof tryAllTypedArrays>} */ var found = false;
-	forEach(
-		// eslint-disable-next-line no-extra-parens
-		/** @type {Record<`\$${TypedArrayName}`, Getter>} */ /** @type {any} */ (cache),
-		/** @type {(getter: Getter, name: `\$${import('.').TypedArrayName}`) => void} */
-		function (getter, typedArray) {
-			if (!found) {
-				try {
-				// @ts-expect-error TODO: fix
-					if ('$' + getter(value) === typedArray) {
-						found = $slice(typedArray, 1);
-					}
-				} catch (e) { /**/ }
-			}
-		}
-	);
-	return found;
-};
-
-/** @type {(value: object) => false | import('.').TypedArrayName} */
-var trySlices = function tryAllSlices(value) {
-	/** @type {ReturnType<typeof tryAllSlices>} */ var found = false;
-	forEach(
-		// eslint-disable-next-line no-extra-parens
-		/** @type {Record<`\$${TypedArrayName}`, Getter>} */ /** @type {any} */ (cache),
-		/** @type {(getter: typeof cache, name: `\$${import('.').TypedArrayName}`) => void} */ function (getter, name) {
-			if (!found) {
-				try {
-					// @ts-expect-error TODO: fix
-					getter(value);
-					found = $slice(name, 1);
-				} catch (e) { /**/ }
-			}
-		}
-	);
-	return found;
-};
-
-/** @type {import('.')} */
-var whichTypedArray$1 = function whichTypedArray(value) {
-	if (!value || typeof value !== 'object') { return false; }
-	if (!hasToStringTag) {
-		/** @type {string} */
-		var tag = $slice($toString(value), 8, -1);
-		if ($indexOf(typedArrays, tag) > -1) {
-			return tag;
-		}
-		if (tag !== 'Object') {
-			return false;
-		}
-		// node < 0.6 hits here on real Typed Arrays
-		return trySlices(value);
-	}
-	if (!gOPD) { return null; } // unknown engine
-	return tryTypedArrays(value);
-};
-
-var callBound$1 = callBound$b;
-var $byteLength = callBound$1('ArrayBuffer.prototype.byteLength', true);
-
-var isArrayBuffer$1 = isArrayBuffer$2;
-
-/** @type {import('.')} */
-var arrayBufferByteLength = function byteLength(ab) {
-	if (!isArrayBuffer$1(ab)) {
-		return NaN;
-	}
-	return $byteLength ? $byteLength(ab) : ab.byteLength;
-}; // in node < 0.11, byteLength is an own nonconfigurable property
-
-var assign = object_assign;
-var callBound = callBound$b;
-var flags = regexp_prototype_flags;
-var GetIntrinsic = getIntrinsic;
-var getIterator = node;
-var getSideChannel = sideChannel;
-var is = objectIs;
-var isArguments = isArguments$1;
-var isArray = isarray;
-var isArrayBuffer = isArrayBuffer$2;
-var isDate = isDateObject;
-var isRegex = isRegex$1;
-var isSharedArrayBuffer = isSharedArrayBuffer$1;
-var objectKeys = objectKeys$2;
-var whichBoxedPrimitive = whichBoxedPrimitive$1;
-var whichCollection = whichCollection$1;
-var whichTypedArray = whichTypedArray$1;
-var byteLength = arrayBufferByteLength;
-
-var sabByteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
-
-var $getTime = callBound('Date.prototype.getTime');
-var gPO = Object.getPrototypeOf;
-var $objToString = callBound('Object.prototype.toString');
-
-var $Set = GetIntrinsic('%Set%', true);
-var $mapHas = callBound('Map.prototype.has', true);
-var $mapGet = callBound('Map.prototype.get', true);
-var $mapSize = callBound('Map.prototype.size', true);
-var $setAdd = callBound('Set.prototype.add', true);
-var $setDelete = callBound('Set.prototype.delete', true);
-var $setHas = callBound('Set.prototype.has', true);
-var $setSize = callBound('Set.prototype.size', true);
-
-// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L401-L414
-function setHasEqualElement(set, val1, opts, channel) {
-  var i = getIterator(set);
-  var result;
-  while ((result = i.next()) && !result.done) {
-    if (internalDeepEqual(val1, result.value, opts, channel)) { // eslint-disable-line no-use-before-define
-      // Remove the matching element to make sure we do not check that again.
-      $setDelete(set, result.value);
-      return true;
-    }
-  }
-
-  return false;
-}
-
-// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L416-L439
-function findLooseMatchingPrimitives(prim) {
-  if (typeof prim === 'undefined') {
-    return null;
-  }
-  if (typeof prim === 'object') { // Only pass in null as object!
-    return void 0;
-  }
-  if (typeof prim === 'symbol') {
-    return false;
-  }
-  if (typeof prim === 'string' || typeof prim === 'number') {
-    // Loose equal entries exist only if the string is possible to convert to a regular number and not NaN.
-    return +prim === +prim; // eslint-disable-line no-implicit-coercion
-  }
-  return true;
-}
-
-// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L449-L460
-function mapMightHaveLoosePrim(a, b, prim, item, opts, channel) {
-  var altValue = findLooseMatchingPrimitives(prim);
-  if (altValue != null) {
-    return altValue;
-  }
-  var curB = $mapGet(b, altValue);
-  var looseOpts = assign({}, opts, { strict: false });
-  if (
-    (typeof curB === 'undefined' && !$mapHas(b, altValue))
-    // eslint-disable-next-line no-use-before-define
-    || !internalDeepEqual(item, curB, looseOpts, channel)
-  ) {
-    return false;
-  }
-  // eslint-disable-next-line no-use-before-define
-  return !$mapHas(a, altValue) && internalDeepEqual(item, curB, looseOpts, channel);
-}
-
-// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L441-L447
-function setMightHaveLoosePrim(a, b, prim) {
-  var altValue = findLooseMatchingPrimitives(prim);
-  if (altValue != null) {
-    return altValue;
-  }
-
-  return $setHas(b, altValue) && !$setHas(a, altValue);
-}
-
-// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L518-L533
-function mapHasEqualEntry(set, map, key1, item1, opts, channel) {
-  var i = getIterator(set);
-  var result;
-  var key2;
-  while ((result = i.next()) && !result.done) {
-    key2 = result.value;
-    if (
-      // eslint-disable-next-line no-use-before-define
-      internalDeepEqual(key1, key2, opts, channel)
-      // eslint-disable-next-line no-use-before-define
-      && internalDeepEqual(item1, $mapGet(map, key2), opts, channel)
-    ) {
-      $setDelete(set, key2);
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function internalDeepEqual(actual, expected, options, channel) {
-  var opts = options || {};
-
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (opts.strict ? is(actual, expected) : actual === expected) {
-    return true;
-  }
-
-  var actualBoxed = whichBoxedPrimitive(actual);
-  var expectedBoxed = whichBoxedPrimitive(expected);
-  if (actualBoxed !== expectedBoxed) {
-    return false;
-  }
-
-  // 7.3. Other pairs that do not both pass typeof value == 'object', equivalence is determined by ==.
-  if (!actual || !expected || (typeof actual !== 'object' && typeof expected !== 'object')) {
-    return opts.strict ? is(actual, expected) : actual == expected; // eslint-disable-line eqeqeq
-  }
-
-  /*
-   * 7.4. For all other Object pairs, including Array objects, equivalence is
-   * determined by having the same number of owned properties (as verified
-   * with Object.prototype.hasOwnProperty.call), the same set of keys
-   * (although not necessarily the same order), equivalent values for every
-   * corresponding key, and an identical 'prototype' property. Note: this
-   * accounts for both named and indexed properties on Arrays.
-   */
-  // see https://github.com/nodejs/node/commit/d3aafd02efd3a403d646a3044adcf14e63a88d32 for memos/channel inspiration
-
-  var hasActual = channel.has(actual);
-  var hasExpected = channel.has(expected);
-  var sentinel;
-  if (hasActual && hasExpected) {
-    if (channel.get(actual) === channel.get(expected)) {
-      return true;
-    }
-  } else {
-    sentinel = {};
-  }
-  if (!hasActual) { channel.set(actual, sentinel); }
-  if (!hasExpected) { channel.set(expected, sentinel); }
-
-  // eslint-disable-next-line no-use-before-define
-  return objEquiv(actual, expected, opts, channel);
-}
-
-function isBuffer(x) {
-  if (!x || typeof x !== 'object' || typeof x.length !== 'number') {
-    return false;
-  }
-  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
-    return false;
-  }
-  if (x.length > 0 && typeof x[0] !== 'number') {
-    return false;
-  }
-
-  return !!(x.constructor && x.constructor.isBuffer && x.constructor.isBuffer(x));
-}
-
-function setEquiv(a, b, opts, channel) {
-  if ($setSize(a) !== $setSize(b)) {
-    return false;
-  }
-  var iA = getIterator(a);
-  var iB = getIterator(b);
-  var resultA;
-  var resultB;
-  var set;
-  while ((resultA = iA.next()) && !resultA.done) {
-    if (resultA.value && typeof resultA.value === 'object') {
-      if (!set) { set = new $Set(); }
-      $setAdd(set, resultA.value);
-    } else if (!$setHas(b, resultA.value)) {
-      if (opts.strict) { return false; }
-      if (!setMightHaveLoosePrim(a, b, resultA.value)) {
-        return false;
-      }
-      if (!set) { set = new $Set(); }
-      $setAdd(set, resultA.value);
-    }
-  }
-  if (set) {
-    while ((resultB = iB.next()) && !resultB.done) {
-      // We have to check if a primitive value is already matching and only if it's not, go hunting for it.
-      if (resultB.value && typeof resultB.value === 'object') {
-        if (!setHasEqualElement(set, resultB.value, opts.strict, channel)) {
-          return false;
-        }
-      } else if (
-        !opts.strict
-        && !$setHas(a, resultB.value)
-        && !setHasEqualElement(set, resultB.value, opts.strict, channel)
-      ) {
-        return false;
-      }
-    }
-    return $setSize(set) === 0;
-  }
-  return true;
-}
-
-function mapEquiv(a, b, opts, channel) {
-  if ($mapSize(a) !== $mapSize(b)) {
-    return false;
-  }
-  var iA = getIterator(a);
-  var iB = getIterator(b);
-  var resultA;
-  var resultB;
-  var set;
-  var key;
-  var item1;
-  var item2;
-  while ((resultA = iA.next()) && !resultA.done) {
-    key = resultA.value[0];
-    item1 = resultA.value[1];
-    if (key && typeof key === 'object') {
-      if (!set) { set = new $Set(); }
-      $setAdd(set, key);
-    } else {
-      item2 = $mapGet(b, key);
-      if ((typeof item2 === 'undefined' && !$mapHas(b, key)) || !internalDeepEqual(item1, item2, opts, channel)) {
-        if (opts.strict) {
-          return false;
-        }
-        if (!mapMightHaveLoosePrim(a, b, key, item1, opts, channel)) {
-          return false;
-        }
-        if (!set) { set = new $Set(); }
-        $setAdd(set, key);
-      }
-    }
-  }
-
-  if (set) {
-    while ((resultB = iB.next()) && !resultB.done) {
-      key = resultB.value[0];
-      item2 = resultB.value[1];
-      if (key && typeof key === 'object') {
-        if (!mapHasEqualEntry(set, a, key, item2, opts, channel)) {
-          return false;
-        }
-      } else if (
-        !opts.strict
-        && (!a.has(key) || !internalDeepEqual($mapGet(a, key), item2, opts, channel))
-        && !mapHasEqualEntry(set, a, key, item2, assign({}, opts, { strict: false }), channel)
-      ) {
-        return false;
-      }
-    }
-    return $setSize(set) === 0;
-  }
-  return true;
-}
-
-function objEquiv(a, b, opts, channel) {
-  /* eslint max-statements: [2, 100], max-lines-per-function: [2, 120], max-depth: [2, 5], max-lines: [2, 400] */
-  var i, key;
-
-  if (typeof a !== typeof b) { return false; }
-  if (a == null || b == null) { return false; }
-
-  if ($objToString(a) !== $objToString(b)) { return false; }
-
-  if (isArguments(a) !== isArguments(b)) { return false; }
-
-  var aIsArray = isArray(a);
-  var bIsArray = isArray(b);
-  if (aIsArray !== bIsArray) { return false; }
-
-  // TODO: replace when a cross-realm brand check is available
-  var aIsError = a instanceof Error;
-  var bIsError = b instanceof Error;
-  if (aIsError !== bIsError) { return false; }
-  if (aIsError || bIsError) {
-    if (a.name !== b.name || a.message !== b.message) { return false; }
-  }
-
-  var aIsRegex = isRegex(a);
-  var bIsRegex = isRegex(b);
-  if (aIsRegex !== bIsRegex) { return false; }
-  if ((aIsRegex || bIsRegex) && (a.source !== b.source || flags(a) !== flags(b))) {
-    return false;
-  }
-
-  var aIsDate = isDate(a);
-  var bIsDate = isDate(b);
-  if (aIsDate !== bIsDate) { return false; }
-  if (aIsDate || bIsDate) { // && would work too, because both are true or both false here
-    if ($getTime(a) !== $getTime(b)) { return false; }
-  }
-  if (opts.strict && gPO && gPO(a) !== gPO(b)) { return false; }
-
-  var aWhich = whichTypedArray(a);
-  var bWhich = whichTypedArray(b);
-  if (aWhich !== bWhich) {
-    return false;
-  }
-  if (aWhich || bWhich) { // && would work too, because both are true or both false here
-    if (a.length !== b.length) { return false; }
-    for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) { return false; }
-    }
-    return true;
-  }
-
-  var aIsBuffer = isBuffer(a);
-  var bIsBuffer = isBuffer(b);
-  if (aIsBuffer !== bIsBuffer) { return false; }
-  if (aIsBuffer || bIsBuffer) { // && would work too, because both are true or both false here
-    if (a.length !== b.length) { return false; }
-    for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) { return false; }
-    }
-    return true;
-  }
-
-  var aIsArrayBuffer = isArrayBuffer(a);
-  var bIsArrayBuffer = isArrayBuffer(b);
-  if (aIsArrayBuffer !== bIsArrayBuffer) { return false; }
-  if (aIsArrayBuffer || bIsArrayBuffer) { // && would work too, because both are true or both false here
-    if (byteLength(a) !== byteLength(b)) { return false; }
-    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
-  }
-
-  var aIsSAB = isSharedArrayBuffer(a);
-  var bIsSAB = isSharedArrayBuffer(b);
-  if (aIsSAB !== bIsSAB) { return false; }
-  if (aIsSAB || bIsSAB) { // && would work too, because both are true or both false here
-    if (sabByteLength(a) !== sabByteLength(b)) { return false; }
-    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
-  }
-
-  if (typeof a !== typeof b) { return false; }
-
-  var ka = objectKeys(a);
-  var kb = objectKeys(b);
-  // having the same number of owned properties (keys incorporates hasOwnProperty)
-  if (ka.length !== kb.length) { return false; }
-
-  // the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  // ~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i]) { return false; } // eslint-disable-line eqeqeq
-  }
-
-  // equivalent values for every corresponding key, and ~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!internalDeepEqual(a[key], b[key], opts, channel)) { return false; }
-  }
-
-  var aCollection = whichCollection(a);
-  var bCollection = whichCollection(b);
-  if (aCollection !== bCollection) {
-    return false;
-  }
-  if (aCollection === 'Set' || bCollection === 'Set') { // aCollection === bCollection
-    return setEquiv(a, b, opts, channel);
-  }
-  if (aCollection === 'Map') { // aCollection === bCollection
-    return mapEquiv(a, b, opts, channel);
-  }
-
-  return true;
-}
-
-var deepEqual = function deepEqual(a, b, opts) {
-  return internalDeepEqual(a, b, opts, getSideChannel());
-};
-
-Object.defineProperty(elementRoleMap$1, "__esModule", {
-  value: true
-});
-elementRoleMap$1.default = void 0;
-var _deepEqual = _interopRequireDefault$2(deepEqual);
-var _iterationDecorator$1 = _interopRequireDefault$2(iterationDecorator$1);
-var _rolesMap$2 = _interopRequireDefault$2(rolesMap$1);
-function _interopRequireDefault$2(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _slicedToArray$1(arr, i) { return _arrayWithHoles$1(arr) || _iterableToArrayLimit$1(arr, i) || _unsupportedIterableToArray$1(arr, i) || _nonIterableRest$1(); }
-function _nonIterableRest$1() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit$1(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-function _arrayWithHoles$1(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray$1(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$1(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen); }
-function _arrayLikeToArray$1(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-var elementRoles$1 = [];
-var keys$1 = _rolesMap$2.default.keys();
-for (var i$1 = 0; i$1 < keys$1.length; i$1++) {
-  var key = keys$1[i$1];
-  var role = _rolesMap$2.default.get(key);
-  if (role) {
-    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
-    for (var k = 0; k < concepts.length; k++) {
-      var relation = concepts[k];
-      if (relation.module === 'HTML') {
-        var concept = relation.concept;
-        if (concept) {
-          (function () {
-            var conceptStr = JSON.stringify(concept);
-            var elementRoleRelation = elementRoles$1.find(function (relation) {
-              return JSON.stringify(relation[0]) === conceptStr;
-            });
-            var roles = void 0;
-            if (elementRoleRelation) {
-              roles = elementRoleRelation[1];
-            } else {
-              roles = [];
-            }
-            var isUnique = true;
-            for (var _i = 0; _i < roles.length; _i++) {
-              if (roles[_i] === key) {
-                isUnique = false;
-                break;
-              }
-            }
-            if (isUnique) {
-              roles.push(key);
-            }
-            elementRoles$1.push([concept, roles]);
-          })();
-        }
-      }
-    }
-  }
-}
-var elementRoleMap = {
-  entries: function entries() {
-    return elementRoles$1;
-  },
-  forEach: function forEach(fn) {
-    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var _iterator = _createForOfIteratorHelper$1(elementRoles$1),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _step$value = _slicedToArray$1(_step.value, 2),
-          _key = _step$value[0],
-          values = _step$value[1];
-        fn.call(thisArg, values, _key, elementRoles$1);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  },
-  get: function get(key) {
-    var item = elementRoles$1.find(function (tuple) {
-      return (0, _deepEqual.default)(key, tuple[0]);
-    });
-    return item && item[1];
-  },
-  has: function has(key) {
-    return !!elementRoleMap.get(key);
-  },
-  keys: function keys() {
-    return elementRoles$1.map(function (_ref) {
-      var _ref2 = _slicedToArray$1(_ref, 1),
-        key = _ref2[0];
-      return key;
-    });
-  },
-  values: function values() {
-    return elementRoles$1.map(function (_ref3) {
-      var _ref4 = _slicedToArray$1(_ref3, 2),
-        values = _ref4[1];
-      return values;
-    });
-  }
-};
-var _default$1 = (0, _iterationDecorator$1.default)(elementRoleMap, elementRoleMap.entries());
-elementRoleMap$1.default = _default$1;
-
-var roleElementMap$1 = {};
-
-Object.defineProperty(roleElementMap$1, "__esModule", {
-  value: true
-});
-roleElementMap$1.default = void 0;
-var _iterationDecorator = _interopRequireDefault$1(iterationDecorator$1);
-var _rolesMap$1 = _interopRequireDefault$1(rolesMap$1);
-function _interopRequireDefault$1(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-var roleElement = [];
-var keys = _rolesMap$1.default.keys();
-var _loop = function _loop(i) {
-  var key = keys[i];
-  var role = _rolesMap$1.default.get(key);
-  if (role) {
-    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
-    for (var k = 0; k < concepts.length; k++) {
-      var relation = concepts[k];
-      if (relation.module === 'HTML') {
-        var concept = relation.concept;
-        if (concept) {
-          var roleElementRelation = roleElement.find(function (item) {
-            return item[0] === key;
-          });
-          var relationConcepts = void 0;
-          if (roleElementRelation) {
-            relationConcepts = roleElementRelation[1];
-          } else {
-            relationConcepts = [];
-          }
-          relationConcepts.push(concept);
-          roleElement.push([key, relationConcepts]);
-        }
-      }
-    }
-  }
-};
-for (var i = 0; i < keys.length; i++) {
-  _loop(i);
-}
-var roleElementMap = {
-  entries: function entries() {
-    return roleElement;
-  },
-  forEach: function forEach(fn) {
-    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var _iterator = _createForOfIteratorHelper(roleElement),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _step$value = _slicedToArray(_step.value, 2),
-          key = _step$value[0],
-          values = _step$value[1];
-        fn.call(thisArg, values, key, roleElement);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-  },
-  get: function get(key) {
-    var item = roleElement.find(function (tuple) {
-      return tuple[0] === key ? true : false;
-    });
-    return item && item[1];
-  },
-  has: function has(key) {
-    return !!roleElementMap.get(key);
-  },
-  keys: function keys() {
-    return roleElement.map(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 1),
-        key = _ref2[0];
-      return key;
-    });
-  },
-  values: function values() {
-    return roleElement.map(function (_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 2),
-        values = _ref4[1];
-      return values;
-    });
-  }
-};
-var _default = (0, _iterationDecorator.default)(roleElementMap, roleElementMap.entries());
-roleElementMap$1.default = _default;
-
-Object.defineProperty(lib, "__esModule", {
-  value: true
-});
-var roles_1 = lib.roles = roleElements_1 = lib.roleElements = elementRoles_1 = lib.elementRoles = lib.dom = lib.aria = void 0;
-var _ariaPropsMap = _interopRequireDefault(ariaPropsMap$1);
-var _domMap = _interopRequireDefault(domMap$1);
-var _rolesMap = _interopRequireDefault(rolesMap$1);
-var _elementRoleMap = _interopRequireDefault(elementRoleMap$1);
-var _roleElementMap = _interopRequireDefault(roleElementMap$1);
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var aria = _ariaPropsMap.default;
-lib.aria = aria;
-var dom = _domMap.default;
-lib.dom = dom;
-var roles = _rolesMap.default;
-roles_1 = lib.roles = roles;
-var elementRoles = _elementRoleMap.default;
-var elementRoles_1 = lib.elementRoles = elementRoles;
-var roleElements = _roleElementMap.default;
-var roleElements_1 = lib.roleElements = roleElements;
 
 var lzString$1 = {exports: {}};
 
@@ -48738,7 +56940,7 @@ function jestFakeTimersAreEnabled$1() {
   // istanbul ignore next
   return false;
 }
-function getDocument() {
+function getDocument$1() {
   /* istanbul ignore if */
   if (typeof window === 'undefined') {
     throw new Error('Could not find default container');
@@ -48814,7 +57016,7 @@ function prettyDOM(dom, maxLength, options) {
     options = {};
   }
   if (!dom) {
-    dom = getDocument().body;
+    dom = getDocument$1().body;
   }
   if (typeof maxLength !== 'number') {
     maxLength = typeof process !== 'undefined' && process.env.DEBUG_PRINT_LIMIT || 7000;
@@ -49521,7 +57723,7 @@ function copyStackTrace(target, source) {
 }
 function waitFor(callback, _ref) {
   let {
-    container = getDocument(),
+    container = getDocument$1(),
     timeout = getConfig().asyncUtilTimeout,
     showOriginalStackTrace = getConfig().showOriginalStackTrace,
     stackTraceError,
@@ -50433,7 +58635,7 @@ eslint
   require-await: "off"
 */
 
-const eventMap = {
+const eventMap$1 = {
   // Clipboard Events
   copy: {
     EventType: 'ClipboardEvent',
@@ -51136,7 +59338,7 @@ function fireEvent(element, event) {
     return element.dispatchEvent(event);
   });
 }
-function createEvent(eventName, node, init, _temp) {
+function createEvent$1(eventName, node, init, _temp) {
   let {
     EventType = 'Event',
     defaultInit = {}
@@ -51215,17 +59417,17 @@ function createEvent(eventName, node, init, _temp) {
   });
   return event;
 }
-Object.keys(eventMap).forEach(key => {
+Object.keys(eventMap$1).forEach(key => {
   const {
     EventType,
     defaultInit
-  } = eventMap[key];
+  } = eventMap$1[key];
   const eventName = key.toLowerCase();
-  createEvent[key] = (node, init) => createEvent(eventName, node, init, {
+  createEvent$1[key] = (node, init) => createEvent$1(eventName, node, init, {
     EventType,
     defaultInit
   });
-  fireEvent[key] = (node, init) => fireEvent(node, createEvent[key](node, init));
+  fireEvent[key] = (node, init) => fireEvent(node, createEvent$1[key](node, init));
 });
 
 // function written after some investigation here:
@@ -51274,7 +59476,7 @@ function getPlaygroundUrl(markup) {
 const debug = (element, maxLength, options) => Array.isArray(element) ? element.forEach(el => logDOM(el, maxLength, options)) : logDOM(element, maxLength, options);
 const logTestingPlaygroundURL = function (element) {
   if (element === void 0) {
-    element = getDocument().body;
+    element = getDocument$1().body;
   }
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!element || !('innerHTML' in element)) {
@@ -51491,6 +59693,23 @@ if (typeof process === 'undefined' || !process.env?.RTL_SKIP_AUTO_CLEANUP) {
   }
 }
 
+function isElementType(element, tag, props) {
+    if (element.namespaceURI && element.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
+        return false;
+    }
+    tag = Array.isArray(tag) ? tag : [
+        tag
+    ];
+    // tagName is uppercase in HTMLDocument and lowercase in XMLDocument
+    if (!tag.includes(element.tagName.toLowerCase())) {
+        return false;
+    }
+    if (props) {
+        return Object.entries(props).every(([k, v])=>element[k] === v);
+    }
+    return true;
+}
+
 var clickableInputTypes;
 (function(clickableInputTypes) {
     clickableInputTypes["button"] = "button";
@@ -51502,10 +59721,303 @@ var clickableInputTypes;
     clickableInputTypes["checkbox"] = "checkbox";
     clickableInputTypes["radio"] = "radio";
 })(clickableInputTypes || (clickableInputTypes = {}));
+function isClickableInput(element) {
+    return isElementType(element, 'button') || isElementType(element, 'input') && element.type in clickableInputTypes;
+}
 
+function getWindow(node) {
+    var _node_ownerDocument;
+    if (isDocument$1(node) && node.defaultView) {
+        return node.defaultView;
+    } else if ((_node_ownerDocument = node.ownerDocument) === null || _node_ownerDocument === void 0 ? void 0 : _node_ownerDocument.defaultView) {
+        return node.ownerDocument.defaultView;
+    }
+    throw new Error(`Could not determine window of node. Node was ${describe(node)}`);
+}
+function isDocument$1(node) {
+    return node.nodeType === 9;
+}
+function describe(val) {
+    return typeof val === 'function' ? `function ${val.name}` : val === null ? 'null' : String(val);
+}
+
+// jsdom does not implement Blob.text()
+function readBlobText(blob, FileReader) {
+    return new Promise((res, rej)=>{
+        const fr = new FileReader();
+        fr.onerror = rej;
+        fr.onabort = rej;
+        fr.onload = ()=>{
+            res(String(fr.result));
+        };
+        fr.readAsText(blob);
+    });
+}
+
+// FileList can not be created per constructor.
+function createFileList(window, files) {
+    const list = {
+        ...files,
+        length: files.length,
+        item: (index)=>list[index],
+        [Symbol.iterator]: function* nextFile() {
+            for(let i = 0; i < list.length; i++){
+                yield list[i];
+            }
+        }
+    };
+    list.constructor = window.FileList;
+    // guard for environments without FileList
+    /* istanbul ignore else */ if (window.FileList) {
+        Object.setPrototypeOf(list, window.FileList.prototype);
+    }
+    Object.freeze(list);
+    return list;
+}
+
+function _define_property$8(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+// DataTransfer is not implemented in jsdom.
+// DataTransfer with FileList is being created by the browser on certain events.
+class DataTransferItemStub {
+    getAsFile() {
+        return this.file;
+    }
+    getAsString(callback) {
+        if (typeof this.data === 'string') {
+            callback(this.data);
+        }
+    }
+    /* istanbul ignore next */ webkitGetAsEntry() {
+        throw new Error('not implemented');
+    }
+    constructor(dataOrFile, type){
+        _define_property$8(this, "kind", void 0);
+        _define_property$8(this, "type", void 0);
+        _define_property$8(this, "file", null);
+        _define_property$8(this, "data", undefined);
+        if (typeof dataOrFile === 'string') {
+            this.kind = 'string';
+            this.type = String(type);
+            this.data = dataOrFile;
+        } else {
+            this.kind = 'file';
+            this.type = dataOrFile.type;
+            this.file = dataOrFile;
+        }
+    }
+}
+class DataTransferItemListStub extends Array {
+    add(...args) {
+        const item = new DataTransferItemStub(args[0], args[1]);
+        this.push(item);
+        return item;
+    }
+    clear() {
+        this.splice(0, this.length);
+    }
+    remove(index) {
+        this.splice(index, 1);
+    }
+}
+function getTypeMatcher(type, exact) {
+    const [group, sub] = type.split('/');
+    const isGroup = !sub || sub === '*';
+    return (item)=>{
+        return exact ? item.type === (isGroup ? group : type) : isGroup ? item.type.startsWith(`${group}/`) : item.type === group;
+    };
+}
+function createDataTransferStub(window) {
+    return new class DataTransferStub {
+        getData(format) {
+            var _this_items_find;
+            const match = (_this_items_find = this.items.find(getTypeMatcher(format, true))) !== null && _this_items_find !== void 0 ? _this_items_find : this.items.find(getTypeMatcher(format, false));
+            let text = '';
+            match === null || match === void 0 ? void 0 : match.getAsString((t)=>{
+                text = t;
+            });
+            return text;
+        }
+        setData(format, data) {
+            const matchIndex = this.items.findIndex(getTypeMatcher(format, true));
+            const item = new DataTransferItemStub(data, format);
+            if (matchIndex >= 0) {
+                this.items.splice(matchIndex, 1, item);
+            } else {
+                this.items.push(item);
+            }
+        }
+        clearData(format) {
+            if (format) {
+                const matchIndex = this.items.findIndex(getTypeMatcher(format, true));
+                if (matchIndex >= 0) {
+                    this.items.remove(matchIndex);
+                }
+            } else {
+                this.items.clear();
+            }
+        }
+        get types() {
+            const t = [];
+            if (this.files.length) {
+                t.push('Files');
+            }
+            this.items.forEach((i)=>t.push(i.type));
+            Object.freeze(t);
+            return t;
+        }
+        /* istanbul ignore next */ setDragImage() {}
+        constructor(){
+            _define_property$8(this, "dropEffect", 'none');
+            _define_property$8(this, "effectAllowed", 'uninitialized');
+            _define_property$8(this, "items", new DataTransferItemListStub());
+            _define_property$8(this, "files", createFileList(window, []));
+        }
+    }();
+}
+function createDataTransfer(window, files = []) {
+    // Use real DataTransfer if available
+    const dt = typeof window.DataTransfer === 'undefined' ? createDataTransferStub(window) : /* istanbul ignore next */ new window.DataTransfer();
+    Object.defineProperty(dt, 'files', {
+        get: ()=>createFileList(window, files)
+    });
+    return dt;
+}
+function getBlobFromDataTransferItem(window, item) {
+    if (item.kind === 'file') {
+        return item.getAsFile();
+    }
+    let data = '';
+    item.getAsString((s)=>{
+        data = s;
+    });
+    return new window.Blob([
+        data
+    ], {
+        type: item.type
+    });
+}
+
+// Clipboard is not available in jsdom
+function _define_property$7(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+// MDN lists string|Blob|Promise<Blob|string> as possible types in ClipboardItemData
+// lib.dom.d.ts lists only Promise<Blob|string>
+// https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem/ClipboardItem#syntax
+function createClipboardItem(window, ...blobs) {
+    const dataMap = Object.fromEntries(blobs.map((b)=>[
+            typeof b === 'string' ? 'text/plain' : b.type,
+            Promise.resolve(b)
+        ]));
+    // use real ClipboardItem if available
+    /* istanbul ignore if */ if (typeof window.ClipboardItem !== 'undefined') {
+        return new window.ClipboardItem(dataMap);
+    }
+    return new class ClipboardItem {
+        get types() {
+            return Array.from(Object.keys(this.data));
+        }
+        async getType(type) {
+            const value = await this.data[type];
+            if (!value) {
+                throw new Error(`${type} is not one of the available MIME types on this item.`);
+            }
+            return value instanceof window.Blob ? value : new window.Blob([
+                value
+            ], {
+                type
+            });
+        }
+        constructor(d){
+            _define_property$7(this, "data", void 0);
+            this.data = d;
+        }
+    }(dataMap);
+}
 const ClipboardStubControl = Symbol('Manage ClipboardSub');
+function createClipboardStub(window, control) {
+    return Object.assign(new class Clipboard extends window.EventTarget {
+        async read() {
+            return Array.from(this.items);
+        }
+        async readText() {
+            let text = '';
+            for (const item of this.items){
+                const type = item.types.includes('text/plain') ? 'text/plain' : item.types.find((t)=>t.startsWith('text/'));
+                if (type) {
+                    text += await item.getType(type).then((b)=>readBlobText(b, window.FileReader));
+                }
+            }
+            return text;
+        }
+        async write(data) {
+            this.items = data;
+        }
+        async writeText(text) {
+            this.items = [
+                createClipboardItem(window, text)
+            ];
+        }
+        constructor(...args){
+            super(...args);
+            _define_property$7(this, "items", []);
+        }
+    }(), {
+        [ClipboardStubControl]: control
+    });
+}
 function isClipboardStub(clipboard) {
     return !!(clipboard === null || clipboard === void 0 ? void 0 : clipboard[ClipboardStubControl]);
+}
+function attachClipboardStubToView(window) {
+    if (isClipboardStub(window.navigator.clipboard)) {
+        return window.navigator.clipboard[ClipboardStubControl];
+    }
+    const realClipboard = Object.getOwnPropertyDescriptor(window.navigator, 'clipboard');
+    let stub;
+    const control = {
+        resetClipboardStub: ()=>{
+            stub = createClipboardStub(window, control);
+        },
+        detachClipboardStub: ()=>{
+            /* istanbul ignore if */ if (realClipboard) {
+                Object.defineProperty(window.navigator, 'clipboard', realClipboard);
+            } else {
+                Object.defineProperty(window.navigator, 'clipboard', {
+                    value: undefined,
+                    configurable: true
+                });
+            }
+        }
+    };
+    stub = createClipboardStub(window, control);
+    Object.defineProperty(window.navigator, 'clipboard', {
+        get: ()=>stub,
+        configurable: true
+    });
+    return stub[ClipboardStubControl];
 }
 function resetClipboardStubOnView(window) {
     if (isClipboardStub(window.navigator.clipboard)) {
@@ -51517,6 +60029,36 @@ function detachClipboardStubFromView(window) {
         window.navigator.clipboard[ClipboardStubControl].detachClipboardStub();
     }
 }
+async function readDataTransferFromClipboard(document) {
+    const window = document.defaultView;
+    const clipboard = window === null || window === void 0 ? void 0 : window.navigator.clipboard;
+    const items = clipboard && await clipboard.read();
+    if (!items) {
+        throw new Error('The Clipboard API is unavailable.');
+    }
+    const dt = createDataTransfer(window);
+    for (const item of items){
+        for (const type of item.types){
+            dt.setData(type, await item.getType(type).then((b)=>readBlobText(b, window.FileReader)));
+        }
+    }
+    return dt;
+}
+async function writeDataTransferToClipboard(document, clipboardData) {
+    const window = getWindow(document);
+    const clipboard = window.navigator.clipboard;
+    const items = [];
+    for(let i = 0; i < clipboardData.items.length; i++){
+        const dtItem = clipboardData.items[i];
+        const blob = getBlobFromDataTransferItem(window, dtItem);
+        items.push(createClipboardItem(window, blob));
+    }
+    const written = clipboard && await clipboard.write(items).then(()=>true, // Can happen with other implementations that e.g. require permissions
+    /* istanbul ignore next */ ()=>false);
+    if (!written) {
+        throw new Error('The Clipboard API is unavailable.');
+    }
+}
 const g = globalThis;
 /* istanbul ignore else */ if (typeof g.afterEach === 'function') {
     g.afterEach(()=>resetClipboardStubOnView(globalThis.window));
@@ -51525,6 +60067,23 @@ const g = globalThis;
     g.afterAll(()=>detachClipboardStubFromView(globalThis.window));
 }
 
+//jsdom is not supporting isContentEditable
+function isContentEditable(element) {
+    return element.hasAttribute('contenteditable') && (element.getAttribute('contenteditable') == 'true' || element.getAttribute('contenteditable') == '');
+}
+/**
+ * If a node is a contenteditable or inside one, return that element.
+ */ function getContentEditable(node) {
+    const element = getElement$1(node);
+    return element && (element.closest('[contenteditable=""]') || element.closest('[contenteditable="true"]'));
+}
+function getElement$1(node) {
+    return node.nodeType === 1 ? node : node.parentElement;
+}
+
+function isEditable(element) {
+    return isEditableInputOrTextArea(element) && !element.readOnly || isContentEditable(element);
+}
 var editableInputTypes;
 (function(editableInputTypes) {
     editableInputTypes["text"] = "text";
@@ -51540,6 +60099,9 @@ var editableInputTypes;
     editableInputTypes["url"] = "url";
     editableInputTypes["week"] = "week";
 })(editableInputTypes || (editableInputTypes = {}));
+function isEditableInputOrTextArea(element) {
+    return isElementType(element, 'textarea') || isElementType(element, 'input') && element.type in editableInputTypes;
+}
 
 var maxLengthSupportedTypes;
 (function(maxLengthSupportedTypes) {
@@ -51550,18 +60112,136 @@ var maxLengthSupportedTypes;
     maxLengthSupportedTypes["text"] = "text";
     maxLengthSupportedTypes["url"] = "url";
 })(maxLengthSupportedTypes || (maxLengthSupportedTypes = {}));
+// can't use .maxLength property because of a jsdom bug:
+// https://github.com/jsdom/jsdom/issues/2927
+function getMaxLength(element) {
+    var _element_getAttribute;
+    const attr = (_element_getAttribute = element.getAttribute('maxlength')) !== null && _element_getAttribute !== void 0 ? _element_getAttribute : '';
+    return /^\d+$/.test(attr) && Number(attr) >= 0 ? Number(attr) : undefined;
+}
+function supportsMaxLength(element) {
+    return isElementType(element, 'textarea') || isElementType(element, 'input') && element.type in maxLengthSupportedTypes;
+}
+
+const FOCUSABLE_SELECTOR = [
+    'input:not([type=hidden]):not([disabled])',
+    'button:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[contenteditable=""]',
+    '[contenteditable="true"]',
+    'a[href]',
+    '[tabindex]:not([disabled])'
+].join(', ');
+
+function isFocusable(element) {
+    return element.matches(FOCUSABLE_SELECTOR);
+}
 
 var bracketDict;
 (function(bracketDict) {
     bracketDict["{"] = "}";
     bracketDict["["] = "]";
 })(bracketDict || (bracketDict = {}));
+/**
+ * Read the next key definition from user input
+ *
+ * Describe key per `{descriptor}` or `[descriptor]`.
+ * Everything else will be interpreted as a single character as descriptor - e.g. `a`.
+ * Brackets `{` and `[` can be escaped by doubling - e.g. `foo[[bar` translates to `foo[bar`.
+ * A previously pressed key can be released per `{/descriptor}`.
+ * Keeping the key pressed can be written as `{descriptor>}`.
+ * When keeping the key pressed you can choose how long the key is pressed `{descriptor>3}`.
+ * You can then release the key per `{descriptor>3/}` or keep it pressed and continue with the next key.
+ */ function readNextDescriptor(text, context) {
+    let pos = 0;
+    const startBracket = text[pos] in bracketDict ? text[pos] : '';
+    pos += startBracket.length;
+    const isEscapedChar = new RegExp(`^\\${startBracket}{2}`).test(text);
+    const type = isEscapedChar ? '' : startBracket;
+    return {
+        type,
+        ...type === '' ? readPrintableChar(text, pos, context) : readTag(text, pos, type, context)
+    };
+}
+function readPrintableChar(text, pos, context) {
+    const descriptor = text[pos];
+    assertDescriptor(descriptor, text, pos, context);
+    pos += descriptor.length;
+    return {
+        consumedLength: pos,
+        descriptor,
+        releasePrevious: false,
+        releaseSelf: true,
+        repeat: 1
+    };
+}
+function readTag(text, pos, startBracket, context) {
+    var _text_slice_match, _text_slice_match1;
+    const releasePreviousModifier = text[pos] === '/' ? '/' : '';
+    pos += releasePreviousModifier.length;
+    const escapedDescriptor = startBracket === '{' && text[pos] === '\\';
+    pos += Number(escapedDescriptor);
+    const descriptor = escapedDescriptor ? text[pos] : (_text_slice_match = text.slice(pos).match(startBracket === '{' ? /^\w+|^[^}>/]/ : /^\w+/)) === null || _text_slice_match === void 0 ? void 0 : _text_slice_match[0];
+    assertDescriptor(descriptor, text, pos, context);
+    pos += descriptor.length;
+    var _text_slice_match_;
+    const repeatModifier = (_text_slice_match_ = (_text_slice_match1 = text.slice(pos).match(/^>\d+/)) === null || _text_slice_match1 === void 0 ? void 0 : _text_slice_match1[0]) !== null && _text_slice_match_ !== void 0 ? _text_slice_match_ : '';
+    pos += repeatModifier.length;
+    const releaseSelfModifier = text[pos] === '/' || !repeatModifier && text[pos] === '>' ? text[pos] : '';
+    pos += releaseSelfModifier.length;
+    const expectedEndBracket = bracketDict[startBracket];
+    const endBracket = text[pos] === expectedEndBracket ? expectedEndBracket : '';
+    if (!endBracket) {
+        throw new Error(getErrorMessage([
+            !repeatModifier && 'repeat modifier',
+            !releaseSelfModifier && 'release modifier',
+            `"${expectedEndBracket}"`
+        ].filter(Boolean).join(' or '), text[pos], text, context));
+    }
+    pos += endBracket.length;
+    return {
+        consumedLength: pos,
+        descriptor,
+        releasePrevious: !!releasePreviousModifier,
+        repeat: repeatModifier ? Math.max(Number(repeatModifier.substr(1)), 1) : 1,
+        releaseSelf: hasReleaseSelf(releaseSelfModifier, repeatModifier)
+    };
+}
+function assertDescriptor(descriptor, text, pos, context) {
+    if (!descriptor) {
+        throw new Error(getErrorMessage('key descriptor', text[pos], text, context));
+    }
+}
+function hasReleaseSelf(releaseSelfModifier, repeatModifier) {
+    if (releaseSelfModifier) {
+        return releaseSelfModifier === '/';
+    }
+    if (repeatModifier) {
+        return false;
+    }
+}
+function getErrorMessage(expected, found, text, context) {
+    return `Expected ${expected} but found "${found !== null && found !== void 0 ? found : ''}" in "${text}"
+    See ${context === 'pointer' ? `https://testing-library.com/docs/user-event/pointer#pressing-a-button-or-touching-the-screen` : `https://testing-library.com/docs/user-event/keyboard`}
+    for more information about how userEvent parses your input.`;
+}
+
+function cloneEvent(event) {
+    return new event.constructor(event.type, event);
+}
 
 var ApiLevel;
 (function(ApiLevel) {
     ApiLevel[ApiLevel["Trigger"] = 2] = "Trigger";
     ApiLevel[ApiLevel["Call"] = 1] = "Call";
 })(ApiLevel || (ApiLevel = {}));
+function setLevelRef(instance, level) {
+    instance.levelRefs[level] = {};
+}
+function getLevelRef(instance, level) {
+    return instance.levelRefs[level];
+}
 
 var PointerEventsCheckLevel;
 (function(PointerEventsCheckLevel) {
@@ -51574,6 +60254,1652 @@ var PointerEventsCheckLevel;
     /** No pointer events check */ PointerEventsCheckLevel[PointerEventsCheckLevel["Never"] = 0] = "Never";
 })(PointerEventsCheckLevel || (PointerEventsCheckLevel = {}));
 
+// This should probably just rely on the :disabled pseudo-class, but JSDOM doesn't implement it properly.
+function isDisabled(element) {
+    for(let el = element; el; el = el.parentElement){
+        if (isElementType(el, [
+            'button',
+            'input',
+            'select',
+            'textarea',
+            'optgroup',
+            'option'
+        ])) {
+            if (el.hasAttribute('disabled')) {
+                return true;
+            }
+        } else if (isElementType(el, 'fieldset')) {
+            var _el_querySelector;
+            if (el.hasAttribute('disabled') && !((_el_querySelector = el.querySelector(':scope > legend')) === null || _el_querySelector === void 0 ? void 0 : _el_querySelector.contains(element))) {
+                return true;
+            }
+        } else if (el.tagName.includes('-')) {
+            if (el.constructor.formAssociated && el.hasAttribute('disabled')) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function getActiveElement(document) {
+    const activeElement = document.activeElement;
+    if (activeElement === null || activeElement === void 0 ? void 0 : activeElement.shadowRoot) {
+        return getActiveElement(activeElement.shadowRoot);
+    } else {
+        // Browser does not yield disabled elements as document.activeElement - jsdom does
+        if (isDisabled(activeElement)) {
+            return document.ownerDocument ? /* istanbul ignore next */ document.ownerDocument.body : document.body;
+        }
+        return activeElement;
+    }
+}
+function getActiveElementOrBody(document) {
+    var _getActiveElement;
+    return (_getActiveElement = getActiveElement(document)) !== null && _getActiveElement !== void 0 ? _getActiveElement : /* istanbul ignore next */ document.body;
+}
+
+function findClosest(element, callback) {
+    let el = element;
+    do {
+        if (callback(el)) {
+            return el;
+        }
+        el = el.parentElement;
+    }while (el && el !== element.ownerDocument.body)
+    return undefined;
+}
+
+/**
+ * Determine if the element has its own selection implementation
+ * and does not interact with the Document Selection API.
+ */ function hasOwnSelection(node) {
+    return isElement$1(node) && isEditableInputOrTextArea(node);
+}
+function hasNoSelection(node) {
+    return isElement$1(node) && isClickableInput(node);
+}
+function isElement$1(node) {
+    return node.nodeType === 1;
+}
+
+/**
+ * Reset the Document Selection when moving focus into an element
+ * with own selection implementation.
+ */ function updateSelectionOnFocus(element) {
+    const selection = element.ownerDocument.getSelection();
+    /* istanbul ignore if */ if (!(selection === null || selection === void 0 ? void 0 : selection.focusNode)) {
+        return;
+    }
+    // If the focus moves inside an element with own selection implementation,
+    // the document selection will be this element.
+    // But if the focused element is inside a contenteditable,
+    // 1) a collapsed selection will be retained.
+    // 2) other selections will be replaced by a cursor
+    //  2.a) at the start of the first child if it is a text node
+    //  2.b) at the start of the contenteditable.
+    if (hasOwnSelection(element)) {
+        const contenteditable = getContentEditable(selection.focusNode);
+        if (contenteditable) {
+            if (!selection.isCollapsed) {
+                var _contenteditable_firstChild;
+                const focusNode = ((_contenteditable_firstChild = contenteditable.firstChild) === null || _contenteditable_firstChild === void 0 ? void 0 : _contenteditable_firstChild.nodeType) === 3 ? contenteditable.firstChild : contenteditable;
+                selection.setBaseAndExtent(focusNode, 0, focusNode, 0);
+            }
+        } else {
+            selection.setBaseAndExtent(element, 0, element, 0);
+        }
+    }
+}
+
+function wrapEvent(cb, _element) {
+    return getConfig().eventWrapper(cb);
+}
+
+/**
+ * Focus closest focusable element.
+ */ function focusElement(element) {
+    const target = findClosest(element, isFocusable);
+    const activeElement = getActiveElement(element.ownerDocument);
+    if ((target !== null && target !== void 0 ? target : element.ownerDocument.body) === activeElement) {
+        return;
+    } else if (target) {
+        wrapEvent(()=>target.focus());
+    } else {
+        wrapEvent(()=>activeElement === null || activeElement === void 0 ? void 0 : activeElement.blur());
+    }
+    updateSelectionOnFocus(target !== null && target !== void 0 ? target : element.ownerDocument.body);
+}
+function blurElement(element) {
+    if (!isFocusable(element)) return;
+    const wasActive = getActiveElement(element.ownerDocument) === element;
+    if (!wasActive) return;
+    wrapEvent(()=>element.blur());
+}
+
+const behavior = {};
+
+behavior.click = (event, target, instance)=>{
+    const context = target.closest('button,input,label,select,textarea');
+    const control = context && isElementType(context, 'label') && context.control;
+    if (control) {
+        return ()=>{
+            if (isFocusable(control)) {
+                focusElement(control);
+            }
+            instance.dispatchEvent(control, cloneEvent(event));
+        };
+    } else if (isElementType(target, 'input', {
+        type: 'file'
+    })) {
+        return ()=>{
+            // blur fires when the file selector pops up
+            blurElement(target);
+            target.dispatchEvent(new (getWindow(target)).Event('fileDialog'));
+            // focus fires after the file selector has been closed
+            focusElement(target);
+        };
+    }
+};
+
+const UIValue = Symbol('Displayed value in UI');
+const UISelection = Symbol('Displayed selection in UI');
+const InitialValue = Symbol('Initial value to compare on blur');
+function isUIValue(value) {
+    return typeof value === 'object' && UIValue in value;
+}
+function isUISelectionStart(start) {
+    return !!start && typeof start === 'object' && UISelection in start;
+}
+function setUIValue(element, value) {
+    if (element[InitialValue] === undefined) {
+        element[InitialValue] = element.value;
+    }
+    element[UIValue] = value;
+    // eslint-disable-next-line no-new-wrappers
+    element.value = Object.assign(new String(value), {
+        [UIValue]: true
+    });
+}
+function getUIValue(element) {
+    return element[UIValue] === undefined ? element.value : String(element[UIValue]);
+}
+/** Flag the IDL value as clean. This does not change the value.*/ function setUIValueClean(element) {
+    element[UIValue] = undefined;
+}
+function clearInitialValue(element) {
+    element[InitialValue] = undefined;
+}
+function getInitialValue(element) {
+    return element[InitialValue];
+}
+function setUISelectionRaw(element, selection) {
+    element[UISelection] = selection;
+}
+function setUISelection(element, { focusOffset: focusOffsetParam, anchorOffset: anchorOffsetParam = focusOffsetParam }, mode = 'replace') {
+    const valueLength = getUIValue(element).length;
+    const sanitizeOffset = (o)=>Math.max(0, Math.min(valueLength, o));
+    const anchorOffset = mode === 'replace' || element[UISelection] === undefined ? sanitizeOffset(anchorOffsetParam) : element[UISelection].anchorOffset;
+    const focusOffset = sanitizeOffset(focusOffsetParam);
+    const startOffset = Math.min(anchorOffset, focusOffset);
+    const endOffset = Math.max(anchorOffset, focusOffset);
+    element[UISelection] = {
+        anchorOffset,
+        focusOffset
+    };
+    if (element.selectionStart === startOffset && element.selectionEnd === endOffset) {
+        return;
+    }
+    // eslint-disable-next-line no-new-wrappers
+    const startObj = Object.assign(new Number(startOffset), {
+        [UISelection]: true
+    });
+    try {
+        element.setSelectionRange(startObj, endOffset);
+    } catch  {
+    // DOMException for invalid state is expected when calling this
+    // on an element without support for setSelectionRange
+    }
+}
+function getUISelection(element) {
+    var _element_selectionStart, _element_selectionEnd, _element_UISelection;
+    const sel = (_element_UISelection = element[UISelection]) !== null && _element_UISelection !== void 0 ? _element_UISelection : {
+        anchorOffset: (_element_selectionStart = element.selectionStart) !== null && _element_selectionStart !== void 0 ? _element_selectionStart : 0,
+        focusOffset: (_element_selectionEnd = element.selectionEnd) !== null && _element_selectionEnd !== void 0 ? _element_selectionEnd : 0
+    };
+    return {
+        ...sel,
+        startOffset: Math.min(sel.anchorOffset, sel.focusOffset),
+        endOffset: Math.max(sel.anchorOffset, sel.focusOffset)
+    };
+}
+function hasUISelection(element) {
+    return !!element[UISelection];
+}
+/** Flag the IDL selection as clean. This does not change the selection. */ function setUISelectionClean(element) {
+    element[UISelection] = undefined;
+}
+
+const parseInt$1 = globalThis.parseInt;
+function buildTimeValue(value) {
+    const onlyDigitsValue = value.replace(/\D/g, '');
+    if (onlyDigitsValue.length < 2) {
+        return value;
+    }
+    const firstDigit = parseInt$1(onlyDigitsValue[0], 10);
+    const secondDigit = parseInt$1(onlyDigitsValue[1], 10);
+    if (firstDigit >= 3 || firstDigit === 2 && secondDigit >= 4) {
+        let index;
+        if (firstDigit >= 3) {
+            index = 1;
+        } else {
+            index = 2;
+        }
+        return build(onlyDigitsValue, index);
+    }
+    if (value.length === 2) {
+        return value;
+    }
+    return build(onlyDigitsValue, 2);
+}
+function build(onlyDigitsValue, index) {
+    const hours = onlyDigitsValue.slice(0, index);
+    const validHours = Math.min(parseInt$1(hours, 10), 23);
+    const minuteCharacters = onlyDigitsValue.slice(index);
+    const parsedMinutes = parseInt$1(minuteCharacters, 10);
+    const validMinutes = Math.min(parsedMinutes, 59);
+    return `${validHours.toString().padStart(2, '0')}:${validMinutes.toString().padStart(2, '0')}`;
+}
+function isValidDateOrTimeValue(element, value) {
+    const clone = element.cloneNode();
+    clone.value = value;
+    return clone.value === value;
+}
+
+function getNextCursorPosition(node, offset, direction, inputType) {
+    // The behavior at text node zero offset is inconsistent.
+    // When walking backwards:
+    // Firefox always moves to zero offset and jumps over last offset.
+    // Chrome jumps over zero offset per default but over last offset when Shift is pressed.
+    // The cursor always moves to zero offset if the focus area (contenteditable or body) ends there.
+    // When walking foward both ignore zero offset.
+    // When walking over input elements the cursor moves before or after that element.
+    // When walking over line breaks the cursor moves inside any following text node.
+    if (isTextNode(node) && offset + direction >= 0 && offset + direction <= node.nodeValue.length) {
+        return {
+            node,
+            offset: offset + direction
+        };
+    }
+    const nextNode = getNextCharacterContentNode(node, offset, direction);
+    if (nextNode) {
+        if (isTextNode(nextNode)) {
+            return {
+                node: nextNode,
+                offset: direction > 0 ? Math.min(1, nextNode.nodeValue.length) : Math.max(nextNode.nodeValue.length - 1, 0)
+            };
+        } else if (isElementType(nextNode, 'br')) {
+            const nextPlusOne = getNextCharacterContentNode(nextNode, undefined, direction);
+            if (!nextPlusOne) {
+                // The behavior when there is no possible cursor position beyond the line break is inconsistent.
+                // In Chrome outside of contenteditable moving before a leading line break is possible.
+                // A leading line break can still be removed per deleteContentBackward.
+                // A trailing line break on the other hand is not removed by deleteContentForward.
+                if (direction < 0 && inputType === 'deleteContentBackward') {
+                    return {
+                        node: nextNode.parentNode,
+                        offset: getOffset(nextNode)
+                    };
+                }
+                return undefined;
+            } else if (isTextNode(nextPlusOne)) {
+                return {
+                    node: nextPlusOne,
+                    offset: direction > 0 ? 0 : nextPlusOne.nodeValue.length
+                };
+            } else if (direction < 0 && isElementType(nextPlusOne, 'br')) {
+                return {
+                    node: nextNode.parentNode,
+                    offset: getOffset(nextNode)
+                };
+            } else {
+                return {
+                    node: nextPlusOne.parentNode,
+                    offset: getOffset(nextPlusOne) + (direction > 0 ? 0 : 1)
+                };
+            }
+        } else {
+            return {
+                node: nextNode.parentNode,
+                offset: getOffset(nextNode) + (direction > 0 ? 1 : 0)
+            };
+        }
+    }
+}
+function getNextCharacterContentNode(node, offset, direction) {
+    const nextOffset = Number(offset) + (direction < 0 ? -1 : 0);
+    if (offset !== undefined && isElement(node) && nextOffset >= 0 && nextOffset < node.children.length) {
+        node = node.children[nextOffset];
+    }
+    return walkNodes(node, direction === 1 ? 'next' : 'previous', isTreatedAsCharacterContent);
+}
+function isTreatedAsCharacterContent(node) {
+    if (isTextNode(node)) {
+        return true;
+    }
+    if (isElement(node)) {
+        if (isElementType(node, [
+            'input',
+            'textarea'
+        ])) {
+            return node.type !== 'hidden';
+        } else if (isElementType(node, 'br')) {
+            return true;
+        }
+    }
+    return false;
+}
+function getOffset(node) {
+    let i = 0;
+    while(node.previousSibling){
+        i++;
+        node = node.previousSibling;
+    }
+    return i;
+}
+function isElement(node) {
+    return node.nodeType === 1;
+}
+function isTextNode(node) {
+    return node.nodeType === 3;
+}
+function walkNodes(node, direction, callback) {
+    for(;;){
+        var _node_ownerDocument;
+        const sibling = node[`${direction}Sibling`];
+        if (sibling) {
+            node = getDescendant(sibling, direction === 'next' ? 'first' : 'last');
+            if (callback(node)) {
+                return node;
+            }
+        } else if (node.parentNode && (!isElement(node.parentNode) || !isContentEditable(node.parentNode) && node.parentNode !== ((_node_ownerDocument = node.ownerDocument) === null || _node_ownerDocument === void 0 ? void 0 : _node_ownerDocument.body))) {
+            node = node.parentNode;
+        } else {
+            break;
+        }
+    }
+}
+function getDescendant(node, direction) {
+    while(node.hasChildNodes()){
+        node = node[`${direction}Child`];
+    }
+    return node;
+}
+
+const TrackChanges = Symbol('Track programmatic changes for React workaround');
+// When the input event happens in the browser, React executes all event handlers
+// and if they change state of a controlled value, nothing happens.
+// But when we trigger the event handlers in test environment with React@17,
+// the changes are rolled back before the state update is applied.
+// This results in a reset cursor.
+// There might be a better way to work around if we figure out
+// why the batched update is executed differently in our test environment.
+function isReact17Element(element) {
+    return Object.getOwnPropertyNames(element).some((k)=>k.startsWith('__react')) && getWindow(element).REACT_VERSION === 17;
+}
+function startTrackValue(element) {
+    if (!isReact17Element(element)) {
+        return;
+    }
+    element[TrackChanges] = {
+        previousValue: String(element.value),
+        tracked: []
+    };
+}
+function trackOrSetValue(element, v) {
+    var _element_TrackChanges_tracked, _element_TrackChanges;
+    (_element_TrackChanges = element[TrackChanges]) === null || _element_TrackChanges === void 0 ? void 0 : (_element_TrackChanges_tracked = _element_TrackChanges.tracked) === null || _element_TrackChanges_tracked === void 0 ? void 0 : _element_TrackChanges_tracked.push(v);
+    if (!element[TrackChanges]) {
+        setUIValueClean(element);
+        setUISelection(element, {
+            focusOffset: v.length
+        });
+    }
+}
+function commitValueAfterInput(element, cursorOffset) {
+    var _changes_tracked;
+    const changes = element[TrackChanges];
+    element[TrackChanges] = undefined;
+    if (!(changes === null || changes === void 0 ? void 0 : (_changes_tracked = changes.tracked) === null || _changes_tracked === void 0 ? void 0 : _changes_tracked.length)) {
+        return;
+    }
+    const isJustReactStateUpdate = changes.tracked.length === 2 && changes.tracked[0] === changes.previousValue && changes.tracked[1] === element.value;
+    if (!isJustReactStateUpdate) {
+        setUIValueClean(element);
+    }
+    if (hasUISelection(element)) {
+        setUISelection(element, {
+            focusOffset: isJustReactStateUpdate ? cursorOffset : element.value.length
+        });
+    }
+}
+
+/**
+ * Determine which selection logic and selection ranges to consider.
+ */ function getTargetTypeAndSelection(node) {
+    const element = getElement(node);
+    if (element && hasOwnSelection(element)) {
+        return {
+            type: 'input',
+            selection: getUISelection(element)
+        };
+    }
+    const selection = element === null || element === void 0 ? void 0 : element.ownerDocument.getSelection();
+    // It is possible to extend a single-range selection into a contenteditable.
+    // This results in the range acting like a range outside of contenteditable.
+    const isCE = getContentEditable(node) && (selection === null || selection === void 0 ? void 0 : selection.anchorNode) && getContentEditable(selection.anchorNode);
+    return {
+        type: isCE ? 'contenteditable' : 'default',
+        selection
+    };
+}
+function getElement(node) {
+    return node.nodeType === 1 ? node : node.parentElement;
+}
+
+/**
+ * Get the range that would be overwritten by input.
+ */ function getInputRange(focusNode) {
+    const typeAndSelection = getTargetTypeAndSelection(focusNode);
+    if (typeAndSelection.type === 'input') {
+        return typeAndSelection.selection;
+    } else if (typeAndSelection.type === 'contenteditable') {
+        var _typeAndSelection_selection;
+        // Multi-range on contenteditable edits the first selection instead of the last
+        return (_typeAndSelection_selection = typeAndSelection.selection) === null || _typeAndSelection_selection === void 0 ? void 0 : _typeAndSelection_selection.getRangeAt(0);
+    }
+}
+
+/**
+ * Set the selection
+ */ function setSelection({ focusNode, focusOffset, anchorNode = focusNode, anchorOffset = focusOffset }) {
+    var _anchorNode_ownerDocument_getSelection, _anchorNode_ownerDocument;
+    const typeAndSelection = getTargetTypeAndSelection(focusNode);
+    if (typeAndSelection.type === 'input') {
+        return setUISelection(focusNode, {
+            anchorOffset,
+            focusOffset
+        });
+    }
+    (_anchorNode_ownerDocument = anchorNode.ownerDocument) === null || _anchorNode_ownerDocument === void 0 ? void 0 : (_anchorNode_ownerDocument_getSelection = _anchorNode_ownerDocument.getSelection()) === null || _anchorNode_ownerDocument_getSelection === void 0 ? void 0 : _anchorNode_ownerDocument_getSelection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+}
+
+function isDateOrTime(element) {
+    return isElementType(element, 'input') && [
+        'date',
+        'time'
+    ].includes(element.type);
+}
+function input(instance, element, data, inputType = 'insertText') {
+    const inputRange = getInputRange(element);
+    /* istanbul ignore if */ if (!inputRange) {
+        return;
+    }
+    // There is no `beforeinput` event on `date` and `time` input
+    if (!isDateOrTime(element)) {
+        const unprevented = instance.dispatchUIEvent(element, 'beforeinput', {
+            inputType,
+            data
+        });
+        if (!unprevented) {
+            return;
+        }
+    }
+    if ('startContainer' in inputRange) {
+        editContenteditable(instance, element, inputRange, data, inputType);
+    } else {
+        editInputElement(instance, element, inputRange, data, inputType);
+    }
+}
+function editContenteditable(instance, element, inputRange, data, inputType) {
+    let del = false;
+    if (!inputRange.collapsed) {
+        del = true;
+        inputRange.deleteContents();
+    } else if ([
+        'deleteContentBackward',
+        'deleteContentForward'
+    ].includes(inputType)) {
+        const nextPosition = getNextCursorPosition(inputRange.startContainer, inputRange.startOffset, inputType === 'deleteContentBackward' ? -1 : 1, inputType);
+        if (nextPosition) {
+            del = true;
+            const delRange = inputRange.cloneRange();
+            if (delRange.comparePoint(nextPosition.node, nextPosition.offset) < 0) {
+                delRange.setStart(nextPosition.node, nextPosition.offset);
+            } else {
+                delRange.setEnd(nextPosition.node, nextPosition.offset);
+            }
+            delRange.deleteContents();
+        }
+    }
+    if (data) {
+        if (inputRange.endContainer.nodeType === 3) {
+            const offset = inputRange.endOffset;
+            inputRange.endContainer.insertData(offset, data);
+            inputRange.setStart(inputRange.endContainer, offset + data.length);
+            inputRange.setEnd(inputRange.endContainer, offset + data.length);
+        } else {
+            const text = element.ownerDocument.createTextNode(data);
+            inputRange.insertNode(text);
+            inputRange.setStart(text, data.length);
+            inputRange.setEnd(text, data.length);
+        }
+    }
+    if (del || data) {
+        instance.dispatchUIEvent(element, 'input', {
+            inputType
+        });
+    }
+}
+function editInputElement(instance, element, inputRange, data, inputType) {
+    let dataToInsert = data;
+    if (supportsMaxLength(element)) {
+        const maxLength = getMaxLength(element);
+        if (maxLength !== undefined && data.length > 0) {
+            const spaceUntilMaxLength = maxLength - element.value.length;
+            if (spaceUntilMaxLength > 0) {
+                dataToInsert = data.substring(0, spaceUntilMaxLength);
+            } else {
+                return;
+            }
+        }
+    }
+    const { newValue, newOffset, oldValue } = calculateNewValue(dataToInsert, element, inputRange, inputType);
+    if (newValue === oldValue && newOffset === inputRange.startOffset && newOffset === inputRange.endOffset) {
+        return;
+    }
+    if (isElementType(element, 'input', {
+        type: 'number'
+    }) && !isValidNumberInput(newValue)) {
+        return;
+    }
+    setUIValue(element, newValue);
+    setSelection({
+        focusNode: element,
+        anchorOffset: newOffset,
+        focusOffset: newOffset
+    });
+    if (isDateOrTime(element)) {
+        if (isValidDateOrTimeValue(element, newValue)) {
+            commitInput(instance, element, newOffset, {});
+            instance.dispatchUIEvent(element, 'change');
+            clearInitialValue(element);
+        }
+    } else {
+        commitInput(instance, element, newOffset, {
+            data,
+            inputType
+        });
+    }
+}
+function calculateNewValue(inputData, node, { startOffset, endOffset }, inputType) {
+    const value = getUIValue(node);
+    const prologEnd = Math.max(0, startOffset === endOffset && inputType === 'deleteContentBackward' ? startOffset - 1 : startOffset);
+    const prolog = value.substring(0, prologEnd);
+    const epilogStart = Math.min(value.length, startOffset === endOffset && inputType === 'deleteContentForward' ? startOffset + 1 : endOffset);
+    const epilog = value.substring(epilogStart, value.length);
+    let newValue = `${prolog}${inputData}${epilog}`;
+    let newOffset = prologEnd + inputData.length;
+    if (isElementType(node, 'input', {
+        type: 'time'
+    })) {
+        const builtValue = buildTimeValue(newValue);
+        if (builtValue !== '' && isValidDateOrTimeValue(node, builtValue)) {
+            newValue = builtValue;
+            newOffset = builtValue.length;
+        }
+    }
+    return {
+        oldValue: value,
+        newValue,
+        newOffset
+    };
+}
+function commitInput(instance, element, newOffset, inputInit) {
+    instance.dispatchUIEvent(element, 'input', inputInit);
+    commitValueAfterInput(element, newOffset);
+}
+function isValidNumberInput(value) {
+    var _value_match, _value_match1;
+    // the browser allows some invalid input but not others
+    // it allows up to two '-' at any place before any 'e' or one directly following 'e'
+    // it allows one '.' at any place before e
+    const valueParts = value.split('e', 2);
+    return !(/[^\d.\-e]/.test(value) || Number((_value_match = value.match(/-/g)) === null || _value_match === void 0 ? void 0 : _value_match.length) > 2 || Number((_value_match1 = value.match(/\./g)) === null || _value_match1 === void 0 ? void 0 : _value_match1.length) > 1 || valueParts[1] && !/^-?\d*$/.test(valueParts[1]));
+}
+
+behavior.cut = (event, target, instance)=>{
+    return ()=>{
+        if (isEditable(target)) {
+            input(instance, target, '', 'deleteByCut');
+        }
+    };
+};
+
+function getValueOrTextContent(element) {
+    // istanbul ignore if
+    if (!element) {
+        return null;
+    }
+    if (isContentEditable(element)) {
+        return element.textContent;
+    }
+    return getUIValue(element);
+}
+
+function isVisible(element) {
+    const window = getWindow(element);
+    for(let el = element; el === null || el === void 0 ? void 0 : el.ownerDocument; el = el.parentElement){
+        const { display, visibility } = window.getComputedStyle(el);
+        if (display === 'none') {
+            return false;
+        }
+        if (visibility === 'hidden') {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getTabDestination(activeElement, shift) {
+    const document = activeElement.ownerDocument;
+    const focusableElements = document.querySelectorAll(FOCUSABLE_SELECTOR);
+    const enabledElements = Array.from(focusableElements).filter((el)=>el === activeElement || !(Number(el.getAttribute('tabindex')) < 0 || isDisabled(el)));
+    // tabindex has no effect if the active element has negative tabindex
+    if (Number(activeElement.getAttribute('tabindex')) >= 0) {
+        enabledElements.sort((a, b)=>{
+            const i = Number(a.getAttribute('tabindex'));
+            const j = Number(b.getAttribute('tabindex'));
+            if (i === j) {
+                return 0;
+            } else if (i === 0) {
+                return 1;
+            } else if (j === 0) {
+                return -1;
+            }
+            return i - j;
+        });
+    }
+    const checkedRadio = {};
+    let prunedElements = [
+        document.body
+    ];
+    const activeRadioGroup = isElementType(activeElement, 'input', {
+        type: 'radio'
+    }) ? activeElement.name : undefined;
+    enabledElements.forEach((currentElement)=>{
+        const el = currentElement;
+        // For radio groups keep only the active radio
+        // If there is no active radio, keep only the checked radio
+        // If there is no checked radio, treat like everything else
+        if (isElementType(el, 'input', {
+            type: 'radio'
+        }) && el.name) {
+            // If the active element is part of the group, add only that
+            if (el === activeElement) {
+                prunedElements.push(el);
+                return;
+            } else if (el.name === activeRadioGroup) {
+                return;
+            }
+            // If we stumble upon a checked radio, remove the others
+            if (el.checked) {
+                prunedElements = prunedElements.filter((e)=>!isElementType(e, 'input', {
+                        type: 'radio',
+                        name: el.name
+                    }));
+                prunedElements.push(el);
+                checkedRadio[el.name] = el;
+                return;
+            }
+            // If we already found the checked one, skip
+            if (typeof checkedRadio[el.name] !== 'undefined') {
+                return;
+            }
+        }
+        prunedElements.push(el);
+    });
+    for(let index = prunedElements.findIndex((el)=>el === activeElement);;){
+        index += shift ? -1 : 1;
+        // loop at overflow
+        if (index === prunedElements.length) {
+            index = 0;
+        } else if (index === -1) {
+            index = prunedElements.length - 1;
+        }
+        if (prunedElements[index] === activeElement || prunedElements[index] === document.body || isVisible(prunedElements[index])) {
+            return prunedElements[index];
+        }
+    }
+}
+
+/**
+ * Move the selection
+ */ function moveSelection(node, direction) {
+    // TODO: implement shift
+    if (hasOwnSelection(node)) {
+        const selection = getUISelection(node);
+        setSelection({
+            focusNode: node,
+            focusOffset: selection.startOffset === selection.endOffset ? selection.focusOffset + direction : direction < 0 ? selection.startOffset : selection.endOffset
+        });
+    } else {
+        const selection = node.ownerDocument.getSelection();
+        if (!(selection === null || selection === void 0 ? void 0 : selection.focusNode)) {
+            return;
+        }
+        if (selection.isCollapsed) {
+            const nextPosition = getNextCursorPosition(selection.focusNode, selection.focusOffset, direction);
+            if (nextPosition) {
+                setSelection({
+                    focusNode: nextPosition.node,
+                    focusOffset: nextPosition.offset
+                });
+            }
+        } else {
+            selection[direction < 0 ? 'collapseToStart' : 'collapseToEnd']();
+        }
+    }
+}
+
+/**
+ * Expand a selection like the browser does when pressing Ctrl+A.
+ */ function selectAll(target) {
+    if (hasOwnSelection(target)) {
+        return setSelection({
+            focusNode: target,
+            anchorOffset: 0,
+            focusOffset: getUIValue(target).length
+        });
+    }
+    var _getContentEditable;
+    const focusNode = (_getContentEditable = getContentEditable(target)) !== null && _getContentEditable !== void 0 ? _getContentEditable : target.ownerDocument.body;
+    setSelection({
+        focusNode,
+        anchorOffset: 0,
+        focusOffset: focusNode.childNodes.length
+    });
+}
+function isAllSelected(target) {
+    if (hasOwnSelection(target)) {
+        return getUISelection(target).startOffset === 0 && getUISelection(target).endOffset === getUIValue(target).length;
+    }
+    var _getContentEditable;
+    const focusNode = (_getContentEditable = getContentEditable(target)) !== null && _getContentEditable !== void 0 ? _getContentEditable : target.ownerDocument.body;
+    const selection = target.ownerDocument.getSelection();
+    return (selection === null || selection === void 0 ? void 0 : selection.anchorNode) === focusNode && selection.focusNode === focusNode && selection.anchorOffset === 0 && selection.focusOffset === focusNode.childNodes.length;
+}
+
+/**
+ * Backward-compatible selection.
+ *
+ * Handles input elements and contenteditable if it only contains a single text node.
+ */ function setSelectionRange(element, anchorOffset, focusOffset) {
+    var _element_firstChild;
+    if (hasOwnSelection(element)) {
+        return setSelection({
+            focusNode: element,
+            anchorOffset,
+            focusOffset
+        });
+    }
+    /* istanbul ignore else */ if (isContentEditable(element) && ((_element_firstChild = element.firstChild) === null || _element_firstChild === void 0 ? void 0 : _element_firstChild.nodeType) === 3) {
+        return setSelection({
+            focusNode: element.firstChild,
+            anchorOffset,
+            focusOffset
+        });
+    }
+    /* istanbul ignore next */ throw new Error('Not implemented. The result of this interaction is unreliable.');
+}
+
+function walkRadio(instance, el, direction) {
+    const window = getWindow(el);
+    const group = Array.from(el.ownerDocument.querySelectorAll(el.name ? `input[type="radio"][name="${window.CSS.escape(el.name)}"]` : `input[type="radio"][name=""], input[type="radio"]:not([name])`));
+    for(let i = group.findIndex((e)=>e === el) + direction;; i += direction){
+        if (!group[i]) {
+            i = direction > 0 ? 0 : group.length - 1;
+        }
+        if (group[i] === el) {
+            return;
+        }
+        if (isDisabled(group[i])) {
+            continue;
+        }
+        focusElement(group[i]);
+        instance.dispatchUIEvent(group[i], 'click');
+    }
+}
+
+behavior.keydown = (event, target, instance)=>{
+    var _keydownBehavior_event_key;
+    var _keydownBehavior_event_key1;
+    return (_keydownBehavior_event_key1 = (_keydownBehavior_event_key = keydownBehavior[event.key]) === null || _keydownBehavior_event_key === void 0 ? void 0 : _keydownBehavior_event_key.call(keydownBehavior, event, target, instance)) !== null && _keydownBehavior_event_key1 !== void 0 ? _keydownBehavior_event_key1 : combinationBehavior(event, target, instance);
+};
+const keydownBehavior = {
+    ArrowDown: (event, target, instance)=>{
+        /* istanbul ignore else */ if (isElementType(target, 'input', {
+            type: 'radio'
+        })) {
+            return ()=>walkRadio(instance, target, -1);
+        }
+    },
+    ArrowLeft: (event, target, instance)=>{
+        if (isElementType(target, 'input', {
+            type: 'radio'
+        })) {
+            return ()=>walkRadio(instance, target, -1);
+        }
+        return ()=>moveSelection(target, -1);
+    },
+    ArrowRight: (event, target, instance)=>{
+        if (isElementType(target, 'input', {
+            type: 'radio'
+        })) {
+            return ()=>walkRadio(instance, target, 1);
+        }
+        return ()=>moveSelection(target, 1);
+    },
+    ArrowUp: (event, target, instance)=>{
+        /* istanbul ignore else */ if (isElementType(target, 'input', {
+            type: 'radio'
+        })) {
+            return ()=>walkRadio(instance, target, 1);
+        }
+    },
+    Backspace: (event, target, instance)=>{
+        if (isEditable(target)) {
+            return ()=>{
+                input(instance, target, '', 'deleteContentBackward');
+            };
+        }
+    },
+    Delete: (event, target, instance)=>{
+        if (isEditable(target)) {
+            return ()=>{
+                input(instance, target, '', 'deleteContentForward');
+            };
+        }
+    },
+    End: (event, target)=>{
+        if (isElementType(target, [
+            'input',
+            'textarea'
+        ]) || isContentEditable(target)) {
+            return ()=>{
+                var _getValueOrTextContent;
+                var _getValueOrTextContent_length;
+                const newPos = (_getValueOrTextContent_length = (_getValueOrTextContent = getValueOrTextContent(target)) === null || _getValueOrTextContent === void 0 ? void 0 : _getValueOrTextContent.length) !== null && _getValueOrTextContent_length !== void 0 ? _getValueOrTextContent_length : /* istanbul ignore next */ 0;
+                setSelectionRange(target, newPos, newPos);
+            };
+        }
+    },
+    Home: (event, target)=>{
+        if (isElementType(target, [
+            'input',
+            'textarea'
+        ]) || isContentEditable(target)) {
+            return ()=>{
+                setSelectionRange(target, 0, 0);
+            };
+        }
+    },
+    PageDown: (event, target)=>{
+        if (isElementType(target, [
+            'input'
+        ])) {
+            return ()=>{
+                const newPos = getUIValue(target).length;
+                setSelectionRange(target, newPos, newPos);
+            };
+        }
+    },
+    PageUp: (event, target)=>{
+        if (isElementType(target, [
+            'input'
+        ])) {
+            return ()=>{
+                setSelectionRange(target, 0, 0);
+            };
+        }
+    },
+    Tab: (event, target, instance)=>{
+        return ()=>{
+            const dest = getTabDestination(target, instance.system.keyboard.modifiers.Shift);
+            focusElement(dest);
+            if (hasOwnSelection(dest)) {
+                setUISelection(dest, {
+                    anchorOffset: 0,
+                    focusOffset: dest.value.length
+                });
+            }
+        };
+    }
+};
+const combinationBehavior = (event, target, instance)=>{
+    if (event.code === 'KeyA' && instance.system.keyboard.modifiers.Control) {
+        return ()=>selectAll(target);
+    }
+};
+
+behavior.keypress = (event, target, instance)=>{
+    if (event.key === 'Enter') {
+        if (isElementType(target, 'button') || isElementType(target, 'input') && ClickInputOnEnter.includes(target.type) || isElementType(target, 'a') && Boolean(target.href)) {
+            return ()=>{
+                instance.dispatchUIEvent(target, 'click');
+            };
+        } else if (isElementType(target, 'input')) {
+            const form = target.form;
+            const submit = form === null || form === void 0 ? void 0 : form.querySelector('input[type="submit"], button:not([type]), button[type="submit"]');
+            if (submit) {
+                return ()=>instance.dispatchUIEvent(submit, 'click');
+            } else if (form && SubmitSingleInputOnEnter.includes(target.type) && form.querySelectorAll('input').length === 1) {
+                return ()=>instance.dispatchUIEvent(form, 'submit');
+            } else {
+                return;
+            }
+        }
+    }
+    if (isEditable(target)) {
+        const inputType = event.key === 'Enter' ? isContentEditable(target) && !instance.system.keyboard.modifiers.Shift ? 'insertParagraph' : 'insertLineBreak' : 'insertText';
+        const inputData = event.key === 'Enter' ? '\n' : event.key;
+        return ()=>input(instance, target, inputData, inputType);
+    }
+};
+const ClickInputOnEnter = [
+    'button',
+    'color',
+    'file',
+    'image',
+    'reset',
+    'submit'
+];
+const SubmitSingleInputOnEnter = [
+    'email',
+    'month',
+    'password',
+    'search',
+    'tel',
+    'text',
+    'url',
+    'week'
+];
+
+behavior.keyup = (event, target, instance)=>{
+    var _keyupBehavior_event_key;
+    return (_keyupBehavior_event_key = keyupBehavior[event.key]) === null || _keyupBehavior_event_key === void 0 ? void 0 : _keyupBehavior_event_key.call(keyupBehavior, event, target, instance);
+};
+const keyupBehavior = {
+    ' ': (event, target, instance)=>{
+        if (isClickableInput(target)) {
+            return ()=>instance.dispatchUIEvent(target, 'click');
+        }
+    }
+};
+
+behavior.paste = (event, target, instance)=>{
+    if (isEditable(target)) {
+        return ()=>{
+            var _event_clipboardData;
+            const insertData = (_event_clipboardData = event.clipboardData) === null || _event_clipboardData === void 0 ? void 0 : _event_clipboardData.getData('text');
+            if (insertData) {
+                input(instance, target, insertData, 'insertFromPaste');
+            }
+        };
+    }
+};
+
+const eventMap = {
+    auxclick: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    beforeinput: {
+        EventType: 'InputEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    click: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    contextmenu: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    copy: {
+        EventType: 'ClipboardEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    change: {
+        EventType: 'Event',
+        defaultInit: {
+            bubbles: true,
+            cancelable: false
+        }
+    },
+    cut: {
+        EventType: 'ClipboardEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    dblclick: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    keydown: {
+        EventType: 'KeyboardEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    keypress: {
+        EventType: 'KeyboardEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    keyup: {
+        EventType: 'KeyboardEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    paste: {
+        EventType: 'ClipboardEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    input: {
+        EventType: 'InputEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: false,
+            composed: true
+        }
+    },
+    mousedown: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    mouseenter: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: false,
+            cancelable: false,
+            composed: true
+        }
+    },
+    mouseleave: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: false,
+            cancelable: false,
+            composed: true
+        }
+    },
+    mousemove: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    mouseout: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    mouseover: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    mouseup: {
+        EventType: 'MouseEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    pointerover: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    pointerenter: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: false,
+            cancelable: false
+        }
+    },
+    pointerdown: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    pointermove: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    pointerup: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    pointercancel: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: false,
+            composed: true
+        }
+    },
+    pointerout: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true,
+            composed: true
+        }
+    },
+    pointerleave: {
+        EventType: 'PointerEvent',
+        defaultInit: {
+            bubbles: false,
+            cancelable: false
+        }
+    },
+    submit: {
+        EventType: 'Event',
+        defaultInit: {
+            bubbles: true,
+            cancelable: true
+        }
+    }
+};
+function getEventClass(type) {
+    return eventMap[type].EventType;
+}
+const mouseEvents = [
+    'MouseEvent',
+    'PointerEvent'
+];
+function isMouseEvent(type) {
+    return mouseEvents.includes(getEventClass(type));
+}
+function isKeyboardEvent(type) {
+    return getEventClass(type) === 'KeyboardEvent';
+}
+
+const eventInitializer = {
+    ClipboardEvent: [
+        initClipboardEvent
+    ],
+    Event: [],
+    InputEvent: [
+        initUIEvent,
+        initInputEvent
+    ],
+    MouseEvent: [
+        initUIEvent,
+        initUIEventModififiers,
+        initMouseEvent
+    ],
+    PointerEvent: [
+        initUIEvent,
+        initUIEventModififiers,
+        initMouseEvent,
+        initPointerEvent
+    ],
+    KeyboardEvent: [
+        initUIEvent,
+        initUIEventModififiers,
+        initKeyboardEvent
+    ]
+};
+function createEvent(type, target, init) {
+    const window = getWindow(target);
+    const { EventType, defaultInit } = eventMap[type];
+    const event = new (getEventConstructors(window))[EventType](type, defaultInit);
+    eventInitializer[EventType].forEach((f)=>f(event, init !== null && init !== void 0 ? init : {}));
+    return event;
+}
+/* istanbul ignore next */ function getEventConstructors(window) {
+    var _window_Event;
+    /* eslint-disable @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-extraneous-class */ const Event = (_window_Event = window.Event) !== null && _window_Event !== void 0 ? _window_Event : class Event {
+    };
+    var _window_AnimationEvent;
+    const AnimationEvent = (_window_AnimationEvent = window.AnimationEvent) !== null && _window_AnimationEvent !== void 0 ? _window_AnimationEvent : class AnimationEvent extends Event {
+    };
+    var _window_ClipboardEvent;
+    const ClipboardEvent = (_window_ClipboardEvent = window.ClipboardEvent) !== null && _window_ClipboardEvent !== void 0 ? _window_ClipboardEvent : class ClipboardEvent extends Event {
+    };
+    var _window_PopStateEvent;
+    const PopStateEvent = (_window_PopStateEvent = window.PopStateEvent) !== null && _window_PopStateEvent !== void 0 ? _window_PopStateEvent : class PopStateEvent extends Event {
+    };
+    var _window_ProgressEvent;
+    const ProgressEvent = (_window_ProgressEvent = window.ProgressEvent) !== null && _window_ProgressEvent !== void 0 ? _window_ProgressEvent : class ProgressEvent extends Event {
+    };
+    var _window_TransitionEvent;
+    const TransitionEvent = (_window_TransitionEvent = window.TransitionEvent) !== null && _window_TransitionEvent !== void 0 ? _window_TransitionEvent : class TransitionEvent extends Event {
+    };
+    var _window_UIEvent;
+    const UIEvent = (_window_UIEvent = window.UIEvent) !== null && _window_UIEvent !== void 0 ? _window_UIEvent : class UIEvent extends Event {
+    };
+    var _window_CompositionEvent;
+    const CompositionEvent = (_window_CompositionEvent = window.CompositionEvent) !== null && _window_CompositionEvent !== void 0 ? _window_CompositionEvent : class CompositionEvent extends UIEvent {
+    };
+    var _window_FocusEvent;
+    const FocusEvent = (_window_FocusEvent = window.FocusEvent) !== null && _window_FocusEvent !== void 0 ? _window_FocusEvent : class FocusEvent extends UIEvent {
+    };
+    var _window_InputEvent;
+    const InputEvent = (_window_InputEvent = window.InputEvent) !== null && _window_InputEvent !== void 0 ? _window_InputEvent : class InputEvent extends UIEvent {
+    };
+    var _window_KeyboardEvent;
+    const KeyboardEvent = (_window_KeyboardEvent = window.KeyboardEvent) !== null && _window_KeyboardEvent !== void 0 ? _window_KeyboardEvent : class KeyboardEvent extends UIEvent {
+    };
+    var _window_MouseEvent;
+    const MouseEvent = (_window_MouseEvent = window.MouseEvent) !== null && _window_MouseEvent !== void 0 ? _window_MouseEvent : class MouseEvent extends UIEvent {
+    };
+    var _window_DragEvent;
+    const DragEvent = (_window_DragEvent = window.DragEvent) !== null && _window_DragEvent !== void 0 ? _window_DragEvent : class DragEvent extends MouseEvent {
+    };
+    var _window_PointerEvent;
+    const PointerEvent = (_window_PointerEvent = window.PointerEvent) !== null && _window_PointerEvent !== void 0 ? _window_PointerEvent : class PointerEvent extends MouseEvent {
+    };
+    var _window_TouchEvent;
+    const TouchEvent = (_window_TouchEvent = window.TouchEvent) !== null && _window_TouchEvent !== void 0 ? _window_TouchEvent : class TouchEvent extends UIEvent {
+    };
+    /* eslint-enable @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-extraneous-class */ return {
+        Event,
+        AnimationEvent,
+        ClipboardEvent,
+        PopStateEvent,
+        ProgressEvent,
+        TransitionEvent,
+        UIEvent,
+        CompositionEvent,
+        FocusEvent,
+        InputEvent,
+        KeyboardEvent,
+        MouseEvent,
+        DragEvent,
+        PointerEvent,
+        TouchEvent
+    };
+}
+function assignProps(obj, props) {
+    for (const [key, value] of Object.entries(props)){
+        Object.defineProperty(obj, key, {
+            get: ()=>value !== null && value !== void 0 ? value : null
+        });
+    }
+}
+function sanitizeNumber(n) {
+    return Number(n !== null && n !== void 0 ? n : 0);
+}
+function initClipboardEvent(event, { clipboardData }) {
+    assignProps(event, {
+        clipboardData
+    });
+}
+function initInputEvent(event, { data, inputType, isComposing }) {
+    assignProps(event, {
+        data,
+        isComposing: Boolean(isComposing),
+        inputType: String(inputType)
+    });
+}
+function initUIEvent(event, { view, detail }) {
+    assignProps(event, {
+        view,
+        detail: sanitizeNumber(detail !== null && detail !== void 0 ? detail : 0)
+    });
+}
+function initUIEventModififiers(event, { altKey, ctrlKey, metaKey, shiftKey, modifierAltGraph, modifierCapsLock, modifierFn, modifierFnLock, modifierNumLock, modifierScrollLock, modifierSymbol, modifierSymbolLock }) {
+    assignProps(event, {
+        altKey: Boolean(altKey),
+        ctrlKey: Boolean(ctrlKey),
+        metaKey: Boolean(metaKey),
+        shiftKey: Boolean(shiftKey),
+        getModifierState (k) {
+            return Boolean({
+                Alt: altKey,
+                AltGraph: modifierAltGraph,
+                CapsLock: modifierCapsLock,
+                Control: ctrlKey,
+                Fn: modifierFn,
+                FnLock: modifierFnLock,
+                Meta: metaKey,
+                NumLock: modifierNumLock,
+                ScrollLock: modifierScrollLock,
+                Shift: shiftKey,
+                Symbol: modifierSymbol,
+                SymbolLock: modifierSymbolLock
+            }[k]);
+        }
+    });
+}
+function initKeyboardEvent(event, { key, code, location, repeat, isComposing, charCode }) {
+    assignProps(event, {
+        key: String(key),
+        code: String(code),
+        location: sanitizeNumber(location),
+        repeat: Boolean(repeat),
+        isComposing: Boolean(isComposing),
+        charCode
+    });
+}
+function initMouseEvent(event, { x, y, screenX, screenY, clientX = x, clientY = y, button, buttons, relatedTarget }) {
+    assignProps(event, {
+        screenX: sanitizeNumber(screenX),
+        screenY: sanitizeNumber(screenY),
+        clientX: sanitizeNumber(clientX),
+        x: sanitizeNumber(clientX),
+        clientY: sanitizeNumber(clientY),
+        y: sanitizeNumber(clientY),
+        button: sanitizeNumber(button),
+        buttons: sanitizeNumber(buttons),
+        relatedTarget
+    });
+}
+function initPointerEvent(event, { pointerId, width, height, pressure, tangentialPressure, tiltX, tiltY, twist, pointerType, isPrimary }) {
+    assignProps(event, {
+        pointerId: sanitizeNumber(pointerId),
+        width: sanitizeNumber(width),
+        height: sanitizeNumber(height),
+        pressure: sanitizeNumber(pressure),
+        tangentialPressure: sanitizeNumber(tangentialPressure),
+        tiltX: sanitizeNumber(tiltX),
+        tiltY: sanitizeNumber(tiltY),
+        twist: sanitizeNumber(twist),
+        pointerType: String(pointerType),
+        isPrimary: Boolean(isPrimary)
+    });
+}
+
+function dispatchUIEvent(target, type, init, preventDefault = false) {
+    if (isMouseEvent(type) || isKeyboardEvent(type)) {
+        init = {
+            ...init,
+            ...this.system.getUIEventModifiers()
+        };
+    }
+    const event = createEvent(type, target, init);
+    return dispatchEvent.call(this, target, event, preventDefault);
+}
+function dispatchEvent(target, event, preventDefault = false) {
+    var _behavior_type;
+    const type = event.type;
+    const behaviorImplementation = preventDefault ? ()=>{} : (_behavior_type = behavior[type]) === null || _behavior_type === void 0 ? void 0 : _behavior_type.call(behavior, event, target, this);
+    if (behaviorImplementation) {
+        event.preventDefault();
+        let defaultPrevented = false;
+        Object.defineProperty(event, 'defaultPrevented', {
+            get: ()=>defaultPrevented
+        });
+        Object.defineProperty(event, 'preventDefault', {
+            value: ()=>{
+                defaultPrevented = event.cancelable;
+            }
+        });
+        wrapEvent(()=>target.dispatchEvent(event));
+        if (!defaultPrevented) {
+            behaviorImplementation();
+        }
+        return !defaultPrevented;
+    }
+    return wrapEvent(()=>target.dispatchEvent(event));
+}
+function dispatchDOMEvent(target, type, init) {
+    const event = createEvent(type, target, init);
+    wrapEvent(()=>target.dispatchEvent(event));
+}
+
+const Interceptor = Symbol('Interceptor for programmatical calls');
+function prepareInterceptor(element, propName, interceptorImpl) {
+    const prototypeDescriptor = Object.getOwnPropertyDescriptor(element.constructor.prototype, propName);
+    const objectDescriptor = Object.getOwnPropertyDescriptor(element, propName);
+    const target = (prototypeDescriptor === null || prototypeDescriptor === void 0 ? void 0 : prototypeDescriptor.set) ? 'set' : 'value';
+    /* istanbul ignore if */ if (typeof (prototypeDescriptor === null || prototypeDescriptor === void 0 ? void 0 : prototypeDescriptor[target]) !== 'function' || prototypeDescriptor[target][Interceptor]) {
+        throw new Error(`Element ${element.tagName} does not implement "${String(propName)}".`);
+    }
+    function intercept(...args) {
+        const { applyNative = false, realArgs, then } = interceptorImpl.call(this, ...args);
+        const realFunc = (!applyNative && objectDescriptor || prototypeDescriptor)[target];
+        if (target === 'set') {
+            realFunc.call(this, realArgs);
+        } else {
+            realFunc.call(this, ...realArgs);
+        }
+        then === null || then === void 0 ? void 0 : then();
+    }
+    intercept[Interceptor] = Interceptor;
+    Object.defineProperty(element, propName, {
+        ...objectDescriptor !== null && objectDescriptor !== void 0 ? objectDescriptor : prototypeDescriptor,
+        [target]: intercept
+    });
+}
+function prepareValueInterceptor(element) {
+    prepareInterceptor(element, 'value', function interceptorImpl(v) {
+        const isUI = isUIValue(v);
+        if (isUI) {
+            startTrackValue(this);
+        }
+        return {
+            applyNative: !!isUI,
+            realArgs: sanitizeValue(this, v),
+            then: isUI ? undefined : ()=>trackOrSetValue(this, String(v))
+        };
+    });
+}
+function sanitizeValue(element, v) {
+    // Workaround for JSDOM
+    if (isElementType(element, 'input', {
+        type: 'number'
+    }) && String(v) !== '' && !Number.isNaN(Number(v))) {
+        // Setting value to "1." results in `null` in JSDOM
+        return String(Number(v));
+    }
+    return String(v);
+}
+function prepareSelectionInterceptor(element) {
+    prepareInterceptor(element, 'setSelectionRange', function interceptorImpl(start, ...others) {
+        const isUI = isUISelectionStart(start);
+        return {
+            applyNative: !!isUI,
+            realArgs: [
+                Number(start),
+                ...others
+            ],
+            then: ()=>isUI ? undefined : setUISelectionClean(element)
+        };
+    });
+    prepareInterceptor(element, 'selectionStart', function interceptorImpl(v) {
+        return {
+            realArgs: v,
+            then: ()=>setUISelectionClean(element)
+        };
+    });
+    prepareInterceptor(element, 'selectionEnd', function interceptorImpl(v) {
+        return {
+            realArgs: v,
+            then: ()=>setUISelectionClean(element)
+        };
+    });
+    prepareInterceptor(element, 'select', function interceptorImpl() {
+        return {
+            realArgs: [],
+            then: ()=>setUISelectionRaw(element, {
+                    anchorOffset: 0,
+                    focusOffset: getUIValue(element).length
+                })
+        };
+    });
+}
+function prepareRangeTextInterceptor(element) {
+    prepareInterceptor(element, 'setRangeText', function interceptorImpl(...realArgs) {
+        return {
+            realArgs,
+            then: ()=>{
+                setUIValueClean(element);
+                setUISelectionClean(element);
+            }
+        };
+    });
+}
+
+const isPrepared = Symbol('Node prepared with document state workarounds');
+function prepareDocument(document) {
+    if (document[isPrepared]) {
+        return;
+    }
+    document.addEventListener('focus', (e)=>{
+        const el = e.target;
+        prepareElement(el);
+    }, {
+        capture: true,
+        passive: true
+    });
+    // Our test environment defaults to `document.body` as `activeElement`.
+    // In other environments this might be `null` when preparing.
+    // istanbul ignore else
+    if (document.activeElement) {
+        prepareElement(document.activeElement);
+    }
+    document.addEventListener('blur', (e)=>{
+        const el = e.target;
+        const initialValue = getInitialValue(el);
+        if (initialValue !== undefined) {
+            if (el.value !== initialValue) {
+                dispatchDOMEvent(el, 'change');
+            }
+            clearInitialValue(el);
+        }
+    }, {
+        capture: true,
+        passive: true
+    });
+    document[isPrepared] = isPrepared;
+}
+function prepareElement(el) {
+    if (el[isPrepared]) {
+        return;
+    }
+    if (isElementType(el, [
+        'input',
+        'textarea'
+    ])) {
+        prepareValueInterceptor(el);
+        prepareSelectionInterceptor(el);
+        prepareRangeTextInterceptor(el);
+    }
+    el[isPrepared] = isPrepared;
+}
+
+function getDocumentFromNode(el) {
+    return isDocument(el) ? el : el.ownerDocument;
+}
+function isDocument(node) {
+    return node.nodeType === 9;
+}
+
+function wait(config) {
+    const delay = config.delay;
+    if (typeof delay !== 'number') {
+        return;
+    }
+    return Promise.all([
+        new Promise((resolve)=>globalThis.setTimeout(()=>resolve(), delay)),
+        config.advanceTimers(delay)
+    ]);
+}
+
+function _define_property$6(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
 var DOM_KEY_LOCATION;
 (function(DOM_KEY_LOCATION) {
     DOM_KEY_LOCATION[DOM_KEY_LOCATION["STANDARD"] = 0] = "STANDARD";
@@ -51581,6 +61907,120 @@ var DOM_KEY_LOCATION;
     DOM_KEY_LOCATION[DOM_KEY_LOCATION["RIGHT"] = 2] = "RIGHT";
     DOM_KEY_LOCATION[DOM_KEY_LOCATION["NUMPAD"] = 3] = "NUMPAD";
 })(DOM_KEY_LOCATION || (DOM_KEY_LOCATION = {}));
+const modifierKeys = [
+    'Alt',
+    'AltGraph',
+    'Control',
+    'Fn',
+    'Meta',
+    'Shift',
+    'Symbol'
+];
+function isModifierKey(key) {
+    return modifierKeys.includes(key);
+}
+const modifierLocks = [
+    'CapsLock',
+    'FnLock',
+    'NumLock',
+    'ScrollLock',
+    'SymbolLock'
+];
+function isModifierLock(key) {
+    return modifierLocks.includes(key);
+}
+class KeyboardHost {
+    isKeyPressed(keyDef) {
+        return !!this.pressed[String(keyDef.code)];
+    }
+    getPressedKeys() {
+        return Object.values(this.pressed).map((p)=>p.keyDef);
+    }
+    /** Press a key */ async keydown(instance, keyDef) {
+        var // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        _this_pressed, _code, _this_pressed_code;
+        const key = String(keyDef.key);
+        const code = String(keyDef.code);
+        const target = getActiveElementOrBody(instance.config.document);
+        this.setKeydownTarget(target);
+        var _;
+        (_ = (_this_pressed = this.pressed)[_code = code]) !== null && _ !== void 0 ? _ : _this_pressed[_code] = {
+            keyDef,
+            unpreventedDefault: false
+        };
+        if (isModifierKey(key)) {
+            this.modifiers[key] = true;
+        }
+        const unprevented = instance.dispatchUIEvent(target, 'keydown', {
+            key,
+            code
+        });
+        if (isModifierLock(key) && !this.modifiers[key]) {
+            this.modifiers[key] = true;
+            this.modifierLockStart[key] = true;
+        }
+        (_this_pressed_code = this.pressed[code]).unpreventedDefault || (_this_pressed_code.unpreventedDefault = unprevented);
+        if (unprevented && this.hasKeyPress(key)) {
+            instance.dispatchUIEvent(getActiveElementOrBody(instance.config.document), 'keypress', {
+                key,
+                code,
+                charCode: keyDef.key === 'Enter' ? 13 : String(keyDef.key).charCodeAt(0)
+            });
+        }
+    }
+    /** Release a key */ async keyup(instance, keyDef) {
+        const key = String(keyDef.key);
+        const code = String(keyDef.code);
+        const unprevented = this.pressed[code].unpreventedDefault;
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.pressed[code];
+        if (isModifierKey(key) && !Object.values(this.pressed).find((p)=>p.keyDef.key === key)) {
+            this.modifiers[key] = false;
+        }
+        instance.dispatchUIEvent(getActiveElementOrBody(instance.config.document), 'keyup', {
+            key,
+            code
+        }, !unprevented);
+        if (isModifierLock(key) && this.modifiers[key]) {
+            if (this.modifierLockStart[key]) {
+                this.modifierLockStart[key] = false;
+            } else {
+                this.modifiers[key] = false;
+            }
+        }
+    }
+    setKeydownTarget(target) {
+        if (target !== this.lastKeydownTarget) {
+            this.carryChar = '';
+        }
+        this.lastKeydownTarget = target;
+    }
+    hasKeyPress(key) {
+        return (key.length === 1 || key === 'Enter') && !this.modifiers.Control && !this.modifiers.Alt;
+    }
+    constructor(system){
+        _define_property$6(this, "system", void 0);
+        _define_property$6(this, "modifiers", {
+            Alt: false,
+            AltGraph: false,
+            CapsLock: false,
+            Control: false,
+            Fn: false,
+            FnLock: false,
+            Meta: false,
+            NumLock: false,
+            ScrollLock: false,
+            Shift: false,
+            Symbol: false,
+            SymbolLock: false
+        });
+        _define_property$6(this, "pressed", {});
+        _define_property$6(this, "carryChar", '');
+        _define_property$6(this, "lastKeydownTarget", undefined);
+        _define_property$6(this, "modifierLockStart", {});
+        this.system = system;
+    }
+}
 
 /**
  * Mapping for a default US-104-QWERTY keyboard
@@ -51763,9 +62203,1418 @@ const defaultKeyMap = [
     }
 ];
 
+function _define_property$5(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+class Buttons {
+    getButtons() {
+        let v = 0;
+        for (const button of Object.keys(this.pressed)){
+            // eslint-disable-next-line no-bitwise
+            v |= 2 ** Number(button);
+        }
+        return v;
+    }
+    down(keyDef) {
+        const button = getMouseButtonId(keyDef.button);
+        if (button in this.pressed) {
+            this.pressed[button].push(keyDef);
+            return undefined;
+        }
+        this.pressed[button] = [
+            keyDef
+        ];
+        return button;
+    }
+    up(keyDef) {
+        const button = getMouseButtonId(keyDef.button);
+        if (button in this.pressed) {
+            this.pressed[button] = this.pressed[button].filter((k)=>k.name !== keyDef.name);
+            if (this.pressed[button].length === 0) {
+                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                delete this.pressed[button];
+                return button;
+            }
+        }
+        return undefined;
+    }
+    constructor(){
+        _define_property$5(this, "pressed", {});
+    }
+}
+const MouseButton = {
+    primary: 0,
+    secondary: 1,
+    auxiliary: 2,
+    back: 3,
+    X1: 3,
+    forward: 4,
+    X2: 4
+};
+function getMouseButtonId(button = 0) {
+    if (button in MouseButton) {
+        return MouseButton[button];
+    }
+    return Number(button);
+}
+// On the `MouseEvent.button` property auxiliary and secondary button are flipped compared to `MouseEvent.buttons`.
+const MouseButtonFlip = {
+    1: 2,
+    2: 1
+};
+function getMouseEventButton(button) {
+    button = getMouseButtonId(button);
+    if (button in MouseButtonFlip) {
+        return MouseButtonFlip[button];
+    }
+    return button;
+}
+
+function _define_property$4(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+class Device {
+    get countPressed() {
+        return this.pressedKeys.size;
+    }
+    isPressed(keyDef) {
+        return this.pressedKeys.has(keyDef.name);
+    }
+    addPressed(keyDef) {
+        return this.pressedKeys.add(keyDef.name);
+    }
+    removePressed(keyDef) {
+        return this.pressedKeys.delete(keyDef.name);
+    }
+    constructor(){
+        _define_property$4(this, "pressedKeys", new Set());
+    }
+}
+
+function getTreeDiff(a, b) {
+    const treeA = [];
+    for(let el = a; el; el = el.parentElement){
+        treeA.push(el);
+    }
+    const treeB = [];
+    for(let el = b; el; el = el.parentElement){
+        treeB.push(el);
+    }
+    let i = 0;
+    for(;; i++){
+        if (i >= treeA.length || i >= treeB.length || treeA[treeA.length - 1 - i] !== treeB[treeB.length - 1 - i]) {
+            break;
+        }
+    }
+    return [
+        treeA.slice(0, treeA.length - i),
+        treeB.slice(0, treeB.length - i),
+        treeB.slice(treeB.length - i)
+    ];
+}
+
+function resolveCaretPosition({ target, node, offset }) {
+    if (hasOwnSelection(target)) {
+        return {
+            node: target,
+            offset: offset !== null && offset !== void 0 ? offset : getUIValue(target).length
+        };
+    } else if (node) {
+        return {
+            node,
+            offset: offset !== null && offset !== void 0 ? offset : node.nodeType === 3 ? node.nodeValue.length : node.childNodes.length
+        };
+    }
+    return findNodeAtTextOffset(target, offset);
+}
+function findNodeAtTextOffset(node, offset, isRoot = true) {
+    // When clicking after the content the browser behavior can be complicated:
+    // 1. If there is textContent after the last element child,
+    // the cursor is moved there.
+    // 2. If there is textContent in the last element child,
+    // the browser moves the cursor to the last non-empty text node inside this element.
+    // 3. Otherwise the cursor is moved to the end of the target.
+    let i = offset === undefined ? node.childNodes.length - 1 : 0;
+    const step = offset === undefined ? -1 : +1;
+    while(offset === undefined ? i >= (isRoot ? Math.max(node.childNodes.length - 1, 0) : 0) : i <= node.childNodes.length){
+        if (offset && i === node.childNodes.length) {
+            throw new Error('The given offset is out of bounds.');
+        }
+        const c = node.childNodes.item(i);
+        const text = String(c.textContent);
+        if (text.length) {
+            if (offset !== undefined && text.length < offset) {
+                offset -= text.length;
+            } else if (c.nodeType === 1) {
+                return findNodeAtTextOffset(c, offset, false);
+            } else {
+                // The pre-commit hooks keeps changing this
+                // See https://github.com/kentcdodds/kcd-scripts/issues/218
+                /* istanbul ignore else */ // eslint-disable-next-line no-lonely-if
+                if (c.nodeType === 3) {
+                    return {
+                        node: c,
+                        offset: offset !== null && offset !== void 0 ? offset : c.nodeValue.length
+                    };
+                }
+            }
+        }
+        i += step;
+    }
+    return {
+        node,
+        offset: node.childNodes.length
+    };
+}
+
+function setSelectionPerMouseDown({ document, target, clickCount, node, offset }) {
+    if (hasNoSelection(target)) {
+        return;
+    }
+    const targetHasOwnSelection = hasOwnSelection(target);
+    // On non-input elements the text selection per multiple click
+    // can extend beyond the target boundaries.
+    // The exact mechanism what is considered in the same line is unclear.
+    // Looks it might be every inline element.
+    // TODO: Check what might be considered part of the same line of text.
+    const text = String(targetHasOwnSelection ? getUIValue(target) : target.textContent);
+    const [start, end] = node ? // which elements might be considered in the same line of text.
+    // TODO: support expanding initial range on multiple clicks if node is given
+    [
+        offset,
+        offset
+    ] : getTextRange(text, offset, clickCount);
+    // TODO: implement modifying selection per shift/ctrl+mouse
+    if (targetHasOwnSelection) {
+        setUISelection(target, {
+            anchorOffset: start !== null && start !== void 0 ? start : text.length,
+            focusOffset: end !== null && end !== void 0 ? end : text.length
+        });
+        return {
+            node: target,
+            start: start !== null && start !== void 0 ? start : 0,
+            end: end !== null && end !== void 0 ? end : text.length
+        };
+    } else {
+        const { node: startNode, offset: startOffset } = resolveCaretPosition({
+            target,
+            node,
+            offset: start
+        });
+        const { node: endNode, offset: endOffset } = resolveCaretPosition({
+            target,
+            node,
+            offset: end
+        });
+        const range = target.ownerDocument.createRange();
+        try {
+            range.setStart(startNode, startOffset);
+            range.setEnd(endNode, endOffset);
+        } catch (e) {
+            throw new Error('The given offset is out of bounds.');
+        }
+        const selection = document.getSelection();
+        selection === null || selection === void 0 ? void 0 : selection.removeAllRanges();
+        selection === null || selection === void 0 ? void 0 : selection.addRange(range.cloneRange());
+        return range;
+    }
+}
+function getTextRange(text, pos, clickCount) {
+    if (clickCount % 3 === 1 || text.length === 0) {
+        return [
+            pos,
+            pos
+        ];
+    }
+    const textPos = pos !== null && pos !== void 0 ? pos : text.length;
+    if (clickCount % 3 === 2) {
+        return [
+            textPos - text.substr(0, pos).match(/(\w+|\s+|\W)?$/)[0].length,
+            pos === undefined ? pos : pos + text.substr(pos).match(/^(\w+|\s+|\W)?/)[0].length
+        ];
+    }
+    // triple click
+    return [
+        textPos - text.substr(0, pos).match(/[^\r\n]*$/)[0].length,
+        pos === undefined ? pos : pos + text.substr(pos).match(/^[^\r\n]*/)[0].length
+    ];
+}
+
+function modifySelectionPerMouseMove(selectionRange, { document, target, node, offset }) {
+    const selectionFocus = resolveCaretPosition({
+        target,
+        node,
+        offset
+    });
+    if ('node' in selectionRange) {
+        // When the mouse is dragged outside of an input/textarea,
+        // the selection is extended to the beginning or end of the input
+        // depending on pointer position.
+        // TODO: extend selection according to pointer position
+        /* istanbul ignore else */ if (selectionFocus.node === selectionRange.node) {
+            const anchorOffset = selectionFocus.offset < selectionRange.start ? selectionRange.end : selectionRange.start;
+            const focusOffset = selectionFocus.offset > selectionRange.end || selectionFocus.offset < selectionRange.start ? selectionFocus.offset : selectionRange.end;
+            setUISelection(selectionRange.node, {
+                anchorOffset,
+                focusOffset
+            });
+        }
+    } else {
+        const range = selectionRange.cloneRange();
+        const cmp = range.comparePoint(selectionFocus.node, selectionFocus.offset);
+        if (cmp < 0) {
+            range.setStart(selectionFocus.node, selectionFocus.offset);
+        } else if (cmp > 0) {
+            range.setEnd(selectionFocus.node, selectionFocus.offset);
+        }
+        const selection = document.getSelection();
+        selection === null || selection === void 0 ? void 0 : selection.removeAllRanges();
+        selection === null || selection === void 0 ? void 0 : selection.addRange(range.cloneRange());
+    }
+}
+
+function isDifferentPointerPosition(positionA, positionB) {
+    var _positionA_coords, _positionB_coords, _positionA_coords1, _positionB_coords1, _positionA_caret, _positionB_caret, _positionA_caret1, _positionB_caret1;
+    return positionA.target !== positionB.target || ((_positionA_coords = positionA.coords) === null || _positionA_coords === void 0 ? void 0 : _positionA_coords.x) !== ((_positionB_coords = positionB.coords) === null || _positionB_coords === void 0 ? void 0 : _positionB_coords.y) || ((_positionA_coords1 = positionA.coords) === null || _positionA_coords1 === void 0 ? void 0 : _positionA_coords1.y) !== ((_positionB_coords1 = positionB.coords) === null || _positionB_coords1 === void 0 ? void 0 : _positionB_coords1.y) || ((_positionA_caret = positionA.caret) === null || _positionA_caret === void 0 ? void 0 : _positionA_caret.node) !== ((_positionB_caret = positionB.caret) === null || _positionB_caret === void 0 ? void 0 : _positionB_caret.node) || ((_positionA_caret1 = positionA.caret) === null || _positionA_caret1 === void 0 ? void 0 : _positionA_caret1.offset) !== ((_positionB_caret1 = positionB.caret) === null || _positionB_caret1 === void 0 ? void 0 : _positionB_caret1.offset);
+}
+
+function _define_property$3(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+/**
+ * This object is the single "virtual" mouse that might be controlled by multiple different pointer devices.
+ */ class Mouse {
+    move(instance, position) {
+        const prevPosition = this.position;
+        const prevTarget = this.getTarget(instance);
+        this.position = position;
+        if (!isDifferentPointerPosition(prevPosition, position)) {
+            return;
+        }
+        const nextTarget = this.getTarget(instance);
+        const init = this.getEventInit('mousemove');
+        const [leave, enter] = getTreeDiff(prevTarget, nextTarget);
+        return {
+            leave: ()=>{
+                if (prevTarget !== nextTarget) {
+                    instance.dispatchUIEvent(prevTarget, 'mouseout', init);
+                    leave.forEach((el)=>instance.dispatchUIEvent(el, 'mouseleave', init));
+                }
+            },
+            enter: ()=>{
+                if (prevTarget !== nextTarget) {
+                    instance.dispatchUIEvent(nextTarget, 'mouseover', init);
+                    enter.forEach((el)=>instance.dispatchUIEvent(el, 'mouseenter', init));
+                }
+            },
+            move: ()=>{
+                instance.dispatchUIEvent(nextTarget, 'mousemove', init);
+                this.modifySelecting(instance);
+            }
+        };
+    }
+    down(instance, keyDef, pointer) {
+        const button = this.buttons.down(keyDef);
+        if (button === undefined) {
+            return;
+        }
+        const target = this.getTarget(instance);
+        this.buttonDownTarget[button] = target;
+        const disabled = isDisabled(target);
+        const init = this.getEventInit('mousedown', keyDef.button);
+        if (disabled || instance.dispatchUIEvent(target, 'mousedown', init)) {
+            this.startSelecting(instance, init.detail);
+            focusElement(target);
+        }
+        if (!disabled && getMouseEventButton(keyDef.button) === 2) {
+            instance.dispatchUIEvent(target, 'contextmenu', this.getEventInit('contextmenu', keyDef.button, pointer));
+        }
+    }
+    up(instance, keyDef, pointer) {
+        const button = this.buttons.up(keyDef);
+        if (button === undefined) {
+            return;
+        }
+        const target = this.getTarget(instance);
+        if (!isDisabled(target)) {
+            instance.dispatchUIEvent(target, 'mouseup', this.getEventInit('mouseup', keyDef.button));
+            this.endSelecting();
+            const clickTarget = getTreeDiff(this.buttonDownTarget[button], target)[2][0];
+            if (clickTarget) {
+                const init = this.getEventInit('click', keyDef.button, pointer);
+                if (init.detail) {
+                    instance.dispatchUIEvent(clickTarget, init.button === 0 ? 'click' : 'auxclick', init);
+                    if (init.button === 0 && init.detail === 2) {
+                        instance.dispatchUIEvent(clickTarget, 'dblclick', {
+                            ...this.getEventInit('dblclick', keyDef.button),
+                            detail: init.detail
+                        });
+                    }
+                }
+            }
+        }
+    }
+    resetClickCount() {
+        this.clickCount.reset();
+    }
+    getEventInit(type, button, pointer) {
+        const init = {
+            ...this.position.coords
+        };
+        if (pointer) {
+            init.pointerId = pointer.pointerId;
+            init.pointerType = pointer.pointerType;
+            init.isPrimary = pointer.isPrimary;
+        }
+        init.button = getMouseEventButton(button);
+        init.buttons = this.buttons.getButtons();
+        if (type === 'mousedown') {
+            init.detail = this.clickCount.getOnDown(init.button);
+        } else if (type === 'mouseup') {
+            init.detail = this.clickCount.getOnUp(init.button);
+        } else if (type === 'click' || type === 'auxclick') {
+            init.detail = this.clickCount.incOnClick(init.button);
+        }
+        return init;
+    }
+    getTarget(instance) {
+        var _this_position_target;
+        return (_this_position_target = this.position.target) !== null && _this_position_target !== void 0 ? _this_position_target : instance.config.document.body;
+    }
+    startSelecting(instance, clickCount) {
+        var _this_position_caret, _this_position_caret1;
+        // TODO: support extending range (shift)
+        this.selecting = setSelectionPerMouseDown({
+            document: instance.config.document,
+            target: this.getTarget(instance),
+            node: (_this_position_caret = this.position.caret) === null || _this_position_caret === void 0 ? void 0 : _this_position_caret.node,
+            offset: (_this_position_caret1 = this.position.caret) === null || _this_position_caret1 === void 0 ? void 0 : _this_position_caret1.offset,
+            clickCount
+        });
+    }
+    modifySelecting(instance) {
+        var _this_position_caret, _this_position_caret1;
+        if (!this.selecting) {
+            return;
+        }
+        modifySelectionPerMouseMove(this.selecting, {
+            document: instance.config.document,
+            target: this.getTarget(instance),
+            node: (_this_position_caret = this.position.caret) === null || _this_position_caret === void 0 ? void 0 : _this_position_caret.node,
+            offset: (_this_position_caret1 = this.position.caret) === null || _this_position_caret1 === void 0 ? void 0 : _this_position_caret1.offset
+        });
+    }
+    endSelecting() {
+        this.selecting = undefined;
+    }
+    constructor(){
+        _define_property$3(this, "position", {});
+        _define_property$3(this, "buttons", new Buttons());
+        _define_property$3(this, "selecting", void 0);
+        _define_property$3(this, "buttonDownTarget", {});
+        // According to spec the `detail` on click events should be the number
+        // of *consecutive* clicks with a specific button.
+        // On `mousedown` and `mouseup` it should be this number increased by one.
+        // But the browsers don't implement it this way.
+        // If another button is pressed,
+        //   in Webkit: the `mouseup` on the previously pressed button has `detail: 0` and no `click`/`auxclick`.
+        //   in Gecko: the `mouseup` and click events have the same detail as the `mousedown`.
+        // If there is a delay while a button is pressed,
+        // the `mouseup` and `click` are normal, but a following `mousedown` starts a new click count.
+        // We'll follow the minimal implementation of Webkit.
+        _define_property$3(this, "clickCount", new class {
+            incOnClick(button) {
+                const current = this.down[button] === undefined ? undefined : Number(this.down[button]) + 1;
+                this.count = this.count[button] === undefined ? {} : {
+                    [button]: Number(this.count[button]) + 1
+                };
+                return current;
+            }
+            getOnDown(button) {
+                var _this_count_button;
+                this.down = {
+                    [button]: (_this_count_button = this.count[button]) !== null && _this_count_button !== void 0 ? _this_count_button : 0
+                };
+                var _this_count_button1;
+                this.count = {
+                    [button]: (_this_count_button1 = this.count[button]) !== null && _this_count_button1 !== void 0 ? _this_count_button1 : 0
+                };
+                return Number(this.count[button]) + 1;
+            }
+            getOnUp(button) {
+                return this.down[button] === undefined ? undefined : Number(this.down[button]) + 1;
+            }
+            reset() {
+                this.count = {};
+            }
+            constructor(){
+                _define_property$3(this, "down", {});
+                _define_property$3(this, "count", {});
+            }
+        }());
+    }
+}
+
+function hasPointerEvents(instance, element) {
+    var _checkPointerEvents;
+    return ((_checkPointerEvents = checkPointerEvents(instance, element)) === null || _checkPointerEvents === void 0 ? void 0 : _checkPointerEvents.pointerEvents) !== 'none';
+}
+function closestPointerEventsDeclaration(element) {
+    const window = getWindow(element);
+    for(let el = element, tree = []; el === null || el === void 0 ? void 0 : el.ownerDocument; el = el.parentElement){
+        tree.push(el);
+        const pointerEvents = window.getComputedStyle(el).pointerEvents;
+        if (pointerEvents && ![
+            'inherit',
+            'unset'
+        ].includes(pointerEvents)) {
+            return {
+                pointerEvents,
+                tree
+            };
+        }
+    }
+    return undefined;
+}
+const PointerEventsCheck = Symbol('Last check for pointer-events');
+function checkPointerEvents(instance, element) {
+    const lastCheck = element[PointerEventsCheck];
+    const needsCheck = instance.config.pointerEventsCheck !== PointerEventsCheckLevel.Never && (!lastCheck || hasBitFlag(instance.config.pointerEventsCheck, PointerEventsCheckLevel.EachApiCall) && lastCheck[ApiLevel.Call] !== getLevelRef(instance, ApiLevel.Call) || hasBitFlag(instance.config.pointerEventsCheck, PointerEventsCheckLevel.EachTrigger) && lastCheck[ApiLevel.Trigger] !== getLevelRef(instance, ApiLevel.Trigger));
+    if (!needsCheck) {
+        return lastCheck === null || lastCheck === void 0 ? void 0 : lastCheck.result;
+    }
+    const declaration = closestPointerEventsDeclaration(element);
+    element[PointerEventsCheck] = {
+        [ApiLevel.Call]: getLevelRef(instance, ApiLevel.Call),
+        [ApiLevel.Trigger]: getLevelRef(instance, ApiLevel.Trigger),
+        result: declaration
+    };
+    return declaration;
+}
+function assertPointerEvents(instance, element) {
+    const declaration = checkPointerEvents(instance, element);
+    if ((declaration === null || declaration === void 0 ? void 0 : declaration.pointerEvents) === 'none') {
+        throw new Error([
+            `Unable to perform pointer interaction as the element ${declaration.tree.length > 1 ? 'inherits' : 'has'} \`pointer-events: none\`:`,
+            '',
+            printTree(declaration.tree)
+        ].join('\n'));
+    }
+}
+function printTree(tree) {
+    return tree.reverse().map((el, i)=>[
+            ''.padEnd(i),
+            el.tagName,
+            el.id && `#${el.id}`,
+            el.hasAttribute('data-testid') && `(testId=${el.getAttribute('data-testid')})`,
+            getLabelDescr(el),
+            tree.length > 1 && i === 0 && '  <-- This element declared `pointer-events: none`',
+            tree.length > 1 && i === tree.length - 1 && '  <-- Asserted pointer events here'
+        ].filter(Boolean).join('')).join('\n');
+}
+function getLabelDescr(element) {
+    var _element_labels;
+    let label;
+    if (element.hasAttribute('aria-label')) {
+        label = element.getAttribute('aria-label');
+    } else if (element.hasAttribute('aria-labelledby')) {
+        var _element_ownerDocument_getElementById_textContent, _element_ownerDocument_getElementById;
+        label = (_element_ownerDocument_getElementById = element.ownerDocument.getElementById(element.getAttribute('aria-labelledby'))) === null || _element_ownerDocument_getElementById === void 0 ? void 0 : (_element_ownerDocument_getElementById_textContent = _element_ownerDocument_getElementById.textContent) === null || _element_ownerDocument_getElementById_textContent === void 0 ? void 0 : _element_ownerDocument_getElementById_textContent.trim();
+    } else if (isElementType(element, [
+        'button',
+        'input',
+        'meter',
+        'output',
+        'progress',
+        'select',
+        'textarea'
+    ]) && ((_element_labels = element.labels) === null || _element_labels === void 0 ? void 0 : _element_labels.length)) {
+        label = Array.from(element.labels).map((el)=>{
+            var _el_textContent;
+            return (_el_textContent = el.textContent) === null || _el_textContent === void 0 ? void 0 : _el_textContent.trim();
+        }).join('|');
+    } else if (isElementType(element, 'button')) {
+        var _element_textContent;
+        label = (_element_textContent = element.textContent) === null || _element_textContent === void 0 ? void 0 : _element_textContent.trim();
+    }
+    label = label === null || label === void 0 ? void 0 : label.replace(/\n/g, '  ');
+    if (Number(label === null || label === void 0 ? void 0 : label.length) > 30) {
+        label = `${label === null || label === void 0 ? void 0 : label.substring(0, 29)}…`;
+    }
+    return label ? `(label=${label})` : '';
+}
+// With the eslint rule and prettier the bitwise operation isn't nice to read
+function hasBitFlag(conf, flag) {
+    // eslint-disable-next-line no-bitwise
+    return (conf & flag) > 0;
+}
+
+function _define_property$2(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+class Pointer {
+    init(instance, position) {
+        this.position = position;
+        const target = this.getTarget(instance);
+        const [, enter] = getTreeDiff(null, target);
+        const init = this.getEventInit();
+        assertPointerEvents(instance, target);
+        instance.dispatchUIEvent(target, 'pointerover', init);
+        enter.forEach((el)=>instance.dispatchUIEvent(el, 'pointerenter', init));
+        return this;
+    }
+    move(instance, position) {
+        const prevPosition = this.position;
+        const prevTarget = this.getTarget(instance);
+        this.position = position;
+        if (!isDifferentPointerPosition(prevPosition, position)) {
+            return;
+        }
+        const nextTarget = this.getTarget(instance);
+        const init = this.getEventInit();
+        const [leave, enter] = getTreeDiff(prevTarget, nextTarget);
+        return {
+            leave: ()=>{
+                if (hasPointerEvents(instance, prevTarget)) {
+                    if (prevTarget !== nextTarget) {
+                        instance.dispatchUIEvent(prevTarget, 'pointerout', init);
+                        leave.forEach((el)=>instance.dispatchUIEvent(el, 'pointerleave', init));
+                    }
+                }
+            },
+            enter: ()=>{
+                assertPointerEvents(instance, nextTarget);
+                if (prevTarget !== nextTarget) {
+                    instance.dispatchUIEvent(nextTarget, 'pointerover', init);
+                    enter.forEach((el)=>instance.dispatchUIEvent(el, 'pointerenter', init));
+                }
+            },
+            move: ()=>{
+                instance.dispatchUIEvent(nextTarget, 'pointermove', init);
+            }
+        };
+    }
+    down(instance, _keyDef) {
+        if (this.isDown) {
+            return;
+        }
+        const target = this.getTarget(instance);
+        assertPointerEvents(instance, target);
+        this.isDown = true;
+        this.isPrevented = !instance.dispatchUIEvent(target, 'pointerdown', this.getEventInit());
+    }
+    up(instance, _keyDef) {
+        if (!this.isDown) {
+            return;
+        }
+        const target = this.getTarget(instance);
+        assertPointerEvents(instance, target);
+        this.isDown = false;
+        instance.dispatchUIEvent(target, 'pointerup', this.getEventInit());
+    }
+    release(instance) {
+        const target = this.getTarget(instance);
+        const [leave] = getTreeDiff(target, null);
+        const init = this.getEventInit();
+        // Currently there is no PointerEventsCheckLevel that would
+        // make this check not use the *asserted* cached value from `up`.
+        /* istanbul ignore else */ if (hasPointerEvents(instance, target)) {
+            instance.dispatchUIEvent(target, 'pointerout', init);
+            leave.forEach((el)=>instance.dispatchUIEvent(el, 'pointerleave', init));
+        }
+        this.isCancelled = true;
+    }
+    getTarget(instance) {
+        var _this_position_target;
+        return (_this_position_target = this.position.target) !== null && _this_position_target !== void 0 ? _this_position_target : instance.config.document.body;
+    }
+    getEventInit() {
+        return {
+            ...this.position.coords,
+            pointerId: this.pointerId,
+            pointerType: this.pointerType,
+            isPrimary: this.isPrimary
+        };
+    }
+    constructor({ pointerId, pointerType, isPrimary }){
+        _define_property$2(this, "pointerId", void 0);
+        _define_property$2(this, "pointerType", void 0);
+        _define_property$2(this, "isPrimary", void 0);
+        _define_property$2(this, "isMultitouch", false);
+        _define_property$2(this, "isCancelled", false);
+        _define_property$2(this, "isDown", false);
+        _define_property$2(this, "isPrevented", false);
+        _define_property$2(this, "position", {});
+        this.pointerId = pointerId;
+        this.pointerType = pointerType;
+        this.isPrimary = isPrimary;
+        this.isMultitouch = !isPrimary;
+    }
+}
+
+function _define_property$1(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+class PointerHost {
+    isKeyPressed(keyDef) {
+        return this.devices.get(keyDef.pointerType).isPressed(keyDef);
+    }
+    async press(instance, keyDef, position) {
+        const pointerName = this.getPointerName(keyDef);
+        const pointer = keyDef.pointerType === 'touch' ? this.pointers.new(pointerName, keyDef).init(instance, position) : this.pointers.get(pointerName);
+        // TODO: deprecate the following implicit setting of position
+        pointer.position = position;
+        if (pointer.pointerType !== 'touch') {
+            this.mouse.position = position;
+        }
+        this.devices.get(keyDef.pointerType).addPressed(keyDef);
+        this.buttons.down(keyDef);
+        pointer.down(instance, keyDef);
+        if (pointer.pointerType !== 'touch' && !pointer.isPrevented) {
+            this.mouse.down(instance, keyDef, pointer);
+        }
+    }
+    async move(instance, pointerName, position) {
+        const pointer = this.pointers.get(pointerName);
+        // In (some?) browsers this order of events can be observed.
+        // This interweaving of events is probably unnecessary.
+        // While the order of mouse (or pointer) events is defined per spec,
+        // the order in which they interweave/follow on a user interaction depends on the implementation.
+        const pointermove = pointer.move(instance, position);
+        const mousemove = pointer.pointerType === 'touch' || pointer.isPrevented && pointer.isDown ? undefined : this.mouse.move(instance, position);
+        pointermove === null || pointermove === void 0 ? void 0 : pointermove.leave();
+        mousemove === null || mousemove === void 0 ? void 0 : mousemove.leave();
+        pointermove === null || pointermove === void 0 ? void 0 : pointermove.enter();
+        mousemove === null || mousemove === void 0 ? void 0 : mousemove.enter();
+        pointermove === null || pointermove === void 0 ? void 0 : pointermove.move();
+        mousemove === null || mousemove === void 0 ? void 0 : mousemove.move();
+    }
+    async release(instance, keyDef, position) {
+        const device = this.devices.get(keyDef.pointerType);
+        device.removePressed(keyDef);
+        this.buttons.up(keyDef);
+        const pointer = this.pointers.get(this.getPointerName(keyDef));
+        // TODO: deprecate the following implicit setting of position
+        pointer.position = position;
+        if (pointer.pointerType !== 'touch') {
+            this.mouse.position = position;
+        }
+        if (device.countPressed === 0) {
+            pointer.up(instance, keyDef);
+        }
+        if (pointer.pointerType === 'touch') {
+            pointer.release(instance);
+        }
+        if (!pointer.isPrevented) {
+            if (pointer.pointerType === 'touch' && !pointer.isMultitouch) {
+                const mousemove = this.mouse.move(instance, pointer.position);
+                mousemove === null || mousemove === void 0 ? void 0 : mousemove.leave();
+                mousemove === null || mousemove === void 0 ? void 0 : mousemove.enter();
+                mousemove === null || mousemove === void 0 ? void 0 : mousemove.move();
+                this.mouse.down(instance, keyDef, pointer);
+            }
+            if (!pointer.isMultitouch) {
+                const mousemove = this.mouse.move(instance, pointer.position);
+                mousemove === null || mousemove === void 0 ? void 0 : mousemove.leave();
+                mousemove === null || mousemove === void 0 ? void 0 : mousemove.enter();
+                mousemove === null || mousemove === void 0 ? void 0 : mousemove.move();
+                this.mouse.up(instance, keyDef, pointer);
+            }
+        }
+    }
+    getPointerName(keyDef) {
+        return keyDef.pointerType === 'touch' ? keyDef.name : keyDef.pointerType;
+    }
+    getPreviousPosition(pointerName) {
+        return this.pointers.has(pointerName) ? this.pointers.get(pointerName).position : undefined;
+    }
+    resetClickCount() {
+        this.mouse.resetClickCount();
+    }
+    getMouseTarget(instance) {
+        var _this_mouse_position_target;
+        return (_this_mouse_position_target = this.mouse.position.target) !== null && _this_mouse_position_target !== void 0 ? _this_mouse_position_target : instance.config.document.body;
+    }
+    setMousePosition(position) {
+        this.mouse.position = position;
+        this.pointers.get('mouse').position = position;
+    }
+    constructor(system){
+        _define_property$1(this, "system", void 0);
+        _define_property$1(this, "mouse", void 0);
+        _define_property$1(this, "buttons", void 0);
+        _define_property$1(this, "devices", new class {
+            get(k) {
+                var // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                _this_registry, _k;
+                var _;
+                (_ = (_this_registry = this.registry)[_k = k]) !== null && _ !== void 0 ? _ : _this_registry[_k] = new Device();
+                return this.registry[k];
+            }
+            constructor(){
+                _define_property$1(this, "registry", {});
+            }
+        }());
+        _define_property$1(this, "pointers", new class {
+            new(pointerName, keyDef) {
+                const isPrimary = keyDef.pointerType !== 'touch' || !Object.values(this.registry).some((p)=>p.pointerType === 'touch' && !p.isCancelled);
+                if (!isPrimary) {
+                    Object.values(this.registry).forEach((p)=>{
+                        if (p.pointerType === keyDef.pointerType && !p.isCancelled) {
+                            p.isMultitouch = true;
+                        }
+                    });
+                }
+                this.registry[pointerName] = new Pointer({
+                    pointerId: this.nextId++,
+                    pointerType: keyDef.pointerType,
+                    isPrimary
+                });
+                return this.registry[pointerName];
+            }
+            get(pointerName) {
+                if (!this.has(pointerName)) {
+                    throw new Error(`Trying to access pointer "${pointerName}" which does not exist.`);
+                }
+                return this.registry[pointerName];
+            }
+            has(pointerName) {
+                return pointerName in this.registry;
+            }
+            constructor(){
+                _define_property$1(this, "registry", {
+                    mouse: new Pointer({
+                        pointerId: 1,
+                        pointerType: 'mouse',
+                        isPrimary: true
+                    })
+                });
+                _define_property$1(this, "nextId", 2);
+            }
+        }());
+        this.system = system;
+        this.buttons = new Buttons();
+        this.mouse = new Mouse();
+    }
+}
+
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+/**
+ * @internal Do not create/alter this by yourself as this type might be subject to changes.
+ */ class System {
+    getUIEventModifiers() {
+        return {
+            altKey: this.keyboard.modifiers.Alt,
+            ctrlKey: this.keyboard.modifiers.Control,
+            metaKey: this.keyboard.modifiers.Meta,
+            shiftKey: this.keyboard.modifiers.Shift,
+            modifierAltGraph: this.keyboard.modifiers.AltGraph,
+            modifierCapsLock: this.keyboard.modifiers.CapsLock,
+            modifierFn: this.keyboard.modifiers.Fn,
+            modifierFnLock: this.keyboard.modifiers.FnLock,
+            modifierNumLock: this.keyboard.modifiers.NumLock,
+            modifierScrollLock: this.keyboard.modifiers.ScrollLock,
+            modifierSymbol: this.keyboard.modifiers.Symbol,
+            modifierSymbolLock: this.keyboard.modifiers.SymbolLock
+        };
+    }
+    constructor(){
+        _define_property(this, "keyboard", new KeyboardHost(this));
+        _define_property(this, "pointer", new PointerHost(this));
+    }
+}
+
+async function click$1(element) {
+    const pointerIn = [];
+    if (!this.config.skipHover) {
+        pointerIn.push({
+            target: element
+        });
+    }
+    pointerIn.push({
+        keys: '[MouseLeft]',
+        target: element
+    });
+    return this.pointer(pointerIn);
+}
+async function dblClick$1(element) {
+    return this.pointer([
+        {
+            target: element
+        },
+        '[MouseLeft][MouseLeft]'
+    ]);
+}
+async function tripleClick$1(element) {
+    return this.pointer([
+        {
+            target: element
+        },
+        '[MouseLeft][MouseLeft][MouseLeft]'
+    ]);
+}
+
+async function hover$1(element) {
+    return this.pointer({
+        target: element
+    });
+}
+async function unhover$1(element) {
+    assertPointerEvents(this, this.system.pointer.getMouseTarget(this));
+    return this.pointer({
+        target: element.ownerDocument.body
+    });
+}
+
+async function tab$1({ shift } = {}) {
+    return this.keyboard(shift === true ? '{Shift>}{Tab}{/Shift}' : shift === false ? '[/ShiftLeft][/ShiftRight]{Tab}' : '{Tab}');
+}
+
+/**
+ * Parse key defintions per `keyboardMap`
+ *
+ * Keys can be referenced by `{key}` or `{special}` as well as physical locations per `[code]`.
+ * Everything else will be interpreted as a typed character - e.g. `a`.
+ * Brackets `{` and `[` can be escaped by doubling - e.g. `foo[[bar` translates to `foo[bar`.
+ * Keeping the key pressed can be written as `{key>}`.
+ * When keeping the key pressed you can choose how long (how many keydown and keypress) the key is pressed `{key>3}`.
+ * You can then release the key per `{key>3/}` or keep it pressed and continue with the next key.
+ */ function parseKeyDef$1(keyboardMap, text) {
+    const defs = [];
+    do {
+        const { type, descriptor, consumedLength, releasePrevious, releaseSelf = true, repeat } = readNextDescriptor(text, 'keyboard');
+        var _keyboardMap_find;
+        const keyDef = (_keyboardMap_find = keyboardMap.find((def)=>{
+            if (type === '[') {
+                var _def_code;
+                return ((_def_code = def.code) === null || _def_code === void 0 ? void 0 : _def_code.toLowerCase()) === descriptor.toLowerCase();
+            } else if (type === '{') {
+                var _def_key;
+                return ((_def_key = def.key) === null || _def_key === void 0 ? void 0 : _def_key.toLowerCase()) === descriptor.toLowerCase();
+            }
+            return def.key === descriptor;
+        })) !== null && _keyboardMap_find !== void 0 ? _keyboardMap_find : {
+            key: 'Unknown',
+            code: 'Unknown',
+            [type === '[' ? 'code' : 'key']: descriptor
+        };
+        defs.push({
+            keyDef,
+            releasePrevious,
+            releaseSelf,
+            repeat
+        });
+        text = text.slice(consumedLength);
+    }while (text)
+    return defs;
+}
+
+async function keyboard$1(text) {
+    const actions = parseKeyDef$1(this.config.keyboardMap, text);
+    for(let i = 0; i < actions.length; i++){
+        await wait(this.config);
+        await keyboardAction(this, actions[i]);
+    }
+}
+async function keyboardAction(instance, { keyDef, releasePrevious, releaseSelf, repeat }) {
+    const { system } = instance;
+    // Release the key automatically if it was pressed before.
+    if (system.keyboard.isKeyPressed(keyDef)) {
+        await system.keyboard.keyup(instance, keyDef);
+    }
+    if (!releasePrevious) {
+        for(let i = 1; i <= repeat; i++){
+            await system.keyboard.keydown(instance, keyDef);
+            if (i < repeat) {
+                await wait(instance.config);
+            }
+        }
+        // Release the key only on the last iteration on `state.repeatKey`.
+        if (releaseSelf) {
+            await system.keyboard.keyup(instance, keyDef);
+        }
+    }
+}
+async function releaseAllKeys(instance) {
+    for (const k of instance.system.keyboard.getPressedKeys()){
+        await instance.system.keyboard.keyup(instance, k);
+    }
+}
+
+function copySelection(target) {
+    const data = hasOwnSelection(target) ? {
+        'text/plain': readSelectedValueFromInput(target)
+    } : {
+        'text/plain': String(target.ownerDocument.getSelection())
+    };
+    const dt = createDataTransfer(getWindow(target));
+    for(const type in data){
+        if (data[type]) {
+            dt.setData(type, data[type]);
+        }
+    }
+    return dt;
+}
+function readSelectedValueFromInput(target) {
+    const sel = getUISelection(target);
+    const val = getUIValue(target);
+    return val.substring(sel.startOffset, sel.endOffset);
+}
+
+async function copy$1() {
+    const doc = this.config.document;
+    var _doc_activeElement;
+    const target = (_doc_activeElement = doc.activeElement) !== null && _doc_activeElement !== void 0 ? _doc_activeElement : /* istanbul ignore next */ doc.body;
+    const clipboardData = copySelection(target);
+    if (clipboardData.items.length === 0) {
+        return;
+    }
+    if (this.dispatchUIEvent(target, 'copy', {
+        clipboardData
+    }) && this.config.writeToClipboard) {
+        await writeDataTransferToClipboard(doc, clipboardData);
+    }
+    return clipboardData;
+}
+
+async function cut$1() {
+    const doc = this.config.document;
+    var _doc_activeElement;
+    const target = (_doc_activeElement = doc.activeElement) !== null && _doc_activeElement !== void 0 ? _doc_activeElement : /* istanbul ignore next */ doc.body;
+    const clipboardData = copySelection(target);
+    if (clipboardData.items.length === 0) {
+        return;
+    }
+    if (this.dispatchUIEvent(target, 'cut', {
+        clipboardData
+    }) && this.config.writeToClipboard) {
+        await writeDataTransferToClipboard(target.ownerDocument, clipboardData);
+    }
+    return clipboardData;
+}
+
+async function paste$1(clipboardData) {
+    const doc = this.config.document;
+    var _doc_activeElement;
+    const target = (_doc_activeElement = doc.activeElement) !== null && _doc_activeElement !== void 0 ? _doc_activeElement : /* istanbul ignore next */ doc.body;
+    var _ref;
+    const dataTransfer = (_ref = typeof clipboardData === 'string' ? getClipboardDataFromString(doc, clipboardData) : clipboardData) !== null && _ref !== void 0 ? _ref : await readDataTransferFromClipboard(doc).catch(()=>{
+        throw new Error('`userEvent.paste()` without `clipboardData` requires the `ClipboardAPI` to be available.');
+    });
+    this.dispatchUIEvent(target, 'paste', {
+        clipboardData: dataTransfer
+    });
+}
+function getClipboardDataFromString(doc, text) {
+    const dt = createDataTransfer(getWindow(doc));
+    dt.setData('text', text);
+    return dt;
+}
+
+function parseKeyDef(pointerMap, keys) {
+    const defs = [];
+    do {
+        const { descriptor, consumedLength, releasePrevious, releaseSelf = true } = readNextDescriptor(keys, 'pointer');
+        const keyDef = pointerMap.find((p)=>p.name === descriptor);
+        if (keyDef) {
+            defs.push({
+                keyDef,
+                releasePrevious,
+                releaseSelf
+            });
+        }
+        keys = keys.slice(consumedLength);
+    }while (keys)
+    return defs;
+}
+
+async function pointer$1(input) {
+    const { pointerMap } = this.config;
+    const actions = [];
+    (Array.isArray(input) ? input : [
+        input
+    ]).forEach((actionInput)=>{
+        if (typeof actionInput === 'string') {
+            actions.push(...parseKeyDef(pointerMap, actionInput));
+        } else if ('keys' in actionInput) {
+            actions.push(...parseKeyDef(pointerMap, actionInput.keys).map((i)=>({
+                    ...actionInput,
+                    ...i
+                })));
+        } else {
+            actions.push(actionInput);
+        }
+    });
+    for(let i = 0; i < actions.length; i++){
+        await wait(this.config);
+        await pointerAction(this, actions[i]);
+    }
+    this.system.pointer.resetClickCount();
+}
+async function pointerAction(instance, action) {
+    var _previousPosition_caret, _previousPosition_caret1;
+    const pointerName = 'pointerName' in action && action.pointerName ? action.pointerName : 'keyDef' in action ? instance.system.pointer.getPointerName(action.keyDef) : 'mouse';
+    const previousPosition = instance.system.pointer.getPreviousPosition(pointerName);
+    var _action_target, _action_coords, _action_node, _action_offset;
+    const position = {
+        target: (_action_target = action.target) !== null && _action_target !== void 0 ? _action_target : getPrevTarget(instance, previousPosition),
+        coords: (_action_coords = action.coords) !== null && _action_coords !== void 0 ? _action_coords : previousPosition === null || previousPosition === void 0 ? void 0 : previousPosition.coords,
+        caret: {
+            node: (_action_node = action.node) !== null && _action_node !== void 0 ? _action_node : hasCaretPosition(action) ? undefined : previousPosition === null || previousPosition === void 0 ? void 0 : (_previousPosition_caret = previousPosition.caret) === null || _previousPosition_caret === void 0 ? void 0 : _previousPosition_caret.node,
+            offset: (_action_offset = action.offset) !== null && _action_offset !== void 0 ? _action_offset : hasCaretPosition(action) ? undefined : previousPosition === null || previousPosition === void 0 ? void 0 : (_previousPosition_caret1 = previousPosition.caret) === null || _previousPosition_caret1 === void 0 ? void 0 : _previousPosition_caret1.offset
+        }
+    };
+    if ('keyDef' in action) {
+        if (instance.system.pointer.isKeyPressed(action.keyDef)) {
+            setLevelRef(instance, ApiLevel.Trigger);
+            await instance.system.pointer.release(instance, action.keyDef, position);
+        }
+        if (!action.releasePrevious) {
+            setLevelRef(instance, ApiLevel.Trigger);
+            await instance.system.pointer.press(instance, action.keyDef, position);
+            if (action.releaseSelf) {
+                setLevelRef(instance, ApiLevel.Trigger);
+                await instance.system.pointer.release(instance, action.keyDef, position);
+            }
+        }
+    } else {
+        setLevelRef(instance, ApiLevel.Trigger);
+        await instance.system.pointer.move(instance, pointerName, position);
+    }
+}
+function hasCaretPosition(action) {
+    var _action_target, _ref;
+    return !!((_ref = (_action_target = action.target) !== null && _action_target !== void 0 ? _action_target : action.node) !== null && _ref !== void 0 ? _ref : action.offset !== undefined);
+}
+function getPrevTarget(instance, position) {
+    if (!position) {
+        throw new Error('This pointer has no previous position. Provide a target property!');
+    }
+    var _position_target;
+    return (_position_target = position.target) !== null && _position_target !== void 0 ? _position_target : instance.config.document.body;
+}
+
+async function clear$1(element) {
+    if (!isEditable(element) || isDisabled(element)) {
+        throw new Error('clear()` is only supported on editable elements.');
+    }
+    focusElement(element);
+    if (element.ownerDocument.activeElement !== element) {
+        throw new Error('The element to be cleared could not be focused.');
+    }
+    selectAll(element);
+    if (!isAllSelected(element)) {
+        throw new Error('The element content to be cleared could not be selected.');
+    }
+    input(this, element, '', 'deleteContentBackward');
+}
+
+async function selectOptions$1(select, values) {
+    return selectOptionsBase.call(this, true, select, values);
+}
+async function deselectOptions$1(select, values) {
+    return selectOptionsBase.call(this, false, select, values);
+}
+async function selectOptionsBase(newValue, select, values) {
+    if (!newValue && !select.multiple) {
+        throw getConfig().getElementError(`Unable to deselect an option in a non-multiple select. Use selectOptions to change the selection instead.`, select);
+    }
+    const valArray = Array.isArray(values) ? values : [
+        values
+    ];
+    const allOptions = Array.from(select.querySelectorAll('option, [role="option"]'));
+    const selectedOptions = valArray.map((val)=>{
+        if (typeof val !== 'string' && allOptions.includes(val)) {
+            return val;
+        } else {
+            const matchingOption = allOptions.find((o)=>o.value === val || o.innerHTML === val);
+            if (matchingOption) {
+                return matchingOption;
+            } else {
+                throw getConfig().getElementError(`Value "${String(val)}" not found in options`, select);
+            }
+        }
+    }).filter((option)=>!isDisabled(option));
+    if (isDisabled(select) || !selectedOptions.length) return;
+    const selectOption = (option)=>{
+        option.selected = newValue;
+        this.dispatchUIEvent(select, 'input', {
+            bubbles: true,
+            cancelable: false,
+            composed: true
+        });
+        this.dispatchUIEvent(select, 'change');
+    };
+    if (isElementType(select, 'select')) {
+        if (select.multiple) {
+            for (const option of selectedOptions){
+                const withPointerEvents = this.config.pointerEventsCheck === 0 ? true : hasPointerEvents(this, option);
+                // events fired for multiple select are weird. Can't use hover...
+                if (withPointerEvents) {
+                    this.dispatchUIEvent(option, 'pointerover');
+                    this.dispatchUIEvent(select, 'pointerenter');
+                    this.dispatchUIEvent(option, 'mouseover');
+                    this.dispatchUIEvent(select, 'mouseenter');
+                    this.dispatchUIEvent(option, 'pointermove');
+                    this.dispatchUIEvent(option, 'mousemove');
+                    this.dispatchUIEvent(option, 'pointerdown');
+                    this.dispatchUIEvent(option, 'mousedown');
+                }
+                focusElement(select);
+                if (withPointerEvents) {
+                    this.dispatchUIEvent(option, 'pointerup');
+                    this.dispatchUIEvent(option, 'mouseup');
+                }
+                selectOption(option);
+                if (withPointerEvents) {
+                    this.dispatchUIEvent(option, 'click');
+                }
+                await wait(this.config);
+            }
+        } else if (selectedOptions.length === 1) {
+            const withPointerEvents = this.config.pointerEventsCheck === 0 ? true : hasPointerEvents(this, select);
+            // the click to open the select options
+            if (withPointerEvents) {
+                await this.click(select);
+            } else {
+                focusElement(select);
+            }
+            selectOption(selectedOptions[0]);
+            if (withPointerEvents) {
+                // the browser triggers another click event on the select for the click on the option
+                // this second click has no 'down' phase
+                this.dispatchUIEvent(select, 'pointerover');
+                this.dispatchUIEvent(select, 'pointerenter');
+                this.dispatchUIEvent(select, 'mouseover');
+                this.dispatchUIEvent(select, 'mouseenter');
+                this.dispatchUIEvent(select, 'pointerup');
+                this.dispatchUIEvent(select, 'mouseup');
+                this.dispatchUIEvent(select, 'click');
+            }
+            await wait(this.config);
+        } else {
+            throw getConfig().getElementError(`Cannot select multiple options on a non-multiple select`, select);
+        }
+    } else if (select.getAttribute('role') === 'listbox') {
+        for (const option of selectedOptions){
+            await this.click(option);
+            await this.unhover(option);
+        }
+    } else {
+        throw getConfig().getElementError(`Cannot select options on elements that are neither select nor listbox elements`, select);
+    }
+}
+
+async function type$1(element, text, { skipClick = this.config.skipClick, skipAutoClose = this.config.skipAutoClose, initialSelectionStart, initialSelectionEnd } = {}) {
+    // TODO: properly type guard
+    // we use this workaround for now to prevent changing behavior
+    if (element.disabled) return;
+    if (!skipClick) {
+        await this.click(element);
+    }
+    if (initialSelectionStart !== undefined) {
+        setSelectionRange(element, initialSelectionStart, initialSelectionEnd !== null && initialSelectionEnd !== void 0 ? initialSelectionEnd : initialSelectionStart);
+    }
+    await this.keyboard(text);
+    if (!skipAutoClose) {
+        await releaseAllKeys(this);
+    }
+}
+
+// It is not possible to create a real FileList programmatically.
+// Therefore assigning `files` property with a programmatically created FileList results in an error.
+// Just assigning the property (as per fireEvent) breaks the interweaving with the `value` property.
+const fakeFiles = Symbol('files and value properties are mocked');
+function restoreProperty(obj, prop, descriptor) {
+    if (descriptor) {
+        Object.defineProperty(obj, prop, descriptor);
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete obj[prop];
+    }
+}
+function setFiles(el, files) {
+    var _el_fakeFiles;
+    (_el_fakeFiles = el[fakeFiles]) === null || _el_fakeFiles === void 0 ? void 0 : _el_fakeFiles.restore();
+    const typeDescr = Object.getOwnPropertyDescriptor(el, 'type');
+    const valueDescr = Object.getOwnPropertyDescriptor(el, 'value');
+    const filesDescr = Object.getOwnPropertyDescriptor(el, 'files');
+    function restore() {
+        restoreProperty(el, 'type', typeDescr);
+        restoreProperty(el, 'value', valueDescr);
+        restoreProperty(el, 'files', filesDescr);
+    }
+    el[fakeFiles] = {
+        restore
+    };
+    Object.defineProperties(el, {
+        files: {
+            configurable: true,
+            get: ()=>files
+        },
+        value: {
+            configurable: true,
+            get: ()=>files.length ? `C:\\fakepath\\${files[0].name}` : '',
+            set (v) {
+                if (v === '') {
+                    restore();
+                } else {
+                    var _valueDescr_set;
+                    valueDescr === null || valueDescr === void 0 ? void 0 : (_valueDescr_set = valueDescr.set) === null || _valueDescr_set === void 0 ? void 0 : _valueDescr_set.call(el, v);
+                }
+            }
+        },
+        type: {
+            configurable: true,
+            get: ()=>'file',
+            set (v) {
+                if (v !== 'file') {
+                    restore();
+                    el.type = v;
+                }
+            }
+        }
+    });
+}
+
+async function upload$1(element, fileOrFiles) {
+    const input = isElementType(element, 'label') ? element.control : element;
+    if (!input || !isElementType(input, 'input', {
+        type: 'file'
+    })) {
+        throw new TypeError(`The ${input === element ? 'given' : 'associated'} ${input === null || input === void 0 ? void 0 : input.tagName} element does not accept file uploads`);
+    }
+    if (isDisabled(element)) return;
+    const files = (Array.isArray(fileOrFiles) ? fileOrFiles : [
+        fileOrFiles
+    ]).filter((file)=>!this.config.applyAccept || isAcceptableFile(file, input.accept)).slice(0, input.multiple ? undefined : 1);
+    const fileDialog = ()=>{
+        var _input_files;
+        // do not fire an input event if the file selection does not change
+        if (files.length === ((_input_files = input.files) === null || _input_files === void 0 ? void 0 : _input_files.length) && files.every((f, i)=>{
+            var _input_files;
+            return f === ((_input_files = input.files) === null || _input_files === void 0 ? void 0 : _input_files.item(i));
+        })) {
+            return;
+        }
+        setFiles(input, createFileList(getWindow(element), files));
+        this.dispatchUIEvent(input, 'input');
+        this.dispatchUIEvent(input, 'change');
+    };
+    input.addEventListener('fileDialog', fileDialog);
+    await this.click(element);
+    input.removeEventListener('fileDialog', fileDialog);
+}
+function isAcceptableFile(file, accept) {
+    if (!accept) {
+        return true;
+    }
+    const wildcards = [
+        'audio/*',
+        'image/*',
+        'video/*'
+    ];
+    return accept.split(',').some((acceptToken)=>{
+        if (acceptToken.startsWith('.')) {
+            // tokens starting with a dot represent a file extension
+            return file.name.endsWith(acceptToken);
+        } else if (wildcards.includes(acceptToken)) {
+            return file.type.startsWith(acceptToken.substr(0, acceptToken.length - 1));
+        }
+        return file.type === acceptToken;
+    });
+}
+
+const userEventApi = {
+    click: click$1,
+    dblClick: dblClick$1,
+    tripleClick: tripleClick$1,
+    hover: hover$1,
+    unhover: unhover$1,
+    tab: tab$1,
+    keyboard: keyboard$1,
+    copy: copy$1,
+    cut: cut$1,
+    paste: paste$1,
+    pointer: pointer$1,
+    clear: clear$1,
+    deselectOptions: deselectOptions$1,
+    selectOptions: selectOptions$1,
+    type: type$1,
+    upload: upload$1
+};
+
+/**
+ * Wrap an internal Promise
+ */ function wrapAsync(implementation) {
+    return getConfig().asyncWrapper(implementation);
+}
+
 /**
  * Default options applied when API is called per `userEvent.anyApi()`
- */ ({
+ */ const defaultOptionsDirect = {
     applyAccept: true,
     autoModify: true,
     delay: 0,
@@ -51778,31 +63627,229 @@ const defaultKeyMap = [
     skipHover: false,
     writeToClipboard: false,
     advanceTimers: ()=>Promise.resolve()
+};
+/**
+ * Default options applied when API is called per `userEvent().anyApi()`
+ */ const defaultOptionsSetup = {
+    ...defaultOptionsDirect,
+    writeToClipboard: true
+};
+function createConfig(options = {}, defaults = defaultOptionsSetup, node) {
+    const document = getDocument(options, node, defaults);
+    return {
+        ...defaults,
+        ...options,
+        document
+    };
+}
+/**
+ * Start a "session" with userEvent.
+ * All APIs returned by this function share an input device state and a default configuration.
+ */ function setupMain(options = {}) {
+    const config = createConfig(options);
+    prepareDocument(config.document);
+    var _config_document_defaultView;
+    const view = (_config_document_defaultView = config.document.defaultView) !== null && _config_document_defaultView !== void 0 ? _config_document_defaultView : /* istanbul ignore next */ globalThis.window;
+    attachClipboardStubToView(view);
+    return createInstance(config).api;
+}
+/**
+ * Setup in direct call per `userEvent.anyApi()`
+ */ function setupDirect({ keyboardState, pointerState, ...options } = {}, node) {
+    const config = createConfig(options, defaultOptionsDirect, node);
+    prepareDocument(config.document);
+    var _ref;
+    const system = (_ref = pointerState !== null && pointerState !== void 0 ? pointerState : keyboardState) !== null && _ref !== void 0 ? _ref : new System();
+    return {
+        api: createInstance(config, system).api,
+        system
+    };
+}
+/**
+ * Create a set of callbacks with different default settings but the same state.
+ */ function setupSub(options) {
+    return createInstance({
+        ...this.config,
+        ...options
+    }, this.system).api;
+}
+function wrapAndBindImpl(instance, impl) {
+    function method(...args) {
+        setLevelRef(instance, ApiLevel.Call);
+        return wrapAsync(()=>impl.apply(instance, args).then(async (ret)=>{
+                await wait(instance.config);
+                return ret;
+            }));
+    }
+    Object.defineProperty(method, 'name', {
+        get: ()=>impl.name
+    });
+    return method;
+}
+function createInstance(config, system = new System()) {
+    const instance = {};
+    Object.assign(instance, {
+        config,
+        dispatchEvent: dispatchEvent.bind(instance),
+        dispatchUIEvent: dispatchUIEvent.bind(instance),
+        system,
+        levelRefs: {},
+        ...userEventApi
+    });
+    return {
+        instance,
+        api: {
+            ...Object.fromEntries(Object.entries(userEventApi).map(([name, api])=>[
+                    name,
+                    wrapAndBindImpl(instance, api)
+                ])),
+            setup: setupSub.bind(instance)
+        }
+    };
+}
+function getDocument(options, node, defaults) {
+    var _options_document, _ref;
+    return (_ref = (_options_document = options.document) !== null && _options_document !== void 0 ? _options_document : node && getDocumentFromNode(node)) !== null && _ref !== void 0 ? _ref : defaults.document;
+}
+
+function clear(element) {
+    return setupDirect().api.clear(element);
+}
+function click(element, options = {}) {
+    return setupDirect(options, element).api.click(element);
+}
+function copy(options = {}) {
+    return setupDirect(options).api.copy();
+}
+function cut(options = {}) {
+    return setupDirect(options).api.cut();
+}
+function dblClick(element, options = {}) {
+    return setupDirect(options).api.dblClick(element);
+}
+function deselectOptions(select, values, options = {}) {
+    return setupDirect(options).api.deselectOptions(select, values);
+}
+function hover(element, options = {}) {
+    return setupDirect(options).api.hover(element);
+}
+async function keyboard(text, options = {}) {
+    const { api, system } = setupDirect(options);
+    return api.keyboard(text).then(()=>system);
+}
+async function pointer(input, options = {}) {
+    const { api, system } = setupDirect(options);
+    return api.pointer(input).then(()=>system);
+}
+function paste(clipboardData, options) {
+    return setupDirect(options).api.paste(clipboardData);
+}
+function selectOptions(select, values, options = {}) {
+    return setupDirect(options).api.selectOptions(select, values);
+}
+function tripleClick(element, options = {}) {
+    return setupDirect(options).api.tripleClick(element);
+}
+function type(element, text, options = {}) {
+    return setupDirect(options, element).api.type(element, text, options);
+}
+function unhover(element, options = {}) {
+    const { api, system } = setupDirect(options);
+    system.pointer.setMousePosition({
+        target: element
+    });
+    return api.unhover(element);
+}
+function upload(element, fileOrFiles, options = {}) {
+    return setupDirect(options).api.upload(element, fileOrFiles);
+}
+function tab(options = {}) {
+    return setupDirect().api.tab(options);
+}
+
+var directApi = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    clear: clear,
+    click: click,
+    copy: copy,
+    cut: cut,
+    dblClick: dblClick,
+    deselectOptions: deselectOptions,
+    hover: hover,
+    keyboard: keyboard,
+    paste: paste,
+    pointer: pointer,
+    selectOptions: selectOptions,
+    tab: tab,
+    tripleClick: tripleClick,
+    type: type,
+    unhover: unhover,
+    upload: upload
 });
 
+const userEvent = {
+    ...directApi,
+    setup: setupMain
+};
+
+// `role="menu"` test
+/**
+ * Expected keyboard navigation:
+ *
+ * Trigger button:
+ *
+ * Enter: Open the menu
+ * Space: Open the menu
+ * ArrowDown: Open the menu
+ * ArrowUp: Open the menu
+ * ArrowRight: Open the menu
+ * ArrowLeft: Open the menu
+ *
+ * Menu items:
+ *
+ * ArrowUp: Cycle through items starting with current item to previous item
+ * ArrowDown: Cycle through items starting with current item to next item
+ * ArrowLeft: Closes submenu and sets focus back to parent item
+ * ArrowRight: Opens submenu and sets focus to first item
+ * Enter: Triggers the focused item
+ * Space: Triggers the focused item
+ * Home: Sets focus to first item
+ * PageUp: Sets focus to first item
+ * End: Sets focus to last item
+ * PageDown: Sets focus to last item
+ * Escape: Closes the menu
+ */
+var validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox'];
 function expandEvent(keys, elem, delay) {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, keys_1;
-        return __generator(this, function (_a) {
-            // Is there a way to determine with context this function is currently in? (Jest, Playwright)
-            console.log('-1');
-            // Jest:
-            for (_i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
-                keys_1[_i];
-                act(function () {
-                    elem.focus();
-                });
-                expect(true).toBe(true);
-                // await userEvent.keyboard(`{${key}}`)
-                // // expect(elem).toBeExpanded()
-                // const elemRole = document.activeElement?.getAttribute('role')
-                // expect(validElemRole).toContain(elemRole)
-                // if (delay) await delay();
-                // await userEvent.keyboard(`{Escape}`)
-                // // expect(elem).toBeCollapsed();
-                // expect(document.activeElement).toBe(elem)
+        var _i, keys_1, key, elemRole;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    // Is there a way to determine with context this function is currently in? (Jest, Playwright)
+                    console.log('-1');
+                    _i = 0, keys_1 = keys;
+                    _b.label = 1;
+                case 1:
+                    if (!(_i < keys_1.length)) return [3 /*break*/, 4];
+                    key = keys_1[_i];
+                    act(function () {
+                        elem.focus();
+                    });
+                    return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))
+                        // expect(elem).toBeExpanded()
+                    ];
+                case 2:
+                    _b.sent();
+                    elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
+                    expect(validElemRole).toContain(elemRole);
+                    _b.label = 3;
+                case 3:
+                    _i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
             }
-            return [2 /*return*/];
         });
     });
 }

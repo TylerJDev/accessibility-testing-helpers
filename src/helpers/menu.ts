@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom'
 import {act, RenderResult, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -42,13 +43,11 @@ export async function expandEvent(keys: string[], elem: HTMLElement, delay) {
       elem.focus()
     })
 
-    expect(true).toBe(true)
+    await userEvent.keyboard(`{${key}}`)
+    // expect(elem).toBeExpanded()
 
-    // await userEvent.keyboard(`{${key}}`)
-    // // expect(elem).toBeExpanded()
-
-    // const elemRole = document.activeElement?.getAttribute('role')
-    // expect(validElemRole).toContain(elemRole)
+    const elemRole = document.activeElement?.getAttribute('role')
+    expect(validElemRole).toContain(elemRole)
 
     // if (delay) await delay();
     // await userEvent.keyboard(`{Escape}`)
