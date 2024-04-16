@@ -55625,6 +55625,8 @@ function expandEvent(keys, elem, delay) {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    // Is there a way to determine with context this function is currently in? (Jest, Playwright)
+                    console.log('-1');
                     _i = 0, keys_1 = keys;
                     _b.label = 1;
                 case 1:
@@ -55633,6 +55635,7 @@ function expandEvent(keys, elem, delay) {
                     act(function () {
                         elem.focus();
                     });
+                    console.log('0, loop');
                     return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))];
                 case 2:
                     _b.sent();
@@ -55691,6 +55694,7 @@ function navigationEvent(elem, component, strict, delay) {
                     // - Test submenu navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L214)
                     // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
                     // Jest:
+                    console.log('1');
                     act(function () {
                         elem.focus();
                     });
@@ -55703,6 +55707,7 @@ function navigationEvent(elem, component, strict, delay) {
                 case 2:
                     menu = _e.sent();
                     menuNavigationSteps = menuNavigation(menu);
+                    console.log('2');
                     _i = 0, _a = Object.keys(menuNavigationSteps);
                     _e.label = 3;
                 case 3:

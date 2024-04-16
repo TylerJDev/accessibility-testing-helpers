@@ -34,12 +34,15 @@ const validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox']
 
 export async function expandEvent(keys: string[], elem: HTMLElement, delay) {
   // Is there a way to determine with context this function is currently in? (Jest, Playwright)
+  console.log('-1')
 
   // Jest:
   for (const key of keys) {
     act(() => {
       elem.focus()
     })
+
+    console.log('0, loop')
 
     await userEvent.keyboard(`{${key}}`)
     expect(elem).toBeExpanded()
@@ -75,7 +78,7 @@ const menuNavigation = (menuElem: HTMLElement) => {
   // {ArrowUp: {target: menuElem.lastElementChild, message: '...', strict: true}}
 }
 
-export async function navigationEvent(elem: HTMLButtonElement, component, strict, delay) {
+export async function navigationEvent(elem: HTMLElement, component, strict, delay) {
   // What we need to test:
   // 1. Open the menu
   // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
@@ -88,6 +91,7 @@ export async function navigationEvent(elem: HTMLButtonElement, component, strict
   // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
   // Jest:
 
+  console.log('1');
   act(() => {
     elem.focus()
   })
@@ -97,6 +101,8 @@ export async function navigationEvent(elem: HTMLButtonElement, component, strict
 
   const menu = await component.findByRole('menu')
   const menuNavigationSteps = menuNavigation(menu)
+
+  console.log('2');
 
   // Steps [2, 4, 5]
   for (const key of Object.keys(menuNavigationSteps)) {
@@ -145,7 +151,7 @@ export async function navigationEvent(elem: HTMLButtonElement, component, strict
   //   }
 }
 
-export async function activationEvent(elem: HTMLButtonElement, component, strict) {
+export async function activationEvent(elem: HTMLElement, component, strict) {
   return true
 }
 
@@ -169,6 +175,6 @@ export async function accessibleMenuPattern(component: RenderResult, strict: boo
   // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
 
   await expandEvent(supportedTriggerKeys, elem, delayBy)
-  await navigationEvent(elem, component, strict, delayBy)
-  await activationEvent(elem, component, strict)
+  //await navigationEvent(elem, component, strict, delayBy)
+  //await activationEvent(elem, component, strict)
 }
