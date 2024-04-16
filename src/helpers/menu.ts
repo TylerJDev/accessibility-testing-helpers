@@ -77,78 +77,78 @@ const menuNavigation = (menuElem: HTMLElement) => {
   // {ArrowUp: {target: menuElem.lastElementChild, message: '...', strict: true}}
 }
 
-// export async function navigationEvent(elem: HTMLElement, component, strict, delay) {
-//   // What we need to test:
-//   // 1. Open the menu
-//   // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
-//   // 3. [TODO] Ensure that focus trap loops properly (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L68)
-//   // 4. [DONE] Ensure that 'Home' and 'End' keys work properly
-//   // 5. [DONE] Ensure that 'PageUp' and 'PageDown' keys work properly
-//   // Other things to consider:
-//   // - Ensure that the menu is closed when pressing "Tab and Shift + Tab" (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L126)
-//   // - Test submenu navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L214)
-//   // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
-//   // Jest:
+export async function navigationEvent(elem: HTMLElement, component, strict, delay, userEvent) {
+  // What we need to test:
+  // 1. Open the menu
+  // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
+  // 3. [TODO] Ensure that focus trap loops properly (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L68)
+  // 4. [DONE] Ensure that 'Home' and 'End' keys work properly
+  // 5. [DONE] Ensure that 'PageUp' and 'PageDown' keys work properly
+  // Other things to consider:
+  // - Ensure that the menu is closed when pressing "Tab and Shift + Tab" (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L126)
+  // - Test submenu navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L214)
+  // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
+  // Jest:
 
-//   console.log('1');
-//   act(() => {
-//     elem.focus()
-//   })
+  console.log('1');
+  act(() => {
+    elem.focus()
+  })
 
-//   // Steps [1]
-//   await userEvent.keyboard(`{Enter}`)
+  // Steps [1]
+  await userEvent.keyboard(`{Enter}`)
 
-//   const menu = await component.findByRole('menu')
-//   const menuNavigationSteps = menuNavigation(menu)
+  const menu = await component.findByRole('menu')
+  const menuNavigationSteps = menuNavigation(menu)
 
-//   console.log('2');
+  console.log('2');
 
-//   // Steps [2, 4, 5]
-//   for (const key of Object.keys(menuNavigationSteps)) {
-//     if (delay) await delay();
-//     // TODO: Can we make this easier to debug without messing with the internals of this script?
-//     // TODO: (e.g. a log statement that only shows if something is true in the environment)
-//     await userEvent.keyboard(`{${key}}`)
+  // Steps [2, 4, 5]
+  for (const key of Object.keys(menuNavigationSteps)) {
+    if (delay) await delay();
+    // TODO: Can we make this easier to debug without messing with the internals of this script?
+    // TODO: (e.g. a log statement that only shows if something is true in the environment)
+    await userEvent.keyboard(`{${key}}`)
 
-//     if (menuNavigationSteps[key] instanceof Array) {
-//       expect(menuNavigationSteps[key]).toContain(document.activeElement?.closest('li'))
-//       continue
-//     }
+    if (menuNavigationSteps[key] instanceof Array) {
+      expect(menuNavigationSteps[key]).toContain(document.activeElement?.closest('li'))
+      continue
+    }
 
-//     expect(document.activeElement?.closest('li')).toBe(menuNavigationSteps[key])
-//     // TODO: If submenu, do ...
-//   }
+    expect(document.activeElement?.closest('li')).toBe(menuNavigationSteps[key])
+    // TODO: If submenu, do ...
+  }
 
-//   if (strict) {
-//     const menu = await component.findByRole('menu')
-//     // Test character navigation
-//     // TODO, make this a function
-//     await userEvent.keyboard(`{Escape}`)
-//     await userEvent.keyboard(`{Enter}`)
+  if (strict) {
+    const menu = await component.findByRole('menu')
+    // Test character navigation
+    // TODO, make this a function
+    await userEvent.keyboard(`{Escape}`)
+    await userEvent.keyboard(`{Enter}`)
 
-//     // TODO: Maybe make this optional? If there aren't any valid characters (e.g. reaction emoji only menu), then -
-//     // TODO: we should test this step, as there's no "alphanumeric" character to test.
-//     const menuItems = menu.querySelectorAll('li') // TODO!: This should test menuitem, menuitemradio, and menuitemcheckbox.
+    // TODO: Maybe make this optional? If there aren't any valid characters (e.g. reaction emoji only menu), then -
+    // TODO: we should test this step, as there's no "alphanumeric" character to test.
+    const menuItems = menu.querySelectorAll('li') // TODO!: This should test menuitem, menuitemradio, and menuitemcheckbox.
 
-//     // Get the menu item in the middle
-//     const middleMenuItem = menuItems[Math.floor(menuItems.length / 2)]
-//     const characterKey = middleMenuItem?.textContent?.[0];
+    // Get the menu item in the middle
+    const middleMenuItem = menuItems[Math.floor(menuItems.length / 2)]
+    const characterKey = middleMenuItem?.textContent?.[0];
 
-//     expect(document.activeElement).toBe(menuItems[0])
-//     await userEvent.keyboard(`{${characterKey}}`)
-//     expect(document.activeElement).toBe(middleMenuItem)
-//   }
-//   // TODO: Test Tab and Shift + Tab functionality
+    expect(document.activeElement).toBe(menuItems[0])
+    await userEvent.keyboard(`{${characterKey}}`)
+    expect(document.activeElement).toBe(middleMenuItem)
+  }
+  // TODO: Test Tab and Shift + Tab functionality
 
-//   // Steps [3]
-//   //   await userEvent.keyboard(`{Enter}`)
-//   //   menu = component.getByRole('menu') // TODO: Is this necessary?
+  // Steps [3]
+  //   await userEvent.keyboard(`{Enter}`)
+  //   menu = component.getByRole('menu') // TODO: Is this necessary?
 
-//   //   for (const item of menu.children) {
-//   //     await userEvent.keyboard(`{ArrowDown}`)
-//   //     expect(document.activeElement).toBe(item)
-//   //   }
-// }
+  //   for (const item of menu.children) {
+  //     await userEvent.keyboard(`{ArrowDown}`)
+  //     expect(document.activeElement).toBe(item)
+  //   }
+}
 
 export async function activationEvent(elem: HTMLElement, component, strict) {
   return true
@@ -174,6 +174,6 @@ export async function accessibleMenuPattern(component: RenderResult, strict: boo
   // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
 
   await expandEvent(supportedTriggerKeys, elem, delayBy, userEvent)
-  //await navigationEvent(elem, component, strict, delayBy)
+  await navigationEvent(elem, component, strict, delayBy, userEvent)
   //await activationEvent(elem, component, strict)
 }
