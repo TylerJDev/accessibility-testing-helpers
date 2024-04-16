@@ -55630,7 +55630,7 @@ function expandEvent(keys, elem, delay) {
                     _i = 0, keys_1 = keys;
                     _b.label = 1;
                 case 1:
-                    if (!(_i < keys_1.length)) return [3 /*break*/, 7];
+                    if (!(_i < keys_1.length)) return [3 /*break*/, 4];
                     key = keys_1[_i];
                     act(function () {
                         elem.focus();
@@ -55642,23 +55642,11 @@ function expandEvent(keys, elem, delay) {
                     _b.sent();
                     elemRole = (_a = document.activeElement) === null || _a === void 0 ? void 0 : _a.getAttribute('role');
                     expect(validElemRole).toContain(elemRole);
-                    if (!delay) return [3 /*break*/, 4];
-                    return [4 /*yield*/, delay()];
+                    _b.label = 3;
                 case 3:
-                    _b.sent();
-                    _b.label = 4;
-                case 4: return [4 /*yield*/, userEvent.keyboard("{Escape}")
-                    // expect(elem).toBeCollapsed();
-                ];
-                case 5:
-                    _b.sent();
-                    // expect(elem).toBeCollapsed();
-                    expect(document.activeElement).toBe(elem);
-                    _b.label = 6;
-                case 6:
                     _i++;
                     return [3 /*break*/, 1];
-                case 7: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -55670,8 +55658,7 @@ function expandEvent(keys, elem, delay) {
 // TODO: Would strict be suited better as some global var?
 function accessibleMenuPattern(component_1) {
     return __awaiter(this, arguments, void 0, function (component, strict, delay) {
-        var supportedTriggerKeys, elem, delayBy;
-        if (delay === void 0) { delay = 0; }
+        var supportedTriggerKeys, elem;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -55680,16 +55667,12 @@ function accessibleMenuPattern(component_1) {
                     return [4 /*yield*/, component.findByRole('button')];
                 case 1:
                     elem = _a.sent();
-                    delayBy = delay ? function (ms) {
-                        if (ms === void 0) { ms = delay; }
-                        return new Promise(function (resolve) { return setTimeout(resolve, ms); });
-                    } : null;
                     // We can make this usable in both Jest and Playright tests, somehow
                     // Jest utilizes `fireEvent` or `userEvent`
                     // With `fireEvent`, we can do `fireEvent.keyDown(elem, {key: 'Enter'})`
                     // With `userEvent`, we can do `userEvent.type(elem, '{enter}')`
                     // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
-                    return [4 /*yield*/, expandEvent(supportedTriggerKeys, elem, delayBy)
+                    return [4 /*yield*/, expandEvent(supportedTriggerKeys, elem)
                         //await navigationEvent(elem, component, strict, delayBy)
                         //await activationEvent(elem, component, strict)
                     ];

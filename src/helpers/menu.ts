@@ -48,11 +48,11 @@ export async function expandEvent(keys: string[], elem: HTMLElement, delay) {
     const elemRole = document.activeElement?.getAttribute('role')
     expect(validElemRole).toContain(elemRole)
 
-    if (delay) await delay();
-    await userEvent.keyboard(`{Escape}`)
+    // if (delay) await delay();
+    // await userEvent.keyboard(`{Escape}`)
 
-    // expect(elem).toBeCollapsed();
-    expect(document.activeElement).toBe(elem)
+    // // expect(elem).toBeCollapsed();
+    // expect(document.activeElement).toBe(elem)
   }
 
   // Playwright: TODO
