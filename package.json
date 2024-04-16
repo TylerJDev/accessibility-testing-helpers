@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Accessibility testing helpers",
   "main": "./dist/index.js",
+  "type": "module",
   "scripts": {
     "test": "jest",
     "build": "rollup --config"
@@ -10,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@storybook/jest": "^0.2.3",
     "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
     "jest": "^29.7.0"
