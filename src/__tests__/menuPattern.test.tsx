@@ -20,6 +20,6 @@ describe('MenuPattern', () => {
         const menu = screen.getByRole('menu')
         expect(menu).toBeTruthy();
 
-        await accessibleMenuPattern(component)
+        await accessibleMenuPattern(component, false, 0, userEvent)
     });
 });
