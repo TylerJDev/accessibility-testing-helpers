@@ -32,7 +32,7 @@ import userEvent from '@testing-library/user-event'
 
 const validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox']
 
-export async function expandEvent(keys: string[], elem: HTMLButtonElement, delay) {
+export async function expandEvent(keys: string[], elem: HTMLElement, delay) {
   // Is there a way to determine with context this function is currently in? (Jest, Playwright)
 
   // Jest:
@@ -95,7 +95,7 @@ export async function navigationEvent(elem: HTMLButtonElement, component, strict
   // Steps [1]
   await userEvent.keyboard(`{Enter}`)
 
-  const menu = component.getByRole('menu')
+  const menu = await component.findByRole('menu')
   const menuNavigationSteps = menuNavigation(menu)
 
   // Steps [2, 4, 5]
@@ -115,7 +115,7 @@ export async function navigationEvent(elem: HTMLButtonElement, component, strict
   }
 
   if (strict) {
-    const menu = component.getByRole('menu')
+    const menu = await component.findByRole('menu')
     // Test character navigation
     // TODO, make this a function
     await userEvent.keyboard(`{Escape}`)
@@ -158,7 +158,7 @@ export async function activationEvent(elem: HTMLButtonElement, component, strict
 export async function accessibleMenuPattern(component: RenderResult, strict: boolean = false, delay: number = 0) {
   // TEST: Do all of the expected keyboard interactions for the trigger button work properly?
   const supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
-  const elem = component.getByRole('button') as HTMLButtonElement
+  const elem = await component.findByRole('button');
   const delayBy = delay ? (ms = delay) => new Promise(resolve => setTimeout(resolve, ms)) : null;
 
   // We can make this usable in both Jest and Playright tests, somehow

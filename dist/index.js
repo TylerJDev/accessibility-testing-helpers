@@ -55699,42 +55699,49 @@ function navigationEvent(elem, component, strict, delay) {
                 case 1:
                     // Steps [1]
                     _e.sent();
-                    menu = component.getByRole('menu');
+                    return [4 /*yield*/, component.findByRole('menu')];
+                case 2:
+                    menu = _e.sent();
                     menuNavigationSteps = menuNavigation(menu);
                     _i = 0, _a = Object.keys(menuNavigationSteps);
-                    _e.label = 2;
-                case 2:
-                    if (!(_i < _a.length)) return [3 /*break*/, 7];
-                    key = _a[_i];
-                    if (!delay) return [3 /*break*/, 4];
-                    return [4 /*yield*/, delay()];
+                    _e.label = 3;
                 case 3:
+                    if (!(_i < _a.length)) return [3 /*break*/, 8];
+                    key = _a[_i];
+                    if (!delay) return [3 /*break*/, 5];
+                    return [4 /*yield*/, delay()];
+                case 4:
                     _e.sent();
-                    _e.label = 4;
-                case 4: 
+                    _e.label = 5;
+                case 5: 
                 // TODO: Can we make this easier to debug without messing with the internals of this script?
                 // TODO: (e.g. a log statement that only shows if something is true in the environment)
                 return [4 /*yield*/, userEvent.keyboard("{".concat(key, "}"))];
-                case 5:
+                case 6:
                     // TODO: Can we make this easier to debug without messing with the internals of this script?
                     // TODO: (e.g. a log statement that only shows if something is true in the environment)
                     _e.sent();
                     if (menuNavigationSteps[key] instanceof Array) {
                         expect(menuNavigationSteps[key]).toContain((_b = document.activeElement) === null || _b === void 0 ? void 0 : _b.closest('li'));
-                        return [3 /*break*/, 6];
+                        return [3 /*break*/, 7];
                     }
                     expect((_c = document.activeElement) === null || _c === void 0 ? void 0 : _c.closest('li')).toBe(menuNavigationSteps[key]);
-                    _e.label = 6;
-                case 6:
-                    _i++;
-                    return [3 /*break*/, 2];
+                    _e.label = 7;
                 case 7:
-                    if (!strict) return [3 /*break*/, 11];
-                    menu_1 = component.getByRole('menu');
+                    _i++;
+                    return [3 /*break*/, 3];
+                case 8:
+                    if (!strict) return [3 /*break*/, 13];
+                    return [4 /*yield*/, component.findByRole('menu')
+                        // Test character navigation
+                        // TODO, make this a function
+                    ];
+                case 9:
+                    menu_1 = _e.sent();
                     // Test character navigation
                     // TODO, make this a function
                     return [4 /*yield*/, userEvent.keyboard("{Escape}")];
-                case 8:
+                case 10:
                     // Test character navigation
                     // TODO, make this a function
                     _e.sent();
@@ -55742,7 +55749,7 @@ function navigationEvent(elem, component, strict, delay) {
                         // TODO: Maybe make this optional? If there aren't any valid characters (e.g. reaction emoji only menu), then -
                         // TODO: we should test this step, as there's no "alphanumeric" character to test.
                     ];
-                case 9:
+                case 11:
                     _e.sent();
                     menuItems = menu_1.querySelectorAll('li') // TODO!: This should test menuitem, menuitemradio, and menuitemcheckbox.
                     ;
@@ -55750,11 +55757,11 @@ function navigationEvent(elem, component, strict, delay) {
                     characterKey = (_d = middleMenuItem === null || middleMenuItem === void 0 ? void 0 : middleMenuItem.textContent) === null || _d === void 0 ? void 0 : _d[0];
                     expect(document.activeElement).toBe(menuItems[0]);
                     return [4 /*yield*/, userEvent.keyboard("{".concat(characterKey, "}"))];
-                case 10:
+                case 12:
                     _e.sent();
                     expect(document.activeElement).toBe(middleMenuItem);
-                    _e.label = 11;
-                case 11: return [2 /*return*/];
+                    _e.label = 13;
+                case 13: return [2 /*return*/];
             }
         });
     });
@@ -55781,7 +55788,9 @@ function accessibleMenuPattern(component_1) {
                 case 0:
                     supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
                     ;
-                    elem = component.getByRole('button');
+                    return [4 /*yield*/, component.findByRole('button')];
+                case 1:
+                    elem = _a.sent();
                     delayBy = delay ? function (ms) {
                         if (ms === void 0) { ms = delay; }
                         return new Promise(function (resolve) { return setTimeout(resolve, ms); });
@@ -55792,7 +55801,7 @@ function accessibleMenuPattern(component_1) {
                     // With `userEvent`, we can do `userEvent.type(elem, '{enter}')`
                     // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
                     return [4 /*yield*/, expandEvent(supportedTriggerKeys, elem, delayBy)];
-                case 1:
+                case 2:
                     // We can make this usable in both Jest and Playright tests, somehow
                     // Jest utilizes `fireEvent` or `userEvent`
                     // With `fireEvent`, we can do `fireEvent.keyDown(elem, {key: 'Enter'})`
@@ -55800,10 +55809,10 @@ function accessibleMenuPattern(component_1) {
                     // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
                     _a.sent();
                     return [4 /*yield*/, navigationEvent(elem, component, strict, delayBy)];
-                case 2:
+                case 3:
                     _a.sent();
                     return [4 /*yield*/, activationEvent()];
-                case 3:
+                case 4:
                     _a.sent();
                     return [2 /*return*/];
             }

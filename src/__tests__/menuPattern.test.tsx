@@ -1,9 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import Menu from '../examples/Menu';
 import userEvent from '@testing-library/user-event';
-import { triggerButton } from '../helpers/menu';
+import { accessibleMenuPattern } from '../helpers/menu';
 
 function ExampleMenu() {
     return (
@@ -21,6 +20,6 @@ describe('MenuPattern', () => {
         const menu = screen.getByRole('menu')
         expect(menu).toBeTruthy();
 
-        await triggerButton(component)
+        await accessibleMenuPattern(component)
     });
 });
