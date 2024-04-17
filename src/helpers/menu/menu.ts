@@ -28,6 +28,7 @@ import {act, RenderResult} from '@testing-library/react'
  * Escape: Closes the menu
  */
 
+
 const validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox']
 
 export async function expandEvent({ keys, elem, delay, event: userEvent, expect }) {
@@ -52,8 +53,6 @@ export async function expandEvent({ keys, elem, delay, event: userEvent, expect 
     // TODO: Add back - expect(elem).toBeCollapsed();
     expect(document.activeElement).toBe(elem)
   }
-
-  // Playwright: TODO
 }
 
 // TODO: Annotations
@@ -69,23 +68,9 @@ const menuNavigation = (menuElem: HTMLElement) => {
     End: menuElem.lastElementChild,
     PageDown: menuElem.lastElementChild, // TODO!: See why this works
   }
-
-  // {ArrowUp: {target: menuElem.lastElementChild, message: '...', strict: true}}
 }
 
 export async function navigationEvent({ elem, component, strict, delay, event: userEvent, expect }) {
-  // What we need to test:
-  // 1. Open the menu
-  // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
-  // 3. [TODO] Ensure that focus trap loops properly (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L68)
-  // 4. [DONE] Ensure that 'Home' and 'End' keys work properly
-  // 5. [DONE] Ensure that 'PageUp' and 'PageDown' keys work properly
-  // Other things to consider:
-  // - Ensure that the menu is closed when pressing "Tab and Shift + Tab" (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L126)
-  // - Test submenu navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L214)
-  // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
-  // Jest:
-
   act(() => {
     elem.focus()
   })
@@ -131,26 +116,11 @@ export async function navigationEvent({ elem, component, strict, delay, event: u
     await userEvent.keyboard(`{${characterKey}}`)
     expect(document.activeElement).toBe(middleMenuItem)
   }
-  // TODO: Test Tab and Shift + Tab functionality
-
-  // Steps [3]
-  //   await userEvent.keyboard(`{Enter}`)
-  //   menu = component.getByRole('menu') // TODO: Is this necessary?
-
-  //   for (const item of menu.children) {
-  //     await userEvent.keyboard(`{ArrowDown}`)
-  //     expect(document.activeElement).toBe(item)
-  //   }
 }
 
 export async function activationEvent(elem: HTMLButtonElement, component, strict) {
   return true
 }
-
-// Could we add a custom matcher
-// example custom matcher
-// toBeExpanded, checks if a component is expanded or not via `aria-expanded`, or if the component naturally expands (e.g. details/summary, dialog, etc.)
-// Add a way to bubble up what exactly failed in an easier way to digest
 
 interface AccessibleMenuPatternOptions {
   component: RenderResult;
@@ -168,14 +138,6 @@ export async function accessibleMenuPattern({ component, strict = false, delay =
   const delayBy = delay ? (ms = delay) => new Promise(resolve => setTimeout(resolve, ms)) : null;
   const assertion = !expectType ? expect : expectType
 
-  // We can make this usable in both Jest and Playright tests, somehow
-  // Jest utilizes `fireEvent` or `userEvent`
-  // With `fireEvent`, we can do `fireEvent.keyDown(elem, {key: 'Enter'})`
-  // With `userEvent`, we can do `userEvent.type(elem, '{enter}')`
-
-  // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
-
   await expandEvent({ keys: supportedTriggerKeys, elem, delay: delayBy, event, expect: assertion })
   await navigationEvent({ elem, component, strict, delay: delayBy, event, expect: assertion })
-  // await activationEvent(elem, component, strict, event)
 }
