@@ -7,7 +7,10 @@ const config = {
   output: {
     file: 'dist/index.js'
   },
-  plugins: [nodeResolve(), commonjs(), typescript({
+  plugins: [nodeResolve({
+    browser: true,
+    preferBuiltins: false
+  }), commonjs(), typescript({
     exclude: ['node_modules/*', 'src/examples/*', 'src/__tests__/*']
   })],
 }
