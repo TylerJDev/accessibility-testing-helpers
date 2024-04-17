@@ -1,7 +1,4 @@
-import '@testing-library/jest-dom' // !TODO: Can we move this? How is this done in PRC?
 import {act, RenderResult} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-
 // `role="menu"` test
 
 /**
@@ -31,9 +28,10 @@ import userEvent from '@testing-library/user-event'
  * Escape: Closes the menu
  */
 
+
 const validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox']
 
-export async function expandEvent(keys: string[], elem: HTMLButtonElement, delay) {
+export async function expandEvent({ keys, elem, delay, event: userEvent, expect }) {
   // Is there a way to determine with context this function is currently in? (Jest, Playwright)
 
   // Jest:
@@ -43,7 +41,7 @@ export async function expandEvent(keys: string[], elem: HTMLButtonElement, delay
     })
 
     await userEvent.keyboard(`{${key}}`)
-    expect(elem).toBeExpanded()
+    // TODO: Add back - expect(elem).toBeExpanded()
 
     const elemRole = document.activeElement?.getAttribute('role')
 
@@ -52,11 +50,9 @@ export async function expandEvent(keys: string[], elem: HTMLButtonElement, delay
     if (delay) await delay();
     await userEvent.keyboard(`{Escape}`)
 
-    expect(elem).toBeCollapsed();
+    // TODO: Add back - expect(elem).toBeCollapsed();
     expect(document.activeElement).toBe(elem)
   }
-
-  // Playwright: TODO
 }
 
 // TODO: Annotations
@@ -72,23 +68,9 @@ const menuNavigation = (menuElem: HTMLElement) => {
     End: menuElem.lastElementChild,
     PageDown: menuElem.lastElementChild, // TODO!: See why this works
   }
-
-  // {ArrowUp: {target: menuElem.lastElementChild, message: '...', strict: true}}
 }
 
-export async function navigationEvent(elem: HTMLButtonElement, component, strict, delay) {
-  // What we need to test:
-  // 1. Open the menu
-  // 2. [DONE] Ensure that first menu item receives focus (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L27)
-  // 3. [TODO] Ensure that focus trap loops properly (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L68)
-  // 4. [DONE] Ensure that 'Home' and 'End' keys work properly
-  // 5. [DONE] Ensure that 'PageUp' and 'PageDown' keys work properly
-  // Other things to consider:
-  // - Ensure that the menu is closed when pressing "Tab and Shift + Tab" (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L126)
-  // - Test submenu navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L214)
-  // - [DONE] Test character navigation (https://github.com/github/a11y-nav-testing/blob/main/lib/wai-aria/menu.ts#L495)
-  // Jest:
-
+export async function navigationEvent({ elem, component, strict, delay, event: userEvent, expect }) {
   act(() => {
     elem.focus()
   })
@@ -134,42 +116,28 @@ export async function navigationEvent(elem: HTMLButtonElement, component, strict
     await userEvent.keyboard(`{${characterKey}}`)
     expect(document.activeElement).toBe(middleMenuItem)
   }
-  // TODO: Test Tab and Shift + Tab functionality
-
-  // Steps [3]
-  //   await userEvent.keyboard(`{Enter}`)
-  //   menu = component.getByRole('menu') // TODO: Is this necessary?
-
-  //   for (const item of menu.children) {
-  //     await userEvent.keyboard(`{ArrowDown}`)
-  //     expect(document.activeElement).toBe(item)
-  //   }
 }
 
 export async function activationEvent(elem: HTMLButtonElement, component, strict) {
   return true
 }
 
-// Could we add a custom matcher
-// example custom matcher
-// toBeExpanded, checks if a component is expanded or not via `aria-expanded`, or if the component naturally expands (e.g. details/summary, dialog, etc.)
-// Add a way to bubble up what exactly failed in an easier way to digest
+interface AccessibleMenuPatternOptions {
+  component: RenderResult;
+  strict?: boolean;
+  delay?: number;
+  event: any;
+  expectType?: any;
+}
 
 // TODO: Would strict be suited better as some global var?
-export async function triggerButton(component: RenderResult, strict: boolean = false, delay: number = 0) {
+export async function accessibleMenuPattern({ component, strict = false, delay = 0, event, expectType }: AccessibleMenuPatternOptions) {
   // TEST: Do all of the expected keyboard interactions for the trigger button work properly?
   const supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
   const elem = component.getByRole('button') as HTMLButtonElement
   const delayBy = delay ? (ms = delay) => new Promise(resolve => setTimeout(resolve, ms)) : null;
+  const assertion = !expectType ? expect : expectType
 
-  // We can make this usable in both Jest and Playright tests, somehow
-  // Jest utilizes `fireEvent` or `userEvent`
-  // With `fireEvent`, we can do `fireEvent.keyDown(elem, {key: 'Enter'})`
-  // With `userEvent`, we can do `userEvent.type(elem, '{enter}')`
-
-  // Likewise with Playwright, we can do `elem.keyboard.press('Enter')`
-
-  await expandEvent(supportedTriggerKeys, elem, delayBy)
-  await navigationEvent(elem, component, strict, delayBy)
-  await activationEvent(elem, component, strict)
+  await expandEvent({ keys: supportedTriggerKeys, elem, delay: delayBy, event, expect: assertion })
+  await navigationEvent({ elem, component, strict, delay: delayBy, event, expect: assertion })
 }

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import Menu from '../examples/Menu';
 import userEvent from '@testing-library/user-event';
-import { triggerButton } from '../helpers/menu';
+import { accessibleMenuPatternJest } from '../helpers/jestPatterns';
 
 function ExampleMenu() {
     return (
@@ -21,6 +21,6 @@ describe('MenuPattern', () => {
         const menu = screen.getByRole('menu')
         expect(menu).toBeTruthy();
 
-        await triggerButton(component)
+        await accessibleMenuPatternJest({ component: component, event: userEvent})
     });
 });
