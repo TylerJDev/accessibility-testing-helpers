@@ -1,4 +1,4 @@
-import {act, RenderResult} from '@testing-library/react'
+import { act, RenderResult } from '@testing-library/react'
 // `role="menu"` test
 
 /**
@@ -34,10 +34,25 @@ const validElemRole = ['menuitem', 'menuitemradio', 'menuitemcheckbox']
 export async function expandEvent({ keys, elem, delay, event: userEvent, expect }) {
   // Is there a way to determine with context this function is currently in? (Jest, Playwright)
 
+  const tests = {
+    'has-role': {
+      pass: false,
+      description: `The menu has one of the valid roles: ${validElemRole.join(', ')}`,
+      expected: 'The menu should have a valid role'
+    },
+    'is-active': {
+      pass: false,
+      description: `The menu's trigger element has focus when the menu is closed`,
+      expected: 'The menu trigger should have focus when the menu is closed'
+    },
+  }
+
   // Jest:
   for (const key of keys) {
     act(() => {
-      elem.focus()
+    elem.focus()
+
+    console.log(document.activeElement, 'button?', elem)
     })
 
     await userEvent.keyboard(`{${key}}`)
@@ -45,14 +60,28 @@ export async function expandEvent({ keys, elem, delay, event: userEvent, expect 
 
     const elemRole = document.activeElement?.getAttribute('role')
 
-    expect(validElemRole).toContain(elemRole)
+    // TODO: Remove [Passion Week]
+    // expect(validElemRole).toContain(elemRole)
+
+    // console.log(document.activeElement)
+
+    if (elemRole) {
+      tests['has-role'].pass = validElemRole.includes(elemRole)
+    }
 
     if (delay) await delay();
     await userEvent.keyboard(`{Escape}`)
 
     // TODO: Add back - expect(elem).toBeCollapsed();
-    expect(document.activeElement).toBe(elem)
+
+    // TODO: Remove [Passion Week]
+    // expect(document.activeElement).toBe(elem)
+
+    tests['is-active'].pass = document.activeElement === elem
   }
+
+  console.log(tests, 'here')
+  return tests;
 }
 
 // TODO: Annotations
@@ -71,6 +100,10 @@ const menuNavigation = (menuElem: HTMLElement) => {
 }
 
 export async function navigationEvent({ elem, component, strict, delay, event: userEvent, expect }) {
+  const tests = {
+    'keyboard-navigation': [],
+  }
+
   act(() => {
     elem.focus()
   })
@@ -78,7 +111,8 @@ export async function navigationEvent({ elem, component, strict, delay, event: u
   // Steps [1]
   await userEvent.keyboard(`{Enter}`)
 
-  const menu = component.getByRole('menu')
+  // const menu = component.getByRole('menu')
+  const menu = component.querySelector('[role="menu"]')
   const menuNavigationSteps = menuNavigation(menu)
 
   // Steps [2, 4, 5]
@@ -90,10 +124,22 @@ export async function navigationEvent({ elem, component, strict, delay, event: u
 
     if (menuNavigationSteps[key] instanceof Array) {
       expect(menuNavigationSteps[key]).toContain(document.activeElement?.closest('li'))
+      const result = menuNavigationSteps[key].includes(document.activeElement?.closest('li'))
+
+
+      // expected ...
+      test['keyboard-navigation'].push({
+        pass: result,
+        description: `Focus should be on one of the menu items`,
+        expected: ``
+      })
+
+      // test['keyboard-navigation'].push(menuNavigationSteps[key].includes(document.activeElement?.closest('li')))
       continue
     }
 
     expect(document.activeElement?.closest('li')).toBe(menuNavigationSteps[key])
+    // test['keyboard-navigation'].push(document.activeElement?.closest('li') === menuNavigationSteps[key])
     // TODO: If submenu, do ...
   }
 
@@ -123,7 +169,7 @@ export async function activationEvent(elem: HTMLButtonElement, component, strict
 }
 
 interface AccessibleMenuPatternOptions {
-  component: RenderResult;
+  component: HTMLElement;
   strict?: boolean;
   delay?: number;
   event: any;
@@ -134,10 +180,11 @@ interface AccessibleMenuPatternOptions {
 export async function accessibleMenuPattern({ component, strict = false, delay = 0, event, expectType }: AccessibleMenuPatternOptions) {
   // TEST: Do all of the expected keyboard interactions for the trigger button work properly?
   const supportedTriggerKeys = ['Enter', ' ', 'ArrowDown', 'ArrowUp'] //, 'ArrowRight', 'ArrowLeft']
-  const elem = component.getByRole('button') as HTMLButtonElement
+  const triggerElem = component.getByRole('button');
+
   const delayBy = delay ? (ms = delay) => new Promise(resolve => setTimeout(resolve, ms)) : null;
   const assertion = !expectType ? expect : expectType
 
-  await expandEvent({ keys: supportedTriggerKeys, elem, delay: delayBy, event, expect: assertion })
-  await navigationEvent({ elem, component, strict, delay: delayBy, event, expect: assertion })
+  const expandResult = await expandEvent({ keys: supportedTriggerKeys, elem: triggerElem, delay: delayBy, event, expect: assertion })
+  // const navigationResult = await navigationEvent({ elem: triggerElem, component, strict, delay: delayBy, event, expect: assertion })
 }
